@@ -37,7 +37,7 @@ var logManager = {
 		}
 	},
 	_update: function() {
-		edited = true;
+		this.edited = true;
 		if(this._updateCallback === undefined) {
 			this.FlushAll();
 		} else {

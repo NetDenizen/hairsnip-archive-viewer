@@ -6,8 +6,20 @@ var idRecord = {
 	keys: undefined,
 	values: undefined,
 
+	_unique(input) {
+		var output = [];
+		var inputLength = input.length;
+		var idx = undefined;
+		for(idx = 0; idx < inputLength; ++idx) {
+			var item = input[idx];
+			if( !output.includes(item) ) {
+				output.push(item);
+			}
+		}
+		return output;
+	},
 	AllValues: function() {
-		return [].concat(this.values).unique();
+		return this._unique( [].concat(this.values) );
 	},
 	length: function() {
 		return this.keys.length;
@@ -28,7 +40,7 @@ var idRecord = {
 				this.keys.push(record.keys[idx]);
 				this.values.push(record.values[idx]);
 			} else {
-				this.values = this.values.concat(record.values[idx]).unique();
+				this.values = this._unique( this.values.concat(record.values[idx]) );
 			}
 		}
 	},
@@ -60,7 +72,7 @@ var idLookup = {
 		return output;
 	},
 	_GetSingle: function(key) {
-		var output = undefined;
+		var output = newIdRecord([], []);
 		var strKey = key.toString();
 		if( this._lookup.hasOwnProperty(strKey) ) {
 			output = this._GetIdx(this._lookup[strKey]);

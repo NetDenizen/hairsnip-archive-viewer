@@ -45,10 +45,10 @@ var storySearcher = {
 			var valuesLength = values.length;
 			var idx = undefined;
 			for (idx = 0; idx < valuesLength; ++idx) {
-				if ( !lookup.get(values[idx][0]).empty() ) {
+				if ( !output.get(values[idx][0]).empty() ) {
 					this._errors.LogWarning("Value " + values[idx][0].toString() + " should not be repeated in '" + table + "'.");
 				}
-				lookup.add(values[idx][0], values[idx][1]);
+				output.add(values[idx][0], values[idx][1]);
 			}
 		}
 		return output;
