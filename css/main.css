@@ -1,0 +1,35 @@
+h1 {
+	text-align: center;
+}
+
+section {
+	display: block;
+	margin-bottom: 2%;
+	white-space: nowrap;
+}
+
+.border {
+	border: black solid thin;
+}
+
+.HorizontalCenter {
+	text-align: center;
+	margin-left: 50%;
+	transform: translateX(-50%);
+}
+
+.ScrollField {
+	height: 20%;
+	overflow: scroll;
+	resize: vertical;
+}
+
+section#PageControls > button {
+	font-size: large;
+	color: black;
+	background-color: white;
+}
+
+section#ErrorField {
+	font-family: monospace, courier;
+}

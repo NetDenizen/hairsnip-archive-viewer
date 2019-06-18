@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HairSnip Archive Viewer</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script type="text/javascript" src="js/sql-asm.js"></script>
+		<script type="text/javascript" src="js/logging.js"></script>
+		<script type="text/javascript" src="js/idlookup.js"></script>
+		<script type="text/javascript" src="js/dbops.js"></script>
+		<script type="text/javascript" src="js/queryfields.js"></script>
+		<script type="text/javascript" src="js/ui.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+	</head>
+	<body>
+	<h1>HairSnip Archive Viewer</h1>
+	<p class="HorizontalCenter" id="DbFileContainer">Select DB File: <input type="file" id="DbFile" accept="application/x-sqlite3" onchange="main()"/></p>
+	<section class="HorizontalCenter" id="PageControls">
+		<button class="border" onclick="documentUi.ToggleDisplay(this)">Error Messages v</button>
+		<button class="border" onclick="documentUi.ToggleDisplay(this)">Search Fields v</button>
+		<button class="border" onclick="documentUi.ToggleDisplay(this)">Search Result v</button>
+		<button class="border" onclick="documentUi.ToggleDisplay(this)">Story Body v</button>
+	</section>
+	<section class="border ScrollField" id="ErrorField"></section>
+	<section class="border" id="SearchFields"></section>
+	<section class="border ScrollField" id="SearchResults"></section>
+	<section class="border" id="StoryArea"></section>
+	</body>
+</html>
