@@ -4,41 +4,42 @@
 // TODO: constructors capitalize 'new'
 "use strict";
 
-var storySearcher = {
-	_db: undefined,
-	_panic: false,
-	_errors: undefined,
+function newStorySearcher(logger, _db) {
+	var output = {};
+	output._db = undefined;
+	output._panic = false;
+	output._errors = undefined;
 
-	sha256Lookup: undefined,
-	commentsLookup: undefined,
-	descriptionLookup: undefined,
+	output.sha256Lookup = undefined;
+	output.commentsLookup = undefined;
+	output.descriptionLookup = undefined;
 
-	ratingLookup: undefined,
-	ratersLookup: undefined,
-	rating1Lookup: undefined,
-	rating2Lookup: undefined,
-	rating3Lookup: undefined,
-	rating4Lookup: undefined,
-	rating5Lookup: undefined,
-	viewcountLookup: undefined,
-	posixdateLookup: undefined,
+	output.ratingLookup = undefined;
+	output.ratersLookup = undefined;
+	output.rating1Lookup = undefined;
+	output.rating2Lookup = undefined;
+	output.rating3Lookup = undefined;
+	output.rating4Lookup = undefined;
+	output.rating5Lookup = undefined;
+	output.viewcountLookup = undefined;
+	output.posixdateLookup = undefined;
 
-	domainLookup: undefined,
-	languageLookup: undefined,
-	contentLookup: undefined,
-	typeLookup: undefined,
-	categoryLookup: undefined,
-	locationLookup: undefined,
-	formatLookup: undefined,
-	authorLookup: undefined,
-	emailLookup: undefined,
-	tagLookup: undefined,
-	originLookup: undefined,
-	siteLookup: undefined,
-	titleLookup: undefined,
+	output.domainLookup = undefined;
+	output.languageLookup = undefined;
+	output.contentLookup = undefined;
+	output.typeLookup = undefined;
+	output.categoryLookup = undefined;
+	output.locationLookup = undefined;
+	output.formatLookup = undefined;
+	output.authorLookup = undefined;
+	output.emailLookup = undefined;
+	output.tagLookup = undefined;
+	output.originLookup = undefined;
+	output.siteLookup = undefined;
+	output.titleLookup = undefined;
 
 	//TODO: Refactor
-	_LoadIds: function(table) {
+	output._LoadIds = function(table) {
 		var output = newIdLookup();
 		if(!this._panic) {
 			var values = this._db.exec("SELECT id, name FROM " + table)[0]['values'];
@@ -52,8 +53,8 @@ var storySearcher = {
 			}
 		}
 		return output;
-	},
-	_LoadIntArray: function(arrayId) {
+	};
+	output._LoadIntArray = function(arrayId) {
 		var output = [];
 		if(!this._panic) {
 			var values = this._db.exec("SELECT idx, val FROM int_arrays WHERE array_id = ?", [arrayId])[0]['values'];
@@ -71,11 +72,11 @@ var storySearcher = {
 			}
 		}
 		return output;
-	},
-	_resetPanic: function() {
+	};
+	output._resetPanic = function() {
 		this._panic = false;
-	},
-	_newLookups: function() {
+	};
+	output._newLookups = function() {
 		this.sha256Lookup = newIdLookup();
 		this.commentsLookup = newIdLookup();
 		this.descriptionLookup = newIdLookup();
@@ -103,8 +104,8 @@ var storySearcher = {
 		this.originLookup = newIdLookup();
 		this.siteLookup = newIdLookup();
 		this.titleLookup = newIdLookup();
-	},
-	_populateContainers: function() {
+	};
+	output._populateContainers = function() {
 		var sha256 = this._db.exec("SELECT id, sha256 FROM stories ORDER BY sha256")[0]['values'];
 		var comments = this._db.exec("SELECT id, comments FROM stories ORDER BY comments")[0]['values'];
 		var domain_id = this._db.exec("SELECT id, domain_id FROM stories ORDER BY domain_id")[0]['values'];
@@ -180,18 +181,18 @@ var storySearcher = {
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
 			this.tagLookup.add(tagsIds.get(tagArray).AllValues(), tag_array_id[idx][0]);
 		}
-	},
-	init: function(logger, _db) {
+	};
+	output.init = function(logger, _db) {
 		this._errors = logger;
 		this._db = _db;
 		this._resetPanic();
 		this._newLookups();
 		this._populateContainers();
-	},
-	LookupBody: function(keywords) {
+	};
+	output.LookupBody = function(keywords) {
 		var outputKeywords = [];
 		var outputIds = [];
-		var arrayKeywords = !Array.isArray(keywords) ? [keywords] : keywords;
+		var arrayKeywords = !Array.isArray(keywords) ? [keywords]  = keywords;
 		var arrayKeywordsLength = arrayKeywords.length;
 		var idxKeywordsArray = undefined;
 		for(idxKeywordsArray = 0; idxKeywordsArray < arrayKeywordsLength; ++idxKeywordsArray) {
@@ -205,15 +206,12 @@ var storySearcher = {
 			}
 		}
 		return newIdRecord(outputKeywords, outputIds);
-	},
-	GetBody: function(id) {
+	};
+	output.GetBody = function(id) {
 		//TODO: Rewrite?
 		var bodyId = this._db.exec("SELECT body_id FROM stories WHERE id=? ORDER BY body_id", [id])[0]['values'][0];
 		return this._db.exec("SELECT body FROM stories_body WHERE id=? ORDER BY id", [bodyId])[0]['values'][0];
-	},
-}
-function newStorySearcher(logger, _db) {
-	var output = Object.create(storySearcher);
+	};
 	output.init(logger, _db);
 	return output;
 }

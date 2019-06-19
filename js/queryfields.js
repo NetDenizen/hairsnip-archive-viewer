@@ -3,15 +3,16 @@
 //TODO: Trim all?
 "use strict";
 
-var fulltextSearcher = {
-	targetElement: undefined,
-	searcher: undefined,
-	_updateCallback: undefined,
-	edited: false,
-	index: {},
-	results: undefined,
+function newFulltextSearcher(name, searcher, updateCallback) {
+	var output = {};
+	output.targetElement = undefined;
+	output.searcher = undefined;
+	output._updateCallback = undefined;
+	output.edited = false;
+	output.index = {};
+	output.results = undefined;
 
-	_ParseKeywords: function() {
+	output._ParseKeywords = function() {
 		var keywords = this.targetElement.value.split(",");
 		var keywordsLength = keywords.length;
 		var idx = undefined;
@@ -25,18 +26,18 @@ var fulltextSearcher = {
 		}
 		this.edited = true;
 		this._updateCallback();
-	},
-	_InputListener: function(e) {
+	};
+	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
 		} else {
 			this._ParseKeywords();
 		}
-	},
-	handleEvent: function(e) {
+	};
+	output.handleEvent = function(e) {
 		this._InputListener(e);
-	},
-	init: function(name, searcher, updateCallback) {
+	};
+	output.init = function(name, searcher, updateCallback) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
@@ -44,23 +45,21 @@ var fulltextSearcher = {
 		this.targetElement.addEventListener("input", this, false);
 		this.searcher = searcher;
 		this._updateCallback = updateCallback;
-	},
-}
-function newFulltextSearcher(name, searcher, updateCallback) {
-	var output = Object.create(fulltextSearcher);
+	};
 	output.init(name, searcher, updateCallback);
 	return output;
 }
 
-var keywordSearcher = {
-	targetElement: undefined,
-	lookup: undefined,
-	_updateCallback: undefined,
-	edited: false,
-	index: {},
-	results: undefined,
+function newKeywordSearcher(name, lookup, updateCallback) {
+	var output = {};
+	output.targetElement = undefined;
+	output.lookup = undefined;
+	output._updateCallback = undefined;
+	output.edited = false;
+	output.index = {};
+	output.results = undefined;
 
-	_ParseKeywords: function() {
+	output._ParseKeywords = function() {
 		var keywords = this.targetElement.value.split(",");
 		var keywordsLength = keywords.length;
 		var idx = undefined;
@@ -77,18 +76,18 @@ var keywordSearcher = {
 		}
 		this.edited = true;
 		this._updateCallback();
-	},
-	_InputListener: function(e) {
+	};
+	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
 		} else {
 			this._ParseKeywords();
 		}
-	},
-	handleEvent: function(e) {
+	};
+	output.handleEvent = function(e) {
 		this._InputListener(e);
-	},
-	init: function(name, lookup, updateCallback) {
+	};
+	output.init = function(name, lookup, updateCallback) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
@@ -96,24 +95,22 @@ var keywordSearcher = {
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._updateCallback = updateCallback;
-	},
-}
-function newKeywordSearcher(name, lookup, updateCallback) {
-	var output = Object.create(keywordSearcher);
+	};
 	output.init(name, lookup, updateCallback);
 	return output;
 }
 
-var dateSearcher = {
-	targetMinElement: undefined,
-	targetMaxElement: undefined,
-	lookup: undefined,
-	_updateCallback: undefined,
-	edited: false,
-	results: undefined,
+function newDateSearcher(minName, maxName, lookup, updateCallback) {
+	var output = {};
+	output.targetMinElement = undefined;
+	output.targetMaxElement = undefined;
+	output.lookup = undefined;
+	output._updateCallback = undefined;
+	output.edited = false;
+	output.results = undefined;
 
-	_ParseDate: function() {
-		//TODO: Formatting
+	output._ParseDate = function() {
+		//TODO: formatting
 		var minDateTime = this.targetMinElement.valueAsDate === null ? new Date(1970).getTime() : this.targetMinElement.valueAsDate.getTime();
 		var maxDateTime = this.targetMaxElement.valueAsDate === null ? new Date(2038, 0, 19, 3, 14, 7).getTime() : this.targetMaxElement.valueAsDate.getTime();
 		this.results = newIdRecord([], []);
@@ -122,45 +119,43 @@ var dateSearcher = {
 		}
 		this.edited = true;
 		this._updateCallback();
-	},
-	_InputListener: function(e) {
+	};
+	output._InputListener = function(e) {
 		if(this.targetMinElement.valueAsDate === null && this.targetMaxElement.valueAsDate === null) {
 			this.results = undefined;
 		} else {
 			this._ParseDate();
 		}
-	},
-	handleEvent: function(e) {
+	};
+	output.handleEvent = function(e) {
 		this._InputListener(e);
-	},
-	_MakeInputElement: function(name) {
+	};
+	output._MakeInputElement = function(name) {
 		var inputElement = document.createElement('input');
 		inputElement.setAttribute("type", "date");
 		inputElement.setAttribute("id", name);
 		this.targetElement.addEventListener("input", this, false);
 		return inputElement;
-	},
-	init: function(minName, maxName, lookup, updateCallback) {
+	};
+	output.init = function(minName, maxName, lookup, updateCallback) {
 		this.targetMinElement = this._MakeInputElement(minName);
 		this.targetMaxElement = this._MakeInputElement(maxName);
 		this.lookup = lookup;
 		this._updateCallback = updateCallback;
-	},
-}
-function newDateSearcher(minName, maxName, lookup, updateCallback) {
-	var output = Object.create(dateSearcher);
+	};
 	output.init(minName, maxName, lookup, updateCallback);
 	return output;
 }
 
-var rangeSearcher = {
-	targetElement: undefined,
-	lookup: undefined,
-	_updateCallback: undefined,
-	edited: false,
-	results: undefined,
+function newRangeSearcher(name, lookup, updateCallback) {
+	var output = {};
+	output.targetElement = undefined;
+	output.lookup = undefined;
+	output._updateCallback = undefined;
+	output.edited = false;
+	output.results = undefined;
 
-	_ExtractValues: function(valueString) {
+	output._ExtractValues = function(valueString) {
 		//TODO: Rewrite?
 		//TODO: What if we leave one of these blank? Default to highest?
 		return valueString.split(",").map( function(e) {
@@ -182,8 +177,8 @@ var rangeSearcher = {
 									       }
 										 )
 									 .filter( function(e) { return e.length === 2; } );
-	},
-	_ParseRanges: function() {
+	};
+	output._ParseRanges = function() {
 		var values = this._ExtractValues(this.targetMinElement.value);
 		var valuesLength = values.length;
 		var idx = undefined;
@@ -193,18 +188,18 @@ var rangeSearcher = {
 		}
 		this.edited = true;
 		this._updateCallback();
-	},
-	_InputListener: function(e) {
+	};
+	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
 		} else {
 			this._ParseRanges();
 		}
-	},
-	handleEvent: function(e) {
+	};
+	output.handleEvent = function(e) {
 		this._InputListener(e);
-	},
-	init: function(name, lookup, updateCallback) {
+	};
+	output.init = function(name, lookup, updateCallback) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
@@ -212,29 +207,27 @@ var rangeSearcher = {
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._updateCallback = updateCallback;
-	},
-}
-function newRangeSearcher(name, lookup, updateCallback) {
-	var output = Object.create(dateSearcher);
+	};
 	output.init(name, lookup, updateCallback);
 	return output;
 }
 
-var autocompleteSearcher = {
-	targetElement: undefined,
-	targetElementList: undefined,
-	lookup: undefined,
-	_updateCallback: undefined,
-	edited: false,
-	results: undefined,
+function newAutocompleteSearcher(name, listName, lookup, updateCallback) {
+	var output = {};
+	output.targetElement = undefined;
+	output.targetElementList = undefined;
+	output.lookup = undefined;
+	output._updateCallback = undefined;
+	output.edited = false;
+	output.results = undefined;
 
-	_datalistKeys: undefined,
-	_datalistValues: undefined,
+	output._datalistKeys = undefined;
+	output._datalistValues = undefined;
 
-	_EscapeHTML: function(text) {
+	output._EscapeHTML = function(text) {
 		return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
-	},
-	_SetDataList: function(prefix, currentValue, keys, values) {
+	};
+	output._SetDataList = function(prefix, currentValue, keys, values) {
 		var datalistLength = this._datalistKeys.length;
 		var idx = undefined;
 		this.targetElementList.innerHTML = "";
@@ -246,8 +239,8 @@ var autocompleteSearcher = {
 				this.targetElementList.appendChild(option);
 			}
 		}
-	},
-	_update: function() {
+	};
+	output._update = function() {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
 		}
@@ -275,12 +268,12 @@ var autocompleteSearcher = {
 		}
 		this.edited = true;
 		this._updateCallback();
-	},
-	_InputListener: function(e) {
+	};
+	output._InputListener = function(e) {
 		this._update();
-	},
+	};
 	//TODO: Optimize output slicing.
-	_longestCommonPrefix: function(values) {
+	output._longestCommonPrefix = function(values) {
 		var output = undefined;
 		var valuesLength = values.length;
 		if(valuesLength === 0) {
@@ -313,8 +306,8 @@ var autocompleteSearcher = {
 			}
 		}
 		return output;
-	},
-	_KeyDownListener: function(e) {
+	};
+	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
 			var allValues = this.targetElement.value.split(',');
 			var val = allValues[allValues.length - 1];
@@ -345,16 +338,16 @@ var autocompleteSearcher = {
 			this.targetElement.value = val;
 			this._update();
 		}
-	},
-	handleEvent: function(e) {
+	};
+	output.handleEvent = function(e) {
 		var eType = e.type;
 		if(eType === "input") {
 			this._InputListener(e);
 		} else if(eType === "keydown") {
 			this._KeyDownListener(e);
 		}
-	},
-	_BuildDatalistValues: function() {
+	};
+	output._BuildDatalistValues = function() {
 		var values = this.lookup.GetAll();
 		var valuesLength = values.length();
 		var idx = undefined;
@@ -364,8 +357,8 @@ var autocompleteSearcher = {
 			this._datalistKeys.push(values.keys[idx]);
 			this._datalistValues.push(values.keys[idx] + " [" + values.values[idx].length.toString() + "]");
 		}
-	},
-	init: function(name, listName, lookup, updateCallback) {
+	};
+	output.init = function(name, listName, lookup, updateCallback) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
@@ -379,10 +372,7 @@ var autocompleteSearcher = {
 		this.lookup = lookup;
 		this._updateCallback = updateCallback;
 		this._BuildDatalistValues();
-	},
-}
-function newAutocompleteSearcher(name, listName, lookup, updateCallback) {
-	var output = Object.create(autocompleteSearcher);
+	};
 	output.init(name, listName, lookup, updateCallback);
 	return output;
 }

@@ -7,40 +7,41 @@ var defaultResultsPerPage = 100;
 var defaultPageNumber = 0;
 var defaultUpdateInterval = 1000;
 
-var uiManager = {
+function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPage) {
+	var output = {};
 	// keywordSearcher
-	commentsManager: undefined,
-	descriptionManager: undefined,
+	output.commentsManager = undefined;
+	output.descriptionManager = undefined;
 
 	// fulltextSearcher
-	bodyManager: undefined,
+	output.bodyManager = undefined;
 
 	// dateSearcher
-	posixdateManager: undefined,
+	output.posixdateManager = undefined;
 
 	// rangeSearcher
-	ratingManager: undefined,
-	ratersManager: undefined,
-	viewcountManager: undefined,
+	output.ratingManager = undefined;
+	output.ratersManager = undefined;
+	output.viewcountManager = undefined;
 
 	// autocompleteSearcher
-	sha256Manager: undefined,
-	domainManager: undefined,
-	languageManager: undefined,
-	contentManager: undefined,
-	typeManager: undefined,
-	categoryManager: undefined,
-	locationManager: undefined,
-	formatManager: undefined,
-	authorManager: undefined,
-	emailManager: undefined,
-	tagManager: undefined,
-	originManager: undefined,
-	siteManager: undefined,
-	titleManager: undefined,
+	output.sha256Manager = undefined;
+	output.domainManager = undefined;
+	output.languageManager = undefined;
+	output.contentManager = undefined;
+	output.typeManager = undefined;
+	output.categoryManager = undefined;
+	output.locationManager = undefined;
+	output.formatManager = undefined;
+	output.authorManager = undefined;
+	output.emailManager = undefined;
+	output.tagManager = undefined;
+	output.originManager = undefined;
+	output.siteManager = undefined;
+	output.titleManager = undefined;
 
-	_displayStates: {},
-	ToggleDisplay: function(e) {
+	output._displayStates = {};
+	output.ToggleDisplay = function(e) {
 		var id = e.getAttribute("id");
 		if(e.display === "none") {
 			if( this.displayStates.hasOwnProperty(id) ) {
@@ -52,40 +53,40 @@ var uiManager = {
 			this.displayStates[id] = e.display;
 			e.display = "none";
 		}
-	},
+	};
 
 	// logManager
-	logger: undefined,
+	output.logger = undefined;
 
-	queryManagerLookup: [],
-	queryOccurrenceTargetsLookup: [],
-	searcher: undefined,
+	output.queryManagerLookup = [];
+	output.queryOccurrenceTargetsLookup = [];
+	output.searcher = undefined;
 
-	_lastUpdateTime: undefined,
-	_updateInterval: undefined,
-	_allStoryIndexes: undefined,
-	_storyIndexes: undefined,
-	//_currentStoryIndex: undefined,
+	output._lastUpdateTime = undefined;
+	output._updateInterval = undefined;
+	output._allStoryIndexes = undefined;
+	output._storyIndexes = undefined;
+	//_currentStoryIndex = undefined;
 
-	_resultsPerPageTarget: undefined,
-	//_defaultResultsPerPage: undefined,
-	_resultsPerPage: undefined,
+	output._resultsPerPageTarget = undefined;
+	//_defaultResultsPerPage = undefined;
+	output._resultsPerPage = undefined;
 
-	_pageNumberTarget: undefined,
-	_pageNumberLeftTarget: undefined,
-	_pageNumberRightTarget: undefined,
-	_maxPageNumberTarget: undefined,
-	_pageNumber: undefined,
-	_maxPageNumber: undefined,
+	output._pageNumberTarget = undefined;
+	output._pageNumberLeftTarget = undefined;
+	output._pageNumberRightTarget = undefined;
+	output._maxPageNumberTarget = undefined;
+	output._pageNumber = undefined;
+	output._maxPageNumber = undefined;
 
-	_resultsDisplayTarget: undefined,
-	_storyDisplayTarget: undefined,
+	output._resultsDisplayTarget = undefined;
+	output._storyDisplayTarget = undefined;
 
-	_UpdateMaxPageNumber: function() {
+	output._UpdateMaxPageNumber = function() {
 		this._maxPageNumber = Math.floor(this._storyIndexes.length / this._resultsPerPage);
 		this._maxPageNumberTarget.innerHTML = " / " + this._maxPageNumber.toString;
-	},
-	_UpdateSingleQuery: function(idx) {
+	};
+	output._UpdateSingleQuery = function(idx) {
 		if(this.queryManagerLookup[idx].edited) {
 			var results = this.queryManagerLookup[idx].results;
 			if(results !== undefined) {
@@ -96,19 +97,19 @@ var uiManager = {
 				target.innerHTML = allValues.length.ToString();
 			}
 		}
-	},
-	_UpdateQueries: function() {
+	};
+	output._UpdateQueries = function() {
 		var queryManagerLookupLength = this.queryManagerLookup.length;
 		var idx = undefined;
 		this._storyIndexes = this._allStoryIndexes.slice(0);
 		for(idx = 0; idx < queryManagerLookupLength; ++idx) {
 			this._UpdateSingleQuery(idx);
 		}
-	},
-	_LookupTerm: function(manager, id) {
+	};
+	output._LookupTerm = function(manager, id) {
 		return manager.lookup.GetReverse(id).join(", ");
-	},
-	_UpdateSingleResult: function(id) {
+	};
+	output._UpdateSingleResult = function(id) {
 		// Main items
 		var title = this._LookupTerm(this.titleManager, id);
 		var domain = this._LookupTerm(this.domainManager, id);
@@ -141,8 +142,8 @@ var uiManager = {
 		item.appendChild(infoItem);
 		item.setAttribute("onclick", "documentUI.LoadStory(" + id.toString() + ")");
 		this._resultsDisplayTarget.appendChild(item);
-	},
-	_UpdateResults: function() {
+	};
+	output._UpdateResults = function() {
 		var resultsStart = this._pageNumber * this._resultsPerPage;
 		var indexes = this._storyIndexes.slice(resultsStart, resultsStart + this._resultsPerPage);
 		var indexesLength = indexes.length;
@@ -151,8 +152,8 @@ var uiManager = {
 		for(idx = 0; idx < indexesLength; ++idx) {
 			this._UpdateSingleResult(idx);
 		}
-	},
-	_UpdateSearch: function() {
+	};
+	output._UpdateSearch = function() {
 		var currentTime = Date().now();
 		var deltaTime = currentTime - this._lastUpdateTime;
 		if(this._lastUpdateTime === undefined || deltaTime >= this._updateInterval) {
@@ -163,8 +164,8 @@ var uiManager = {
 		} else {
 			setTimeout(this._UpdateSearch, deltaTime);
 		}
-	},
-	_UpdatePageNumber: function(e) {
+	};
+	output._UpdatePageNumber = function(e) {
 		//TODO: Optimize
 		// TODO: Make proportional to number of pages
 		var value = Number(this._pageNumberTarget.value);
@@ -180,8 +181,8 @@ var uiManager = {
 			this._pageNumber = value;
 		}
 		this._UpdateResults();
-	},
-	_UpdateResultsPerPage: function(e) {
+	};
+	output._UpdateResultsPerPage = function(e) {
 		var value = Number(this._resultsPerPageTarget.value);
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._resultsPerPageTarget.value = this._resultsPerPage.toString();
@@ -192,8 +193,8 @@ var uiManager = {
 			this._resultsPerPage = value;
 		}
 		this._UpdateResults();
-	},
-	handleEvent: function(e) {
+	};
+	output.handleEvent = function(e) {
 		if(e.type === "keydown") {
 			if(e.target == this._pageNumberTarget) {
 				this._UpdatePageNumber(e);
@@ -201,35 +202,35 @@ var uiManager = {
 				this._UpdateResultsPerPage(e);
 			}
 		}
-	},
-	pageNumberRight: function() {
+	};
+	output.pageNumberRight = function() {
 		if(this._pageNumber < this._maxPageNumber) {
 			this._pageNumber += 1;
 		} else {
 			this._pageNumber = 0;
 		}
 		this._UpdateResults();
-	},
-	pageNumberLeft: function() {
+	};
+	output.pageNumberLeft = function() {
 		if(this._pageNumber > 0) {
 			this._pageNumber -= 1;
 		} else {
 			this._pageNumber = this._maxPageNumber;
 		}
 		this._UpdateResults();
-	},
-	LoadStory: function(id) {
+	};
+	output.LoadStory = function(id) {
 		this._storyDisplayTarget.innerHTML = this.searcher.GetBody(id);
-	},
-	_range: function(start, end) {
+	};
+	output._range = function(start, end) {
 		var idx = undefined;
 		var output = [];
 		for(idx = start; idx < end; ++idx) {
 			output.push(idx);
 		}
 		return output;
-	},
-	_initQueryTable: function(parentField, names, managers) {
+	};
+	output._initQueryTable = function(parentField, names, managers) {
 		var table = document.createElement("table");
 		var headings = document.createElement("tr");
 		var queries = document.createElement("tr");
@@ -256,8 +257,8 @@ var uiManager = {
 		table.appendChild(queries);
 		table.appendChild(occurrences);
 		parentField.appendChild(table);
-	},
-	init: function(logger, searcher, updateInterval, pageNumber, resultsPerPage) {
+	};
+	output.init = function(logger, searcher, updateInterval, pageNumber, resultsPerPage) {
 		var searchFields = document.getElementById("SearchFields");
 		var sha256Table = document.createElement("table");
 		var sha256Tr1 = document.createElement("tr");
@@ -361,10 +362,7 @@ var uiManager = {
 		resultsControl.appendChild(pageNumberP);
 
 		this._UpdateSearch();
-	},
-}
-function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPage) {
-	var output = Object.create(uiManager);
+	};
 	output.init(searcher, updateInterval, pageNumber, resultsPerPage);
 	return output;
 }
