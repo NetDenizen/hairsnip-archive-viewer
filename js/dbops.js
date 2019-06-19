@@ -2,6 +2,8 @@
 // TODO: Strict typing
 // TODO: Try to shrink functions
 // TODO: constructors capitalize 'new'
+// TODO: We build some SQLite requests in toxic ways, but shit if we have a documented API.
+// TODO: Add info messages
 "use strict";
 
 function newStorySearcher(logger, _db) {
@@ -51,13 +53,14 @@ function newStorySearcher(logger, _db) {
 				}
 				output.add(values[idx][0], values[idx][1]);
 			}
+			this._errors.LogInfo("Loaded table: '" + table + "'");
 		}
 		return output;
 	};
 	output._LoadIntArray = function(arrayId) {
 		var output = [];
 		if(!this._panic) {
-			var values = this._db.exec("SELECT idx, val FROM int_arrays WHERE array_id = ?", [arrayId])[0]['values'];
+			var values = this._db.exec( "SELECT idx, val FROM int_arrays WHERE array_id = " + arrayId.toString() )[0]['values'];
 			var valuesLength = values.length;
 			var idx = undefined;
 			output = Array.apply( undefined, Array(valuesLength) ).map(function () {});
@@ -131,6 +134,7 @@ function newStorySearcher(logger, _db) {
 		var site_id = this._db.exec("SELECT id, site_id FROM stories ORDER BY site_id")[0]['values'];
 		var description = this._db.exec("SELECT id, description FROM stories ORDER BY description")[0]['values'];
 		var title_id = this._db.exec("SELECT id, title_id FROM stories ORDER BY title_id")[0]['values'];
+		this._errors.LogInfo("Loaded story info ids.");
 
 		var domainIds = this._LoadIds("domain_ids");
 		var languageIds = this._LoadIds("language_ids");
@@ -179,15 +183,17 @@ function newStorySearcher(logger, _db) {
 			this.titleLookup.add(titleIds.get(title_id[idx][1]).AllValues(), title_id[idx][0]);
 
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
-			this.tagLookup.add(tagsIds.get(tagArray).AllValues(), tag_array_id[idx][0]);
+			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
 		}
 	};
 	output.init = function(logger, _db) {
 		this._errors = logger;
 		this._db = _db;
+		this._errors.LogInfo("Initializing story searcher.");
 		this._resetPanic();
 		this._newLookups();
 		this._populateContainers();
+		this._errors.LogInfo("Story searcher initialized.");
 	};
 	output.LookupBody = function(keywords) {
 		var outputKeywords = [];
@@ -196,11 +202,11 @@ function newStorySearcher(logger, _db) {
 		var arrayKeywordsLength = arrayKeywords.length;
 		var idxKeywordsArray = undefined;
 		for(idxKeywordsArray = 0; idxKeywordsArray < arrayKeywordsLength; ++idxKeywordsArray) {
-			var bodyIds = this._db.exec("SELECT id FROM stories_body WHERE body MATCH ? ORDER BY id", [ arrayKeywords[idxKeywordsArray] ])[0]['values'];
+			var bodyIds = this._db.exec('SELECT id FROM stories_body WHERE body MATCH "' + arrayKeywords[idxKeywordsArray].replace('"', '""') + '" ORDER BY id')[0]['values'];
 			var bodyIdsLength = bodyIds.length;
 			var idxBodyIds = undefined;
 			for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
-				var values = this._db.exec("SELECT id FROM stories WHERE body_id=? ORDER BY id", [ arrayKeywords[idxKeywordsArray] ])[0]['values'];
+				var values = this._db.exec("SELECT id FROM stories WHERE body_id=" + bodyIds[idxBodyIds].toString() + " ORDER BY id")[0]['values'];
 				outputKeywords.push(arrayKeywords[idxKeywordsArray]);
 				outputIds = outputIds.concat( [].concat.apply([], values) );
 			}
@@ -209,8 +215,9 @@ function newStorySearcher(logger, _db) {
 	};
 	output.GetBody = function(id) {
 		//TODO: Rewrite?
-		var bodyId = this._db.exec("SELECT body_id FROM stories WHERE id=? ORDER BY body_id", [id])[0]['values'][0];
-		return this._db.exec("SELECT body FROM stories_body WHERE id=? ORDER BY id", [bodyId])[0]['values'][0];
+		//TODO: Should we make sure input is sanitary, here?
+		var bodyId = this._db.exec("SELECT body_id FROM stories WHERE id=" + id.toString() + " ORDER BY body_id", [id])[0]['values'][0];
+		return this._db.exec("SELECT body FROM stories_body WHERE id=" + bodyId + " ORDER BY id", [bodyId])[0]['values'][0];
 	};
 	output.init(logger, _db);
 	return output;

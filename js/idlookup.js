@@ -95,7 +95,7 @@ function newIdLookup() {
 		} else {
 			this._keys.push(strKey);
 			this._items.push( [item] );
-			this._lookup[strKey] = this._items.length;
+			this._lookup[strKey] = this._items.length - 1;
 		}
 		this._allChanged = true;
 		this._AddSingleReverse(item, strKey);

@@ -13,7 +13,9 @@ var documentUi = undefined;
 
 function LoadSearcher() {
 	searcher = newStorySearcher(logger, db);
+	logger.LogInfo("Building UI.");
 	documentUi = newUiManager(logger, searcher, defaultUpdateInterval, defaultPageNumber, defaultResultsPerPage);
+	logger.LogInfo("Init completed.");
 }
 
 function OpenDb(path) {
@@ -33,5 +35,6 @@ function OpenDb(path) {
 function main() {
 	logger = newLogManager(errorId, undefined);
 	initSqlJs(config);
+	logger.LogInfo("SQL.js initialized.");
 	OpenDb(document.getElementById(dbId).files[0]);
 }

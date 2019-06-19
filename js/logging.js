@@ -39,13 +39,18 @@ function newLogManager(id, updateCallback) {
 			this._updateCallback();
 		}
 	};
-	output.LogError = function(value) {
-		this._records.push( newLogRecord(new Date(), "ERROR", value) );
+	output._LogNow = function(level, value) {
+		this._records.push( newLogRecord(new Date(), level, value) );
 		this._update();
 	};
+	output.LogError = function(value) {
+		this._LogNow("ERROR", value);
+	};
 	output.LogWarning = function(value) {
-		this._records.push( newLogRecord(new Date(), "WARNING", value) );
-		this._update();
+		this._LogNow("WARNING", value);
+	};
+	output.LogInfo = function(value) {
+		this._LogNow("INFO", value);
 	};
 	return output;
 }
