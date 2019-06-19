@@ -110,7 +110,7 @@ function newDateSearcher(minName, maxName, lookup, updateCallback) {
 	output.results = undefined;
 
 	output._ParseDate = function() {
-		//TODO: formatting
+		//TODO: Formatting
 		var minDateTime = this.targetMinElement.valueAsDate === null ? new Date(1970).getTime() : this.targetMinElement.valueAsDate.getTime();
 		var maxDateTime = this.targetMaxElement.valueAsDate === null ? new Date(2038, 0, 19, 3, 14, 7).getTime() : this.targetMaxElement.valueAsDate.getTime();
 		this.results = newIdRecord([], []);

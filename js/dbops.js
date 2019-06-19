@@ -192,7 +192,7 @@ function newStorySearcher(logger, _db) {
 	output.LookupBody = function(keywords) {
 		var outputKeywords = [];
 		var outputIds = [];
-		var arrayKeywords = !Array.isArray(keywords) ? [keywords]  = keywords;
+		var arrayKeywords = !Array.isArray(keywords) ? [keywords] : keywords;
 		var arrayKeywordsLength = arrayKeywords.length;
 		var idxKeywordsArray = undefined;
 		for(idxKeywordsArray = 0; idxKeywordsArray < arrayKeywordsLength; ++idxKeywordsArray) {

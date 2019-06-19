@@ -101,9 +101,9 @@ function newIdLookup() {
 		this._AddSingleReverse(item, strKey);
 	};
 	output.add = function(key, item) {
-		var arrayKey = !Array.isArray(key) ? [key]  = key;
+		var arrayKey = !Array.isArray(key) ? [key] : key;
 		var arrayKeyLength = arrayKey.length;
-		var arrayItem = !Array.isArray(item) ? [item]  = item;
+		var arrayItem = !Array.isArray(item) ? [item] : item;
 		var arrayItemLength = arrayItem.length;
 		var arrayKeyIdx = undefined;
 		for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
@@ -118,7 +118,7 @@ function newIdLookup() {
 	};
 	output.get = function(key) {
 		var output = newIdRecord([], []);
-		var arrayKey = !Array.isArray(arrayKey) ? [key]  = key;
+		var arrayKey = !Array.isArray(arrayKey) ? [key] : key;
 		var arrayKeyLength = arrayKey.length;
 		var idx = undefined;
 		for(idx = 0; idx < arrayKeyLength; ++idx) {
@@ -152,7 +152,7 @@ function newIdLookup() {
 	};
 	output.get = function(key) {
 		var output = newIdRecord([], []);
-		var arrayKey = !Array.isArray(key) ? [key]  = key;
+		var arrayKey = !Array.isArray(key) ? [key] : key;
 		var arrayKeyLength = arrayKey.length;
 		var idx = undefined;
 		for(idx = 0; idx < arrayKeyLength; ++idx) {
@@ -163,7 +163,7 @@ function newIdLookup() {
 	output.GetFuzzy = function(key) {
 		//TODO: Rewrite?
 		// TODO: This *might* not be accessible in mapFunc
-		var arrayKey = !Array.isArray(key) ? [key]  = key;
+		var arrayKey = !Array.isArray(key) ? [key] : key;
 		var keyFunc = function(kf) { return kf.indexOf(km) !== -1; };
 		var mapFunc = function(km) { return this._keys.filter(keyFunc); }
 		return this.get( [].concat.apply( [], arrayKey.map(mapFunc) ) );
@@ -178,7 +178,7 @@ function newIdLookup() {
 	};
 	output.GetReverse = function(item) {
 		var output = [];
-		var arrayItem = !Array.isArray(item) ? [item]  = item;
+		var arrayItem = !Array.isArray(item) ? [item] : item;
 		var arrayItemLength = arrayItem.length;
 		var idx = undefined;
 		for(idx = 0; idx < arrayItemLength; ++idx) {

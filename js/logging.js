@@ -15,10 +15,10 @@ function newLogRecord(timestamp, level, message) {
 
 function newLogManager(id, updateCallback) {
 	var output = {};
-	this._targetElement = document.getElementById(id);
-	this._records = [];
-	this._updateCallback = updateCallback;
-	this.edited = false;
+	output._targetElement = document.getElementById(id);
+	output._records = [];
+	output._updateCallback = updateCallback;
+	output.edited = false;
 	output._FlushSingle = function() {
 		var record = this._records.shift();
 		var contentSpan = document.createElement('span');
