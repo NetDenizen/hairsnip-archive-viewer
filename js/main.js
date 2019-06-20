@@ -32,9 +32,14 @@ function OpenDb(path) {
 	}
 }
 
-function main() {
+function OnSQLSelect() {
+	OpenDb(document.getElementById(dbId).files[0]);
+}
+
+function OnPageLoad() {
 	logger = newLogManager(errorId, undefined);
 	initSqlJs(config);
 	logger.LogInfo("SQL.js initialized.");
-	OpenDb(document.getElementById(dbId).files[0]);
 }
+
+document.addEventListener("DOMContentLoaded", OnPageLoad);
