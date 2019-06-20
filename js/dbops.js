@@ -59,7 +59,7 @@ function newStorySearcher(logger, _db) {
 	};
 	output._LoadIntArray = function(arrayId) {
 		var output = [];
-		if(!this._panic) {
+		if(!this._panic && arrayId !== null) {
 			var values = this._db.exec( "SELECT idx, val FROM int_arrays WHERE array_id = " + arrayId.toString() )[0]['values'];
 			var valuesLength = values.length;
 			var idx = undefined;
@@ -184,6 +184,7 @@ function newStorySearcher(logger, _db) {
 
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
 			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
+			console.log(idx);
 		}
 	};
 	output.init = function(logger, _db) {

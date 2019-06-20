@@ -134,7 +134,7 @@ function newDateSearcher(minName, maxName, lookup, updateCallback) {
 		var inputElement = document.createElement('input');
 		inputElement.setAttribute("type", "date");
 		inputElement.setAttribute("id", name);
-		this.targetElement.addEventListener("input", this, false);
+		inputElement.addEventListener("input", this, false);
 		return inputElement;
 	};
 	output.init = function(minName, maxName, lookup, updateCallback) {

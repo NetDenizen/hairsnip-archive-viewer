@@ -279,9 +279,6 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 
 		this.searcher = searcher;
 
-		this._updateInterval = updateInterval;
-		this._allStoryIndexes = this._range(0, this.titleManager.lookup.GetAll().AllValues().length);
-
 		// logManager
 		this.logger = logger;
 
@@ -324,6 +321,9 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 		sha256Table.appendChild(sha256Tr2);
 		searchFields.appendChild(sha256Table);
 
+		this._updateInterval = updateInterval;
+		this._allStoryIndexes = this._range(0, this.titleManager.lookup.GetAll().AllValues().length);
+
 		this._initQueryTable(searchFields, ["Title", "Author", "Date Range", "Story Language"], [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]);
 		this._initQueryTable(searchFields, ["Site Domain", "Archive Format", "Archive Comment"], [this.domainManager, this.formatManager, this.commentsManager]);
 		this._initQueryTable(searchFields, ["Views", "Rating", "Raters"], [this.viewcountManager, this.ratingManager, this.ratersManager]);
@@ -363,6 +363,6 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 
 		this._UpdateSearch();
 	};
-	output.init(searcher, updateInterval, pageNumber, resultsPerPage);
+	output.init(logger, searcher, updateInterval, pageNumber, resultsPerPage);
 	return output;
 }
