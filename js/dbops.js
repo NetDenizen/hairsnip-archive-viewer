@@ -184,7 +184,6 @@ function newStorySearcher(logger, _db) {
 
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
 			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
-			console.log(idx);
 		}
 	};
 	output.init = function(logger, _db) {
