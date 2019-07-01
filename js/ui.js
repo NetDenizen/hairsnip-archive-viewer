@@ -84,7 +84,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 
 	output._UpdateMaxPageNumber = function() {
 		this._maxPageNumber = Math.floor(this._storyIndexes.length / this._resultsPerPage);
-		this._maxPageNumberTarget.innerHTML = " / " + this._maxPageNumber.toString;
+		this._maxPageNumberTarget.innerHTML = " / " + this._maxPageNumber.toString();
 	};
 	output._UpdateSingleQuery = function(idx) {
 		if(this.queryManagerLookup[idx].edited) {
@@ -137,7 +137,11 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 		var titleItem = document.createElement("h3"); // Title, and Author
 		var infoItem = document.createElement("p"); // Date, Domain, Format
 		titleItem.innerHTML = title +  " - " + author;
-		infoItem.innerHTML = Date.parse(date).toISOString() + " - " + domain + " | Format: " + format;
+		if(date !== "") {
+			infoItem.innerHTML = new Date( parseInt(date) ).toISOString() + " - " + domain + " | Format: " + format;
+		} else {
+			infoItem.innerHTML = "Date not found - " + domain + " | Format: " + format;
+		}
 		item.appendChild(titleItem);
 		item.appendChild(infoItem);
 		item.setAttribute("onclick", "documentUI.LoadStory(" + id.toString() + ")");
@@ -154,12 +158,12 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 		}
 	};
 	output._UpdateSearch = function() {
-		var currentTime = Date().now();
+		var currentTime = Date.now();
 		var deltaTime = currentTime - this._lastUpdateTime;
 		if(this._lastUpdateTime === undefined || deltaTime >= this._updateInterval) {
 			this._lastUpdateTime = currentTime;
-			this._UpdateMaxPageNumber();
 			this._UpdateQueries();
+			this._UpdateMaxPageNumber();
 			this._UpdateResults();
 		} else {
 			setTimeout(this._UpdateSearch, deltaTime);
@@ -240,6 +244,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 		for(idx = 0; idx < namesLength; ++idx) {
 			var heading = document.createElement("th");
 			heading.innerHTML = names[idx];
+			headings.appendChild(heading);
 			var query = document.createElement("td");
 			if( managers[idx].hasOwnProperty("targetMinElement") ) {
 				query.appendChild(managers[idx].targetMinElement);
@@ -248,6 +253,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 			} else {
 				query.appendChild(managers[idx].targetElement);
 			}
+			queries.appendChild(query);
 			var occurrence = document.createElement("td");
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);

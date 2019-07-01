@@ -349,13 +349,13 @@ function newAutocompleteSearcher(name, listName, lookup, updateCallback) {
 	};
 	output._BuildDatalistValues = function() {
 		var values = this.lookup.GetAll();
-		var valuesLength = values.length();
+		var valuesLength = values.keys.length;
 		var idx = undefined;
 		this._datalistKeys = [];
 		this._datalistValues = [];
 		for(idx = 0; idx < valuesLength; ++idx) {
 			this._datalistKeys.push(values.keys[idx]);
-			this._datalistValues.push(values.keys[idx] + " [" + values.values[idx].length.toString() + "]");
+			this._datalistValues.push(values.keys[idx] + " [" + values.values[idx].size.toString() + "]");
 		}
 	};
 	output.init = function(name, listName, lookup, updateCallback) {

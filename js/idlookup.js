@@ -6,24 +6,23 @@ function newIdRecord(keys, values) {
 	var output = {};
 	output.keys = keys;
 	output.values = values;
-	output._unique = function(input) {
+	output.lookup = {};
+	output.AllKeys = function() {
+		return [].concat(this.keys);
+	};
+	output.AllValues = function() {
 		var output = [];
-		var inputLength = input.length;
+		var values = this.values;
+		var valuesLength = values.length;
 		var idx = undefined;
-		for(idx = 0; idx < inputLength; ++idx) {
-			var item = input[idx];
-			if( !output.includes(item) ) {
-				output.push(item);
-			}
+		for(idx = 0; idx < valuesLength; ++idx) {
+			output = output.concat( Array.from(values[idx]) )
 		}
 		return output;
 	};
-	output.AllValues = function() {
-		return this._unique( [].concat(this.values) );
-	};
-	output.length = function() {
-		return this.keys.length;
-	};
+	//output.length = function() {
+	//	return this.keys.length;
+	//};
 	output.empty = function() {
 		var output = true;
 		if(this.values !== undefined && this.values.length > 0) {
@@ -32,15 +31,24 @@ function newIdRecord(keys, values) {
 		return output;
 	};
 	output.extend = function(record) {
-		var recordLength = record.length();
+		//var recordLength = record.length();
+		var recordLength = record.keys.length;
 		var idx = 0;
 		for(idx = 0; idx < recordLength; ++idx) {
-			var found = this.keys.indexOf(record.keys[idx], 0);
-			if(found !== -1) {
-				this.keys.push(record.keys[idx]);
-				this.values.push(record.values[idx]);
+			if( !this.lookup.hasOwnProperty(record.keys[idx]) ) {
+				var key = record.keys[idx];
+				var values = new Set(record.values[idx]);
+				this.keys.push(key);
+				this.values.push(values);
+				this.lookup[key] = values;
 			} else {
-				this.values = this._unique( this.values.concat(record.values[idx]) );
+				var found = this.lookup[key];
+				var values = record.values;
+				var valuesLength = values.length;
+				var idx = undefined;
+				for(idx = 0; idx < valuesLength; ++idx) {
+					found.add(values[idx]);
+				}
 			}
 		}
 	};
@@ -145,10 +153,12 @@ function newIdLookup() {
 		return output;
 	};
 	output.GetAll = function() {
+		var output = newIdRecord([], []);
 		if(this._allChanged) {
 			this._all = this._GetIdxRange(0, this._items.length);
 		}
-		return newIdRecord([], []).extend(this._all);
+		output.extend(this._all);
+		return output;
 	};
 	output.get = function(key) {
 		var output = newIdRecord([], []);
