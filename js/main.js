@@ -14,7 +14,7 @@ var documentUi = undefined;
 function LoadSearcher() {
 	searcher = newStorySearcher(logger, db);
 	logger.LogInfo("Building UI.");
-	documentUi = newUiManager(logger, searcher, defaultUpdateInterval, defaultPageNumber, defaultResultsPerPage);
+	documentUi = newUiManager(logger, searcher, 'documentUi', defaultUpdateInterval, defaultPageNumber, defaultResultsPerPage);
 	logger.LogInfo("Init completed.");
 }
 

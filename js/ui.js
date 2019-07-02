@@ -144,7 +144,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 		}
 		item.appendChild(titleItem);
 		item.appendChild(infoItem);
-		item.setAttribute("onclick", "documentUI.LoadStory(" + id.toString() + ")");
+		item.setAttribute("onclick", this.name + ".LoadStory(" + id.toString() + ")");
 		this._resultsDisplayTarget.appendChild(item);
 	};
 	output._UpdateResults = function() {
@@ -264,7 +264,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 		table.appendChild(occurrences);
 		parentField.appendChild(table);
 	};
-	output.init = function(logger, searcher, updateInterval, pageNumber, resultsPerPage) {
+	output.init = function(logger, searcher, name, updateInterval, pageNumber, resultsPerPage) {
 		var searchFields = document.getElementById("SearchFields");
 		var sha256Table = document.createElement("table");
 		var sha256Tr1 = document.createElement("tr");
@@ -284,6 +284,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 		this._storyDisplayTarget = document.getElementById("StoryArea");
 
 		this.searcher = searcher;
+		this.name = name; // TODO: Where to put this?
 
 		// logManager
 		this.logger = logger;
@@ -344,7 +345,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		this._pageNumberLeftTarget.innerHTML = "<";
-		this._pageNumberLeftTarget.setAttribute("onclick", "documentUi.pageNumberLeft()");
+		this._pageNumberLeftTarget.setAttribute("onclick", this.name + ".pageNumberLeft()");
 
 		this._pageNumberTarget = document.createElement("input");
 		this._pageNumberTarget.setAttribute("type", "text");
@@ -355,7 +356,7 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 
 		this._pageNumberRightTarget = document.createElement("button");
 		this._pageNumberRightTarget.innerHTML = ">";
-		this._pageNumberRightTarget.setAttribute("onclick", "documentUi.pageNumberRight()");
+		this._pageNumberRightTarget.setAttribute("onclick", this.name + ".pageNumberRight()");
 
 		resultsPerPageP.appendChild(this._resultsPerPageTarget);
 
