@@ -84,7 +84,7 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 
 	output._UpdateMaxPageNumber = function() {
 		this._maxPageNumber = Math.floor(this._storyIndexes.length / this._resultsPerPage);
-		this._maxPageNumberTarget.innerHTML = " / " + this._maxPageNumber.toString();
+		this._maxPageNumberTarget.innerHTML = " / " + (this._maxPageNumber + 1).toString();
 	};
 	output._UpdateSingleQuery = function(idx) {
 		if(this.queryManagerLookup[idx].edited) {
@@ -154,7 +154,7 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		var idx = undefined;
 		this._resultsDisplayTarget.innerHTML = "";
 		for(idx = 0; idx < indexesLength; ++idx) {
-			this._UpdateSingleResult(idx);
+			this._UpdateSingleResult( indexes[idx] );
 		}
 	};
 	output._UpdateSearch = function() {
@@ -197,9 +197,10 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 			this._resultsPerPage = value;
 		}
 		this._UpdateResults();
+		this._UpdateMaxPageNumber();
 	};
 	output.handleEvent = function(e) {
-		if(e.type === "keydown") {
+		if(e.type === "keyup") {
 			if(e.target == this._pageNumberTarget) {
 				this._UpdatePageNumber(e);
 			} else if(e.target == this._resultsPerPageTarget) {
@@ -207,12 +208,14 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 			}
 		}
 	};
+	//TODO: Remove duplication
 	output.pageNumberRight = function() {
 		if(this._pageNumber < this._maxPageNumber) {
 			this._pageNumber += 1;
 		} else {
 			this._pageNumber = 0;
 		}
+		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
 	output.pageNumberLeft = function() {
@@ -221,6 +224,7 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		} else {
 			this._pageNumber = this._maxPageNumber;
 		}
+		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
 	output.LoadStory = function(id) {
@@ -338,20 +342,24 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		this._initQueryTable(searchFields, ["Author Website", "Author Email", "Author Description"], [this.siteManager, this.emailManager, this.descriptionManager]);
 		this._initQueryTable(searchFields, ["Story Origin", "Story Tags", "Body Keywords"], [this.originManager, this.tagManager, this.bodyManager]);
 
+		this._resultsPerPage = resultsPerPage;
 		this._resultsPerPageTarget = document.createElement("input"),
 		this._resultsPerPageTarget.setAttribute("type", "text");
 		this._resultsPerPageTarget.setAttribute("placeholder", "Results per page");
-		this._resultsPerPage = resultsPerPage;
+		this._resultsPerPageTarget.addEventListener("keyup", this, false);
+		this._resultsPerPageTarget.value = this._resultsPerPage.toString();
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		this._pageNumberLeftTarget.innerHTML = "<";
 		this._pageNumberLeftTarget.setAttribute("onclick", this.name + ".pageNumberLeft()");
 
+		this._pageNumber = pageNumber;
 		this._pageNumberTarget = document.createElement("input");
 		this._pageNumberTarget.setAttribute("type", "text");
 		this._pageNumberTarget.setAttribute("placeholder", "Page Number");
+		this._pageNumberTarget.addEventListener("keyup", this, false);
+		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 
-		this._pageNumber = pageNumber;
 		this._maxPageNumberTarget = document.createElement("span");
 
 		this._pageNumberRightTarget = document.createElement("button");
