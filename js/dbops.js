@@ -57,12 +57,18 @@ function newStorySearcher(logger, _db) {
 		}
 		return output;
 	};
-	output._LoadIntArray = function(arrayId) {
+	output._LoadIntArray = function(intArrays, arrayId) {
 		var output = [];
 		if(!this._panic && arrayId !== null) {
-			var values = this._db.exec( "SELECT idx, val FROM int_arrays WHERE array_id = " + arrayId.toString() )[0]['values'];
-			var valuesLength = values.length;
+			var values = [];
 			var idx = undefined;
+			var intArraysLength = intArrays.length;
+			for(idx = 0; idx < intArraysLength; ++idx) {
+				if(intArrays[idx][1] === arrayId){
+					values.push([ intArrays[idx][2], intArrays[idx][3] ]);
+				}
+			}
+			var valuesLength = values.length;
 			output = Array.apply( undefined, Array(valuesLength) ).map(function () {});
 			for (idx = 0; idx < valuesLength; ++idx) {
 				if (output[ values[idx][0] ] !== undefined) {
@@ -109,6 +115,8 @@ function newStorySearcher(logger, _db) {
 		this.titleLookup = newIdLookup();
 	};
 	output._populateContainers = function() {
+		var intArrays = this._db.exec("SELECT id, array_id, idx, val FROM int_arrays")[0]['values'];
+
 		var sha256 = this._db.exec("SELECT id, sha256 FROM stories ORDER BY sha256")[0]['values'];
 		var comments = this._db.exec("SELECT id, comments FROM stories ORDER BY comments")[0]['values'];
 		var domain_id = this._db.exec("SELECT id, domain_id FROM stories ORDER BY domain_id")[0]['values'];
@@ -153,8 +161,8 @@ function newStorySearcher(logger, _db) {
 		var sha256Length = sha256.length;
 		var idx = undefined;
 		for(idx = 0; idx < sha256Length; ++idx) {
-			var emailArray = this._LoadIntArray(email_array_id[idx][1]);
-			var tagArray = this._LoadIntArray(tags_array_id[idx][1]);
+			var emailArray = this._LoadIntArray(intArrays, email_array_id[idx][1]);
+			var tagArray = this._LoadIntArray(intArrays, tags_array_id[idx][1]);
 
 			this.sha256Lookup.add(sha256[idx][1], sha256[idx][0]);
 			this.commentsLookup.add(comments[idx][1], comments[idx][0]);
