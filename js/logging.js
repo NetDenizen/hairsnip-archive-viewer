@@ -2,10 +2,6 @@
 
 var errorId = "ErrorField";
 
-function update() {
-	setTimeout(function(){}, 300);
-}
-
 function newLogRecord(timestamp, level, message) {
 	var output = {}
 	output.timestamp = timestamp;
@@ -29,11 +25,10 @@ function newLogManager(id, updateCallback) {
 		contentSpan.textContent = record.toString();
 		this._targetElement.appendChild(contentSpan);
 		this._targetElement.appendChild( document.createElement('br') );
-		update();
 	};
 	output.FlushAll = function(level, values) {
 		while(this._records.length > 0) {
-			this._FlushSingle();
+			setTimeout(this._FlushSingle(), 0);
 		}
 	};
 	output._update = function() {
