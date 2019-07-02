@@ -41,17 +41,17 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 	output.titleManager = undefined;
 
 	output._displayStates = {};
-	output.ToggleDisplay = function(e) {
-		var id = e.getAttribute("id");
-		if(e.display === "none") {
-			if( this.displayStates.hasOwnProperty(id) ) {
-				e.display = this.displayStates[id];
+	output.ToggleDisplay = function(id) {
+		var e = document.getElementById(id);
+		if(e.style.display === "none") {
+			if( this._displayStates.hasOwnProperty(id) ) {
+				e.style.display = this._displayStates[id];
 			} else {
-				e.display = initial;
+				e.style.display = initial;
 			}
 		} else {
-			this.displayStates[id] = e.display;
-			e.display = "none";
+			this._displayStates[id] = e.style.display;
+			e.style.display = "none";
 		}
 	};
 
