@@ -7,7 +7,7 @@ var defaultResultsPerPage = 100;
 var defaultPageNumber = 0;
 var defaultUpdateInterval = 1000;
 
-function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPage) {
+function newUiManager(logger, searcher, name, updateInterval, pageNumber, resultsPerPage) {
 	var output = {};
 	// keywordSearcher
 	output.commentsManager = undefined;
@@ -370,6 +370,6 @@ function newUiManager(logger, searcher, updateInterval, pageNumber, resultsPerPa
 
 		this._UpdateSearch();
 	};
-	output.init(logger, searcher, updateInterval, pageNumber, resultsPerPage);
+	output.init(logger, searcher, name, updateInterval, pageNumber, resultsPerPage);
 	return output;
 }
