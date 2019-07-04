@@ -278,7 +278,9 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		var searchResults = document.getElementById("SearchResults");
 		var resultsControl = document.createElement("div");
 		var resultsDisplay = document.createElement("div");
+		var resultsPerPageTitle = document.createElement("p");
 		var resultsPerPageP = document.createElement("p");
+		var pageNumberTitle = document.createElement("p");
 		var pageNumberP = document.createElement("p");
 
 		searchResults.appendChild(resultsControl);
@@ -342,12 +344,16 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		this._initQueryTable(searchFields, ["Author Website", "Author Email", "Author Description"], [this.siteManager, this.emailManager, this.descriptionManager]);
 		this._initQueryTable(searchFields, ["Story Origin", "Story Tags", "Body Keywords"], [this.originManager, this.tagManager, this.bodyManager]);
 
+		resultsPerPageTitle.innerHTML = "Results per page:"
+
 		this._resultsPerPage = resultsPerPage;
 		this._resultsPerPageTarget = document.createElement("input"),
 		this._resultsPerPageTarget.setAttribute("type", "text");
 		this._resultsPerPageTarget.setAttribute("placeholder", "Results per page");
 		this._resultsPerPageTarget.addEventListener("keyup", this, false);
 		this._resultsPerPageTarget.value = this._resultsPerPage.toString();
+
+		pageNumberTitle.innerHTML = "Page number:"
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		this._pageNumberLeftTarget.innerHTML = "<";
@@ -373,7 +379,9 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		pageNumberP.appendChild(this._maxPageNumberTarget);
 		pageNumberP.appendChild(this._pageNumberRightTarget);
 
+		resultsControl.appendChild(resultsPerPageTitle);
 		resultsControl.appendChild(resultsPerPageP);
+		resultsControl.appendChild(pageNumberTitle);
 		resultsControl.appendChild(pageNumberP);
 
 		this._UpdateSearch();
