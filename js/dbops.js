@@ -64,17 +64,20 @@ function newStorySearcher(logger, _db) {
 			var idx = undefined;
 			var intArraysLength = intArrays.length;
 			for(idx = 0; idx < intArraysLength; ++idx) {
-				if(intArrays[idx][1] === arrayId){
-					values.push([ intArrays[idx][2], intArrays[idx][3] ]);
+				var array = intArrays[idx];
+				if(array[1] === arrayId){
+					values.push([ array[2], array[3] ]);
 				}
 			}
 			var valuesLength = values.length;
 			output = Array.apply( undefined, Array(valuesLength) ).map(function () {});
 			for (idx = 0; idx < valuesLength; ++idx) {
-				if (output[ values[idx][0] ] !== undefined) {
-					this._errors.LogWarning("Value at index " + values[idx][0].toString() + " should not be repeated for " + arrayId.toString() + ".");
+				var currentValues = values[idx];
+				var outputIdx = currentValues[0];
+				if (output[outputIdx] !== undefined) {
+					this._errors.LogWarning("Value at index " + outputIdx.toString() + " should not be repeated for " + arrayId.toString() + ".");
 				}
-				output[ values[idx][0] ] = values[idx][1];
+				output[outputIdx] = currentValues[1];
 			}
 			if ( output.includes(undefined) ) {
 				this._errors.LogWarning("All of " + valuesLength.toString() + " indexes not filled.");
