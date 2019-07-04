@@ -64,7 +64,7 @@ function newIdLookup() {
 	output._all = undefined;
 	output._allChanged = true;
 	output._GetIdx = function(idx) {
-		return newIdRecord([ this._keys[idx] ], [ this._items[idx] ]);
+		return newIdRecord([ this._keys[idx] ], [ Array.from(this._items[idx]) ]);
 	};
 	output._GetIdxRange = function(startIdx, endIdx) {
 		var output = newIdRecord([], []);
@@ -85,24 +85,18 @@ function newIdLookup() {
 	output._AddSingleReverse = function(item, strKey) {
 		var strItem = item.toString();
 		if( this._lookupReverse.hasOwnProperty(strItem) ) {
-			var itemsArray = this._lookupReverse[strItem];
-			if( !( itemsArray.includes(strKey) ) ) {
-				itemsArray.push(strKey);
-			}
+			this._lookupReverse[strItem].add(strKey);
 		} else {
-			this._lookupReverse[strItem] = [strKey];
+			this._lookupReverse[strItem] = new Set([strKey]);
 		}
 	};
 	output._AddSingle = function(key, item) {
 		var strKey = key.toString();
 		if( this._lookup.hasOwnProperty(strKey) ) {
-			var itemsArray = this._items[ this._lookup[strKey] ];
-			if( !( itemsArray.includes(item) ) ) {
-				itemsArray.push(item);
-			}
+			this._items[ this._lookup[strKey] ].add(item);
 		} else {
 			this._keys.push(strKey);
-			this._items.push( [item] );
+			this._items.push( new Set([item]) );
 			this._lookup[strKey] = this._items.length - 1;
 		}
 		this._allChanged = true;
@@ -182,7 +176,7 @@ function newIdLookup() {
 		var output = [];
 		var strItem = item.toString();
 		if( this._lookupReverse.hasOwnProperty(strItem) ) {
-			output = this._lookupReverse[strItem];
+			output = Array.from(this._lookupReverse[strItem]);
 		}
 		return output;
 	};
