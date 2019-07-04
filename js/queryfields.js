@@ -203,7 +203,7 @@ function newRangeSearcher(name, lookup, updateCallback) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("placeholder", "<Value 1>-<Value 1>[,<Value 1>-<Value 1>...]");
+		this.targetElement.setAttribute("placeholder", "<Value 1>-<Value 2>[,<Value 1>-<Value 2>...]");
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._updateCallback = updateCallback;
