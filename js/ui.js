@@ -5,9 +5,8 @@
 
 var defaultResultsPerPage = 100;
 var defaultPageNumber = 0;
-var defaultUpdateInterval = 1000;
 
-function newUiManager(logger, searcher, name, updateInterval, pageNumber, resultsPerPage) {
+function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	var output = {};
 	// keywordSearcher
 	output.commentsManager = undefined;
@@ -62,8 +61,6 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 	output.queryOccurrenceTargetsLookup = [];
 	output.searcher = undefined;
 
-	output._lastUpdateTime = undefined;
-	output._updateInterval = undefined;
 	output._allStoryIndexes = undefined;
 	output._storyIndexes = undefined;
 	//_currentStoryIndex = undefined;
@@ -89,12 +86,15 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 	output._UpdateSingleQuery = function(idx) {
 		if(this.queryManagerLookup[idx].edited) {
 			var results = this.queryManagerLookup[idx].results;
+			var target = this.queryOccurrenceTargetsLookup[idx];
 			if(results !== undefined) {
 				var allValues = results.AllValues();
-				var target = this.queryOccurrenceTargetsLookup[idx];
+				var allValuesSet = new Set(allValues);
 				//TODO: Rewrite
-				this._storyIndexes = this._storyIndexes.filter( function(e) { return allValues.includes(e); } );
-				target.innerHTML = allValues.length.ToString();
+				this._storyIndexes = this._storyIndexes.filter( function(e) { return allValuesSet.has(e); } );
+				target.innerHTML = allValues.length.toString();
+			} else {
+				target.innerHTML = "";
 			}
 		}
 	};
@@ -158,29 +158,25 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		}
 	};
 	output._UpdateSearch = function() {
-		var currentTime = Date.now();
-		var deltaTime = currentTime - this._lastUpdateTime;
-		if(this._lastUpdateTime === undefined || deltaTime >= this._updateInterval) {
-			this._lastUpdateTime = currentTime;
-			this._UpdateQueries();
-			this._UpdateMaxPageNumber();
-			this._UpdateResults();
-		} else {
-			setTimeout(this._UpdateSearch, deltaTime);
-		}
+		this._UpdateQueries();
+		this._UpdateMaxPageNumber();
+		this._UpdateResults();
+	};
+	output.UpdateSearchCallback = function(thisThis) {
+		thisThis._UpdateSearch();
 	};
 	output._UpdatePageNumber = function(e) {
 		//TODO: Optimize
 		// TODO: Make proportional to number of pages
 		var value = Number(this._pageNumberTarget.value);
 		if(isNaN(value) || Math.floor(value) !== value) {
-			this._pageNumberTarget.value = this._pageNumber.toString();
+			this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		} else if(value === 0) {
 			this._pageNumber = 0;
 			this._pageNumberTarget.value = "1";
 		} else if(value > this._maxPageNumber) {
 			this._pageNumber = this._maxPageNumber;
-			this._pageNumberTarget.value = this._pageNumber.toString();
+			this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		} else {
 			this._pageNumber = value;
 		}
@@ -268,7 +264,7 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		table.appendChild(occurrences);
 		parentField.appendChild(table);
 	};
-	output.init = function(logger, searcher, name, updateInterval, pageNumber, resultsPerPage) {
+	output.init = function(logger, searcher, name, pageNumber, resultsPerPage) {
 		var searchFields = document.getElementById("SearchFields");
 		var sha256Table = document.createElement("table");
 		var sha256Tr1 = document.createElement("tr");
@@ -296,35 +292,35 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		this.logger = logger;
 
 		// keywordSearcher
-		this.commentsManager = newKeywordSearcher("CommentsQuery", this.searcher.commentsLookup, this._UpdateSearch);
-		this.descriptionManager = newKeywordSearcher("DescriptionQuery", this.searcher.descriptionLookup, this._UpdateSearch);
+		this.commentsManager = newKeywordSearcher("CommentsQuery", this.searcher.commentsLookup, this);
+		this.descriptionManager = newKeywordSearcher("DescriptionQuery", this.searcher.descriptionLookup, this);
 
 		// fulltextSearcher
-		this.bodyManager = newFulltextSearcher("BodyQuery", this.searcher, this._UpdateSearch);
+		this.bodyManager = newFulltextSearcher("BodyQuery", this.searcher, this);
 
 		// dateSearcher
-		this.posixdateManager = newDateSearcher("MinDateQuery", "MaxDateQuery", this.searcher.posixdateLookup, this._UpdateSearch);
+		this.posixdateManager = newDateSearcher("MinDateQuery", "MaxDateQuery", this.searcher.posixdateLookup, this);
 
 		// rangeSearcher
-		this.ratingManager = newRangeSearcher("RatingQuery", this.searcher.ratingLookup, this._UpdateSearch);
-		this.ratersManager = newRangeSearcher("RatersQuery", this.searcher.ratersLookup, this._UpdateSearch);
-		this.viewcountManager = newRangeSearcher("ViewcountQuery", this.searcher.viewcountLookup, this._UpdateSearch);
+		this.ratingManager = newRangeSearcher("RatingQuery", this.searcher.ratingLookup, this);
+		this.ratersManager = newRangeSearcher("RatersQuery", this.searcher.ratersLookup, this);
+		this.viewcountManager = newRangeSearcher("ViewcountQuery", this.searcher.viewcountLookup, this);
 
 		// autocompleteSearcher
-		this.sha256Manager = newAutocompleteSearcher("Sha256Query", "Sha256QueryList", this.searcher.sha256Lookup, this._UpdateSearch);
-		this.domainManager = newAutocompleteSearcher("DomainQuery", "DomainQueryList", this.searcher.domainLookup, this._UpdateSearch);
-		this.languageManager = newAutocompleteSearcher("LanguageQuery", "LanguageQueryList", this.searcher.languageLookup, this._UpdateSearch);
-		this.contentManager = newAutocompleteSearcher("ContentQuery", "ContentQueryList", this.searcher.contentLookup, this._UpdateSearch);
-		this.typeManager = newAutocompleteSearcher("TypeQuery", "TypeQueryList", this.searcher.typeLookup, this._UpdateSearch);
-		this.categoryManager = newAutocompleteSearcher("CategoryQuery", "CategoryQueryList", this.searcher.categoryLookup, this._UpdateSearch);
-		this.locationManager = newAutocompleteSearcher("LocationQuery", "LocationQueryList", this.searcher.locationLookup, this._UpdateSearch);
-		this.formatManager = newAutocompleteSearcher("FormatQuery", "FormatQueryList", this.searcher.formatLookup, this._UpdateSearch);
-		this.authorManager = newAutocompleteSearcher("AuthorQuery", "AuthorQueryList", this.searcher.authorLookup, this._UpdateSearch);
-		this.emailManager = newAutocompleteSearcher("EmailQuery", "EmailQueryList", this.searcher.emailLookup, this._UpdateSearch);
-		this.tagManager = newAutocompleteSearcher("TagQuery", "TagQueryList", this.searcher.tagLookup, this._UpdateSearch);
-		this.originManager = newAutocompleteSearcher("OriginQuery", "OriginQueryList", this.searcher.originLookup, this._UpdateSearch);
-		this.siteManager = newAutocompleteSearcher("SiteQuery", "SiteQueryList", this.searcher.siteLookup, this._UpdateSearch);
-		this.titleManager = newAutocompleteSearcher("TitleQuery", "TitleQueryList", this.searcher.titleLookup, this._UpdateSearch);
+		this.sha256Manager = newAutocompleteSearcher("Sha256Query", "Sha256QueryList", this.searcher.sha256Lookup, this);
+		this.domainManager = newAutocompleteSearcher("DomainQuery", "DomainQueryList", this.searcher.domainLookup, this);
+		this.languageManager = newAutocompleteSearcher("LanguageQuery", "LanguageQueryList", this.searcher.languageLookup, this);
+		this.contentManager = newAutocompleteSearcher("ContentQuery", "ContentQueryList", this.searcher.contentLookup, this);
+		this.typeManager = newAutocompleteSearcher("TypeQuery", "TypeQueryList", this.searcher.typeLookup, this);
+		this.categoryManager = newAutocompleteSearcher("CategoryQuery", "CategoryQueryList", this.searcher.categoryLookup, this);
+		this.locationManager = newAutocompleteSearcher("LocationQuery", "LocationQueryList", this.searcher.locationLookup, this);
+		this.formatManager = newAutocompleteSearcher("FormatQuery", "FormatQueryList", this.searcher.formatLookup, this);
+		this.authorManager = newAutocompleteSearcher("AuthorQuery", "AuthorQueryList", this.searcher.authorLookup, this);
+		this.emailManager = newAutocompleteSearcher("EmailQuery", "EmailQueryList", this.searcher.emailLookup, this);
+		this.tagManager = newAutocompleteSearcher("TagQuery", "TagQueryList", this.searcher.tagLookup, this);
+		this.originManager = newAutocompleteSearcher("OriginQuery", "OriginQueryList", this.searcher.originLookup, this);
+		this.siteManager = newAutocompleteSearcher("SiteQuery", "SiteQueryList", this.searcher.siteLookup, this);
+		this.titleManager = newAutocompleteSearcher("TitleQuery", "TitleQueryList", this.searcher.titleLookup, this);
 
 		sha256Th.innerHTML = "Story Checksum";
 		sha256Td.appendChild(this.sha256Manager.targetElement);
@@ -334,7 +330,6 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 		sha256Table.appendChild(sha256Tr2);
 		searchFields.appendChild(sha256Table);
 
-		this._updateInterval = updateInterval;
 		this._allStoryIndexes = this._range(0, this.titleManager.lookup.GetAll().AllValues().length);
 
 		this._initQueryTable(searchFields, ["Title", "Author", "Date Range", "Story Language"], [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]);
@@ -386,6 +381,6 @@ function newUiManager(logger, searcher, name, updateInterval, pageNumber, result
 
 		this._UpdateSearch();
 	};
-	output.init(logger, searcher, name, updateInterval, pageNumber, resultsPerPage);
+	output.init(logger, searcher, name, pageNumber, resultsPerPage);
 	return output;
 }

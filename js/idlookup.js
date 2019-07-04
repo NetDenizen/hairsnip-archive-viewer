@@ -20,6 +20,9 @@ function newIdRecord(keys, values) {
 		}
 		return output;
 	};
+	//output.AllValuesSet = function() {
+	//	return new Set( this.AllValues() );
+	//};
 	//output.length = function() {
 	//	return this.keys.length;
 	//};
@@ -168,9 +171,20 @@ function newIdLookup() {
 		//TODO: Rewrite?
 		// TODO: This *might* not be accessible in mapFunc
 		var arrayKey = !Array.isArray(key) ? [key] : key;
-		var keyFunc = function(kf) { return kf.indexOf(km) !== -1; };
-		var mapFunc = function(km) { return this._keys.filter(keyFunc); }
-		return this.get( [].concat.apply( [], arrayKey.map(mapFunc) ) );
+		var matches = []
+		var arrayKeyLength = arrayKey.length;
+		var arrayKeyIdx = undefined;
+		var lookupLength = this._keys.length;
+		var lookupIdx = undefined;
+		for(lookupIdx = 0; lookupIdx < lookupLength; ++lookupIdx) {
+			for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
+				if(this._keys[lookupIdx].indexOf(arrayKey[arrayKeyIdx]) !== -1) {
+					matches.push(this._keys[lookupIdx]);
+					break;
+				}
+			}
+		}
+		return this.get(matches);
 	};
 	output._GetReverseSingle = function(item) {
 		var output = [];

@@ -28,7 +28,7 @@ function newLogManager(id, updateCallback) {
 	};
 	output.FlushAll = function(level, values) {
 		while(this._records.length > 0) {
-			setTimeout(this._FlushSingle(), 0);
+			this._FlushSingle();
 		}
 	};
 	output._update = function() {
