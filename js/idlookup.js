@@ -1,4 +1,3 @@
-// TODO: Proper constructors
 // TODO: Check all
 "use strict";
 
@@ -168,8 +167,6 @@ function newIdLookup() {
 		return output;
 	};
 	output.GetFuzzy = function(key) {
-		//TODO: Rewrite?
-		// TODO: This *might* not be accessible in mapFunc
 		var arrayKey = !Array.isArray(key) ? [key] : key;
 		var matches = []
 		var arrayKeyLength = arrayKey.length;
