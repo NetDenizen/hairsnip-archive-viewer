@@ -3,8 +3,8 @@
 
 function newIdRecord(keys, values) {
 	var output = {};
-	output.keys = keys;
-	output.values = values;
+	output.keys = [];
+	output.values = [];
 	output.lookup = {};
 	output.AllKeys = function() {
 		return [].concat(this.keys);
@@ -32,28 +32,31 @@ function newIdRecord(keys, values) {
 		}
 		return output;
 	};
-	output.extend = function(record) {
-		//var recordLength = record.length();
-		var recordLength = record.keys.length;
+	output.extendRaw = function(keys, values) {
+		var keysLength = keys.length;
 		var idx = 0;
-		for(idx = 0; idx < recordLength; ++idx) {
-			if( !this.lookup.hasOwnProperty(record.keys[idx]) ) {
-				var key = record.keys[idx];
-				var values = new Set(record.values[idx]);
-				this.keys.push(key);
-				this.values.push(values);
-				this.lookup[key] = values;
+		for(idx = 0; idx < keysLength; ++idx) {
+			var k = keys[idx];
+			if( !this.lookup.hasOwnProperty(k) ) {
+				var v = new Set(values[idx]);
+				this.keys.push(k);
+				this.values.push(v);
+				this.lookup[k] = v;
 			} else {
-				var found = this.lookup[key];
-				var values = record.values;
-				var valuesLength = values.length;
-				var idx = undefined;
-				for(idx = 0; idx < valuesLength; ++idx) {
-					found.add(values[idx]);
+				var v = values[idx];
+				var found = this.lookup[k];
+				var vLength = v.length;
+				var vIdx = undefined;
+				for(vIdx = 0; vIdx < vLength; ++vIdx) {
+					found.add(v[vIdx]);
 				}
 			}
 		}
 	};
+	output.extend = function(record) {
+		this.extendRaw(record.keys, record.values);
+	};
+	output.extendRaw(keys, values);
 	return output;
 }
 
