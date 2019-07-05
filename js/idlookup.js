@@ -79,6 +79,14 @@ function newIdLookup() {
 		}
 		return output;
 	};
+	output._GetReverseIdxRange = function(startIdx, endIdx) {
+		var output = newIdRecord([], []);
+		var idx = undefined;
+		for(idx = startIdx; idx > endIdx; --idx) {
+			output.extend( this._GetIdx(idx) );
+		}
+		return output;
+	};
 	output._GetSingle = function(key) {
 		var output = newIdRecord([], []);
 		var strKey = key.toString();
@@ -133,18 +141,49 @@ function newIdLookup() {
 		}
 		return output;
 	};
-	output.GetRange = function(start, end) {
+	output.GetNumericalRange = function(start, end) {
+		//TODO: This function is too phat. Refactor... eventually.
 		var output = newIdRecord([], []);
-		var strStart = start.toString();
-		var strEnd = end.toString();
-		if( this._lookup.hasOwnProperty(strStart) && this._lookup.hasOwnProperty(strEnd) ) {
-			var startIdx = this._lookup[strStart];
-			var endIdx = this._lookup[strEnd];
+		var startNum = undefined;
+		var endNum = undefined;
+		var startIdx = undefined;
+		var endIdx = undefined;
+		var keysLength = this._keys.length;
+		var keysIdx = undefined;
+		if(start === undefined) {
+			startIdx = 0;
+		} else {
+			startNum = parseFloat(start);
+			if( !isNaN(startNum) ) {
+				for(keysIdx = 0; keysIdx < keysLength; ++keysIdx) {
+					var keyFloat = parseFloat(this._keys[keysIdx]);
+					if(!isNaN(keyFloat) && keyFloat >= startNum) {
+						startIdx = keysIdx;
+						break;
+					}
+				}
+			}
+		}
+		if(end === undefined) {
+			var keysLength = this._keys.length;
+			if(keysLength > 0) {
+				endIdx = keysLength - 1;
+			}
+		} else {
+			endNum = parseFloat(end);
+			if( !isNaN(endNum) ) {
+				for(keysIdx = keysLength - 1; keysIdx > 0; --keysIdx) {
+					var keyFloat = parseFloat(this._keys[keysIdx]);
+					if(!isNaN(keyFloat) && keyFloat <= endNum) {
+						endIdx = keysIdx;
+						break;
+					}
+				}
+			}
+		}
+		if(startIdx !== undefined && endIdx !== undefined) {
 			if(startIdx > endIdx) {
-				var tmpIdx = startIdx;
-				startIdx = endIdx;
-				endIdx = tmpIdx;
-				output = this._GetIdxRange(startIdx, endIdx + 1).reverse();
+				output = this._GetIdxRangeReverse(startIdx, endIdx - 1);
 			} else {
 				output = this._GetIdxRange(startIdx, endIdx + 1);
 			}
