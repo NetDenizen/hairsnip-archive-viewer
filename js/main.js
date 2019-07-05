@@ -38,6 +38,7 @@ function OnSQLSelect() {
 
 function OnPageLoad() {
 	logger = newLogManager(errorId, undefined);
+	logger.LogInfo("Log started.");
 	initSqlJs(config);
 	logger.LogInfo("SQL.js initialized.");
 }

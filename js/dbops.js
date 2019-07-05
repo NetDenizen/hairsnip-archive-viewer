@@ -40,7 +40,13 @@ function newStorySearcher(logger, _db) {
 	output.siteLookup = undefined;
 	output.titleLookup = undefined;
 
+	output._bodyLookup = undefined;
+
 	//TODO: Refactor
+	output._LoadBodyIds = function() {
+		this._bodyLookup = this._db.exec("SELECT body_id FROM stories ORDER BY id")[0]['values'];
+		this._errors.LogInfo("Loaded body_id lookup.");
+	};
 	output._LoadIds = function(table) {
 		var output = newIdLookup();
 		if(!this._panic) {
@@ -196,6 +202,9 @@ function newStorySearcher(logger, _db) {
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
 			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
 		}
+		this._errors.LogInfo("Compiled story lookups.");
+
+		this._LoadBodyIds();
 	};
 	output.init = function(logger, _db) {
 		this._errors = logger;
@@ -227,8 +236,16 @@ function newStorySearcher(logger, _db) {
 	output.GetBody = function(id) {
 		//TODO: Rewrite?
 		//TODO: Should we make sure input is sanitary, here?
-		var bodyId = this._db.exec("SELECT body_id FROM stories WHERE id=" + id.toString() + " ORDER BY body_id", [id])[0]['values'][0];
-		return this._db.exec("SELECT body FROM stories_body WHERE id=" + bodyId + " ORDER BY id", [bodyId])[0]['values'][0];
+		var output = "";
+		var idNum = parseInt(id, 10);
+		if( isNaN(idNum) ) {
+			this._errors.LogWarning("ID given for body retrieval is not a number.");
+		} else if(idNum >= this._bodyLookup.length) {
+			this._errors.LogWarning("ID '" + idNum.toString() + "' given for body retrieval exceeds maximum of '" + this._bodyLookup.length + "'.");
+		} else {
+			output = this._db.exec("SELECT body FROM stories_body WHERE id=" + this._bodyLookup[id])[0]['values'][0];
+		}
+		return output;
 	};
 	output.init(logger, _db);
 	return output;
