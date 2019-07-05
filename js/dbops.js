@@ -41,11 +41,25 @@ function newStorySearcher(logger, _db) {
 	output.titleLookup = undefined;
 
 	output._bodyLookup = undefined;
+	output._bodyLookupReverse = undefined;
 
 	//TODO: Refactor
 	output._LoadBodyIds = function() {
-		this._bodyLookup = this._db.exec("SELECT body_id FROM stories ORDER BY id")[0]['values'];
-		this._errors.LogInfo("Loaded body_id lookup.");
+		var bodyLookup = this._db.exec("SELECT body_id FROM stories ORDER BY id")[0]['values'];
+		var bodyLookupLength = bodyLookup.length;
+		var bodyLookupReverse = {};
+		var idx = undefined;
+		for(idx = 0; idx < bodyLookupLength; ++idx) {
+			var key = bodyLookup[idx];
+			if( bodyLookupReverse.hasOwnProperty(key) ) {
+				bodyLookupReverse[key].push(idx);
+			} else {
+				bodyLookupReverse[key] = [idx];
+			}
+		}
+		this._bodyLookup = bodyLookup;
+		this._bodyLookupReverse = bodyLookupReverse;
+		this._errors.LogInfo("Loaded body_id lookups.");
 	};
 	output._LoadIds = function(table) {
 		var output = newIdLookup();
@@ -226,9 +240,9 @@ function newStorySearcher(logger, _db) {
 			var bodyIdsLength = bodyIds.length;
 			var idxBodyIds = undefined;
 			for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
-				var values = this._db.exec("SELECT id FROM stories WHERE body_id=" + bodyIds[idxBodyIds].toString() + " ORDER BY id")[0]['values'];
+				var values = this._bodyLookupReverse[ bodyIds[idxBodyIds] ]
 				outputKeywords.push(arrayKeywords[idxKeywordsArray]);
-				outputIds = outputIds.concat( [].concat.apply([], values) );
+				outputIds.push( [].concat.apply([], values) );
 			}
 		}
 		return newIdRecord(outputKeywords, outputIds);
