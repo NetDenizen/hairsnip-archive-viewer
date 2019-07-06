@@ -23,7 +23,7 @@ function newIdRecord(keys, values) {
 		}
 		return output;
 	};
-	output.extendRaw = function(keys, values) {
+	output.ExtendRaw = function(keys, values) {
 		var keysLength = keys.length;
 		var idx = 0;
 		for(idx = 0; idx < keysLength; ++idx) {
@@ -45,9 +45,9 @@ function newIdRecord(keys, values) {
 		}
 	};
 	output.extend = function(record) {
-		this.extendRaw(record.keys, record.values);
+		this.ExtendRaw(record.keys, record.values);
 	};
-	output.extendRaw(keys, values);
+	output.ExtendRaw(keys, values);
 	return output;
 }
 
