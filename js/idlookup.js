@@ -7,14 +7,21 @@ function newIdRecord(keys, values) {
 	output.values = [];
 	output.lookup = {};
 	output.AllValues = function() {
-		var output = [];
+		var output = new Set();
 		var values = this.values;
 		var valuesLength = values.length;
 		var idx = undefined;
 		for(idx = 0; idx < valuesLength; ++idx) {
-			output = output.concat( Array.from(values[idx]) )
+			var iter = values[idx].values();
+			while(true) {
+				var next = iter.next();
+				if(next.done) {
+					break;
+				}
+				output.add(next.value);
+			}
 		}
-		return output;
+		return Array.from(output);
 	};
 	output.empty = function() {
 		var output = true;
