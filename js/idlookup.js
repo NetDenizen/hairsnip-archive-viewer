@@ -77,7 +77,7 @@ function newIdLookup() {
 		}
 		return output;
 	};
-	output._GetReverseIdxRange = function(startIdx, endIdx) {
+	output._GetIdxRangeReverse = function(startIdx, endIdx) {
 		var output = newIdRecord([], []);
 		var idx = undefined;
 		for(idx = startIdx; idx > endIdx; --idx) {
