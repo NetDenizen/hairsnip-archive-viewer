@@ -87,16 +87,18 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._maxPageNumberTarget.innerHTML = " / " + (this._maxPageNumber + 1).toString();
 	};
 	output._UpdateSingleQuery = function(idx) {
-		var results = this.queryManagerLookup[idx].results;
-		var target = this.queryOccurrenceTargetsLookup[idx];
-		if(results !== undefined) {
-			var allValues = results.AllValues();
-			var allValuesSet = new Set(allValues);
-			//TODO: Rewrite
-			this._storyIndexes = this._storyIndexes.filter( function(e) { return allValuesSet.has(e); } );
-			target.innerHTML = allValues.length.toString();
-		} else {
-			target.innerHTML = "";
+		if(this.queryManagerLookup[idx].edited) {
+			var results = this.queryManagerLookup[idx].results;
+			var target = this.queryOccurrenceTargetsLookup[idx];
+			if(results !== undefined) {
+				var allValues = results.AllValues();
+				var allValuesSet = new Set(allValues);
+				//TODO: Rewrite
+				this._storyIndexes = this._storyIndexes.filter( function(e) { return allValuesSet.has(e); } );
+				target.innerHTML = allValues.length.toString();
+			} else {
+				target.innerHTML = "";
+			}
 		}
 	};
 	output._UpdateQueries = function() {

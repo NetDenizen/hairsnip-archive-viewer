@@ -8,6 +8,7 @@ function newFulltextSearcher(name, searcher, manager) {
 	output.targetElement = undefined;
 	output.searcher = undefined;
 	output._manager = undefined;
+	output.edited = false;
 	output.index = {};
 	output.results = undefined;
 
@@ -30,6 +31,7 @@ function newFulltextSearcher(name, searcher, manager) {
 		} else {
 			this._ParseKeywords();
 		}
+		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output.handleEvent = function(e) {
@@ -53,6 +55,7 @@ function newKeywordSearcher(name, lookup, manager) {
 	output.targetElement = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
+	output.edited = false;
 	output.index = {};
 	output.results = undefined;
 
@@ -78,6 +81,7 @@ function newKeywordSearcher(name, lookup, manager) {
 		} else {
 			this._ParseKeywords();
 		}
+		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output.handleEvent = function(e) {
@@ -102,6 +106,7 @@ function newDateSearcher(minName, maxName, lookup, manager) {
 	output.targetMaxElement = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
+	output.edited = false;
 	output.results = undefined;
 
 	output._ParseDate = function() {
@@ -121,6 +126,7 @@ function newDateSearcher(minName, maxName, lookup, manager) {
 		} else {
 			this._ParseDate();
 		}
+		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output.handleEvent = function(e) {
@@ -149,6 +155,7 @@ function newRangeSearcher(name, lookup, manager) {
 	output.targetElement = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
+	output.edited = false;
 	output.results = undefined;
 
 	output._ExtractValues = function(valueString) {
@@ -192,6 +199,7 @@ function newRangeSearcher(name, lookup, manager) {
 		} else {
 			this._ParseRanges();
 		}
+		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output.handleEvent = function(e) {
@@ -216,6 +224,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 	output.targetElementList = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
+	output.edited = false;
 	output.results = undefined;
 
 	output._datalistKeys = undefined;
@@ -263,6 +272,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 															 ) ) );
 			this._setDataList(values.slice(0, values.length - 1), this._datalistKeys, this._datalistValues);
 		}
+		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output._InputListener = function(e) {
