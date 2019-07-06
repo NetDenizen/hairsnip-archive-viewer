@@ -18,7 +18,7 @@ function newIdRecord(keys, values) {
 	};
 	output.empty = function() {
 		var output = true;
-		if(this.values !== undefined && this.values.length > 0) {
+		if(this.keys.length > 0) {
 			output = false;
 		}
 		return output;
