@@ -81,6 +81,9 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 
 	output._UpdateMaxPageNumber = function() {
 		this._maxPageNumber = Math.floor(this._storyIndexes.length / this._resultsPerPage);
+		if(this._storyIndexes.length % this._resultsPerPage === 0) {
+			this._maxPageNumber -= 1;
+		}
 		this._maxPageNumberTarget.innerHTML = " / " + (this._maxPageNumber + 1).toString();
 	};
 	output._UpdateSingleQuery = function(idx) {
