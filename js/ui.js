@@ -58,6 +58,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	output.logger = undefined;
 
 	output.queryManagerLookup = [];
+	output.queryManagerResultsLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
 	output.searcher = undefined;
 
@@ -87,18 +88,24 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._maxPageNumberTarget.innerHTML = " / " + (this._maxPageNumber + 1).toString();
 	};
 	output._UpdateSingleQuery = function(idx) {
-		if(this.queryManagerLookup[idx].edited) {
-			var results = this.queryManagerLookup[idx].results;
-			var target = this.queryOccurrenceTargetsLookup[idx];
-			if(results !== undefined) {
-				var allValues = results.AllValues();
-				var allValuesSet = new Set(allValues);
-				//TODO: Rewrite
-				this._storyIndexes = this._storyIndexes.filter( function(e) { return allValuesSet.has(e); } );
-				target.innerHTML = allValues.length.toString();
+		var target = this.queryOccurrenceTargetsLookup[idx];
+		var found = this.queryManagerLookup[idx]
+		if(found.edited) {
+			var results = found.results;
+			if(results !== undefined){
+				this.queryManagerResultsLookup[idx] = new Set( results.AllValues() );
 			} else {
-				target.innerHTML = "";
+				this.queryManagerResultsLookup[idx] = undefined;
 			}
+			found.edited = false;
+		}
+		if(this.queryManagerResultsLookup[idx] !== undefined) {
+			var allValues = this.queryManagerResultsLookup[idx];
+			//TODO: Rewrite
+			this._storyIndexes = this._storyIndexes.filter( function(e) { return allValues.has(e); } );
+			target.innerHTML = allValues.size.toString();
+		} else {
+			target.innerHTML = "";
 		}
 	};
 	output._UpdateQueries = function() {
@@ -260,6 +267,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 			var occurrence = document.createElement("td");
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
+			this.queryManagerResultsLookup.push(undefined);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
 		table.appendChild(headings);
