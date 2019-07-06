@@ -216,10 +216,10 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._UpdateResults();
 	};
 	output.pageNumberLeft = function() {
-		if(this._pageNumber > 0) {
-			this._pageNumber -= 1;
-		} else {
+		if(this._pageNumber > this._maxPageNumber || this._pageNumber <= 0) {
 			this._pageNumber = this._maxPageNumber;
+		} else {
+			this._pageNumber -= 1;
 		}
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
