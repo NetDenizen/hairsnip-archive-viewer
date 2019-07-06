@@ -253,9 +253,10 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		var namesLength = names.length;
 		for(idx = 0; idx < namesLength; ++idx) {
 			var heading = document.createElement("th");
+			var query = document.createElement("td");
+			var occurrence = document.createElement("td");
 			heading.innerHTML = names[idx];
 			headings.appendChild(heading);
-			var query = document.createElement("td");
 			if( managers[idx].hasOwnProperty("targetMinElement") ) {
 				query.appendChild(managers[idx].targetMinElement);
 				query.appendChild( document.createTextNode(" - ") );
@@ -264,7 +265,6 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 				query.appendChild(managers[idx].targetElement);
 			}
 			queries.appendChild(query);
-			var occurrence = document.createElement("td");
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
 			this.queryManagerResultsLookup.push(undefined);

@@ -166,8 +166,8 @@ function newRangeSearcher(name, lookup, manager) {
 											var output = pair;
 										 	if(pair.length === 2) {
 												var pair0 = pair[0].trim();
-												pair0 = pair0 !== "" ? pair0 : undefined;
 												var pair1 = pair[1].trim();
+												pair0 = pair0 !== "" ? pair0 : undefined;
 												pair1 = pair1 !== "" ? pair1 : undefined;
 												if(pair1 < pair0) {
 													output = [ pair1, pair0 ];
