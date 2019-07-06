@@ -3,7 +3,7 @@
 // TODO: Rewrite onclick to event handler
 "use strict";
 
-var defaultResultsPerPage = 100;
+var defaultResultsPerPage = 10;
 var defaultPageNumber = 0;
 
 function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
