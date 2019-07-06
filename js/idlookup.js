@@ -6,9 +6,6 @@ function newIdRecord(keys, values) {
 	output.keys = [];
 	output.values = [];
 	output.lookup = {};
-	output.AllKeys = function() {
-		return [].concat(this.keys);
-	};
 	output.AllValues = function() {
 		var output = [];
 		var values = this.values;
@@ -19,12 +16,6 @@ function newIdRecord(keys, values) {
 		}
 		return output;
 	};
-	//output.AllValuesSet = function() {
-	//	return new Set( this.AllValues() );
-	//};
-	//output.length = function() {
-	//	return this.keys.length;
-	//};
 	output.empty = function() {
 		var output = true;
 		if(this.values !== undefined && this.values.length > 0) {
