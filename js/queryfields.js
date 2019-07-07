@@ -19,7 +19,7 @@ function newFulltextSearcher(name, searcher, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim();
-			if( !(kw in this.index) ) {
+			if( !this.index.hasOwnProperty(kw) ) {
 				this.index[kw] = this.searcher.LookupBody(kw);
 			}
 			this.results.extend(this.index[kw]);
@@ -69,7 +69,7 @@ function newKeywordSearcher(name, lookup, manager) {
 			if(kw === "-") {
 				kw = "";
 			}
-			if( !(kw in this.index) ) {
+			if( !this.index.hasOwnProperty(kw) ) {
 				this.index[kw] = this.lookup.GetFuzzy(kw);
 			}
 			this.results.extend(this.index[kw]);
