@@ -221,6 +221,7 @@ function newRangeSearcher(name, lookup, manager) {
 function newAutocompleteSearcher(name, listName, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
+	output.targetElementInput = undefined;
 	output.targetElementList = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
@@ -238,7 +239,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 		var idx = undefined;
 		this.targetElementList.innerHTML = "";
 		for(idx = 0; idx < datalistLength; ++idx) {
-			if(currentValue in keys[idx]) {
+			if(keys[idx].indexOf(currentValue) !== -1) {
 				var option = document.createElement('option');
 				option.setAttribute("value", prefix + keys[idx]);
 				option.value = this._EscapeHTML(values[idx]);
@@ -247,19 +248,20 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 		}
 	};
 	output._update = function() {
-		if(this.targetElement.value === "") {
+		if(this.targetElementInput.value === "") {
 			this.results = undefined;
 		}
-		else if( !this.targetElement.value.includes(',') ) {
-			var value = this.targetElement.value.trim();
+		else if( !this.targetElementInput.value.includes(',') ) {
+			var value = this.targetElementInput.value.trim();
 			if(value === "-") {
 				value = "";
 			}
 			this.results = newIdRecord([], []);
 			this.results.extend( this.lookup.get(value) );
-			this._setDataList("", this._datalistKeys, this._datalistValues);
+			this._SetDataList("", value, this._datalistKeys, this._datalistValues);
 		} else {
-			var values = this.targetElement.value.split(',');
+			var values = this.targetElementInput.value.split(',');
+			var valuesLength = values.length;
 			this.results = newIdRecord([], []);
 			//TODO: Rewrite?
 			this.results.extend( this.lookup.get( values.map( function(r) {
@@ -270,7 +272,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 																return newR;
 															   }
 															 ) ) );
-			this._setDataList(values.slice(0, values.length - 1), this._datalistKeys, this._datalistValues);
+			this._SetDataList(values.slice(0, valuesLength - 1), values[valuesLength - 1], this._datalistKeys, this._datalistValues);
 		}
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
@@ -315,7 +317,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 	};
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
-			var allValues = this.targetElement.value.split(',');
+			var allValues = this.targetElementInput.value.split(',');
 			var val = allValues[allValues.length - 1];
 			var orig = val.toLowerCase();
 			var ContainsOrig = [];
@@ -341,7 +343,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			} else {
 				val = prefixes.reduce(function (a, b) { return a.length > b.length ? a : b; });
 			}
-			this.targetElement.value = val;
+			this.targetElementInput.value = val;
 			this._update();
 		}
 	};
@@ -363,18 +365,22 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			this._datalistKeys.push(values.keys[idx]);
 			this._datalistValues.push(values.keys[idx] + " [" + values.values[idx].size.toString() + "]");
 		}
+		this._SetDataList("", "", this._datalistKeys, this._datalistValues);
 	};
 	output.init = function(name, listName, lookup, manager) {
-		this.targetElement = document.createElement('input');
-		this.targetElement.setAttribute("type", "text");
-		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("list", listName);
-		this.targetElement.setAttribute("autocomplete", "on");
-		this.targetElement.setAttribute("placeholder", "<Keyword>[,<Keyword>]...");
-		this.targetElement.addEventListener("input", this, false);
-		this.targetElement.addEventListener("keydown", this, false);
+		this.targetElementInput = document.createElement('input');
+		this.targetElementInput.setAttribute("type", "text");
+		this.targetElementInput.setAttribute("id", name);
+		this.targetElementInput.setAttribute("list", listName);
+		this.targetElementInput.setAttribute("autocomplete", "on");
+		this.targetElementInput.setAttribute("placeholder", "<Keyword>[,<Keyword>]...");
+		this.targetElementInput.addEventListener("input", this, false);
+		this.targetElementInput.addEventListener("keydown", this, false);
 		this.targetElementList = document.createElement('datalist');
 		this.targetElementList.setAttribute("id", listName);
+		this.targetElement = document.createElement('div');
+		this.targetElement.appendChild(this.targetElementInput);
+		this.targetElement.appendChild(this.targetElementList);
 		this.lookup = lookup;
 		this._manager = manager;
 		this._BuildDatalistValues();
