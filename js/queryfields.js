@@ -333,7 +333,8 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 	};
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
-			var allValues = this.targetElementInput.value.split(',');
+			var fullVal = this.targetElementInput.value;
+			var allValues = fullVal.split(',');
 			var allValuesLength = allValues.length;
 			var prefixValues = allValues.slice(0, allValuesLength - 1).join(',');
 			var rawVal = allValues[allValuesLength - 1];
@@ -362,6 +363,9 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 				this.targetElementInput.value = prefixValues + valSpace + this._longestCommonPrefix(startsVal);
 			}
 			this._update();
+			if(fullVal.length > 0) {
+				e.preventDefault();
+			}
 		}
 	};
 	output.handleEvent = function(e) {
