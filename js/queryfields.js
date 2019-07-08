@@ -234,6 +234,17 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 	output._EscapeHTML = function(text) {
 		return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
 	};
+	output._FindPrefix = function(value) {
+		var output = 0;
+		var valueLength = value.length;
+		var idx = undefined;
+		for(idx = 0; idx < valueLength; ++idx) {
+			if( value[idx] === ',' || value[idx] !== value[idx].trim() ) {
+				output = idx;
+			}
+		}
+		return output;
+	};
 	output._SetDataList = function(prefix, currentValue, keys, values) {
 		var datalistLength = this._datalistKeys.length;
 		var idx = undefined;
@@ -242,17 +253,18 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			if(keys[idx].indexOf(currentValue) !== -1) {
 				var option = document.createElement('option');
 				option.setAttribute("value", prefix + keys[idx]);
-				option.value = this._EscapeHTML(values[idx]);
+				option.innerHTML = this._EscapeHTML(values[idx]);
 				this.targetElementList.appendChild(option);
 			}
 		}
 	};
 	output._update = function() {
-		if(this.targetElementInput.value === "") {
+		var fullValue = this.targetElementInput.value;
+		if(fullValue === "") {
 			this.results = undefined;
-		}
-		else if( !this.targetElementInput.value.includes(',') ) {
-			var value = this.targetElementInput.value.trim();
+			this._SetDataList("", "", this._datalistKeys, this._datalistValues);
+		} else if( !fullValue.includes(',') ) {
+			var value = fullValue.trim();
 			if(value === "-") {
 				value = "";
 			}
@@ -260,19 +272,22 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			this.results.extend( this.lookup.get(value) );
 			this._SetDataList("", value, this._datalistKeys, this._datalistValues);
 		} else {
-			var values = this.targetElementInput.value.split(',');
+			var cleanValues = [];
+			var values = fullValue.split(',');
 			var valuesLength = values.length;
-			this.results = newIdRecord([], []);
-			//TODO: Rewrite?
-			this.results.extend( this.lookup.get( values.map( function(r) {
-																var newR = r.trim();
-																if(newR === "-") {
-																	newR = "";
-																}
-																return newR;
-															   }
-															 ) ) );
-			this._SetDataList(values.slice(0, valuesLength - 1), values[valuesLength - 1], this._datalistKeys, this._datalistValues);
+			var idx = undefined;
+			for(idx = 0; idx < valuesLength; ++idx) {
+				var trimmed = values[idx].trim();
+				if(trimmed === "") {
+					continue;
+				} else if(trimmed === "-") {
+					cleanValues.push("");
+				} else {
+					cleanValues.push(trimmed);
+				}
+			}
+			this.results = this.lookup.get(cleanValues);
+			this._SetDataList(fullValue.slice(0, this._FindPrefix(fullValue) + 1), values[valuesLength - 1].trim(), this._datalistKeys, this._datalistValues);
 		}
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
@@ -291,17 +306,17 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 		} else {
 			var min = values[0];
 			var minLength = min.length;
-			var max = max;
+			var max = values[0];
 			var maxLength = max.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
 				var val = values[idx];
 				var valLength = val.length;
-				if(valLength < min.length) {
+				if(val < min) {
 					min = val;
 					minLength = valLength;
 				}
-				if(valLength > max.length) {
+				if(val > max) {
 					max = val;
 					maxLength = valLength;
 				}
@@ -310,6 +325,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			for(idx = 0; idx < minLength && idx < maxLength; ++idx) {
 				if(min[idx] !== max[idx]) {
 					output = min.slice(0, idx);
+					break;
 				}
 			}
 		}
@@ -318,32 +334,33 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
 			var allValues = this.targetElementInput.value.split(',');
-			var val = allValues[allValues.length - 1];
-			var orig = val.toLowerCase();
-			var ContainsOrig = [];
-			var prefixes = [];
+			var allValuesLength = allValues.length;
+			var prefixValues = allValues.slice(0, allValuesLength - 1).join(',');
+			var rawVal = allValues[allValuesLength - 1];
+			var val = rawVal.trim().toLowerCase();
+			var valSpace = rawVal.slice(0, rawVal.length - rawVal.trimLeft().length);
+			var containsVal = [];
+			var startsVal = [];
 			var datalistLength = this._datalistKeys.length;
 			var idx = undefined;
 			for(idx = 0; idx < datalistLength; ++idx) {
 				var s = this._datalistKeys[idx];
 				var sLower = s.toLowerCase();
-				if( sLower.includes(orig) ) {
-					ContainsOrig.push(s);
+				if( sLower.indexOf(val) !== -1 ) {
+					containsVal.push(s);
 				}
-				if( sLower.includes( val.toLowerCase() ) ) {
-					if(s.length > val.length) {
-						val = s;
-					}
-				} else {
-					prefixes.push(this._longestCommonPrefix);
+				if( sLower.startsWith(val) ) {
+					startsVal.push(s);
 				}
 			}
-			if(ContainsOrig.length === 1) {
-				val = ContainsOrig[0];
+			if(prefixValues.length > 0) {
+				prefixValues += ',';
+			}
+			if(containsVal.length === 1) {
+				this.targetElementInput.value = prefixValues + valSpace + containsVal[0];
 			} else {
-				val = prefixes.reduce(function (a, b) { return a.length > b.length ? a : b; });
+				this.targetElementInput.value = prefixValues + valSpace + this._longestCommonPrefix(startsVal);
 			}
-			this.targetElementInput.value = val;
 			this._update();
 		}
 	};
@@ -362,8 +379,12 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 		this._datalistKeys = [];
 		this._datalistValues = [];
 		for(idx = 0; idx < valuesLength; ++idx) {
-			this._datalistKeys.push(values.keys[idx]);
-			this._datalistValues.push(values.keys[idx] + " [" + values.values[idx].size.toString() + "]");
+			var val = values.keys[idx];
+			if(val === "") {
+				val = "-";
+			}
+			this._datalistKeys.push(val);
+			this._datalistValues.push(val + " [" + values.values[idx].size.toString() + "]");
 		}
 		this._SetDataList("", "", this._datalistKeys, this._datalistValues);
 	};
