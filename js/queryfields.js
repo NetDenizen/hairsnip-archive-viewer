@@ -296,7 +296,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 		this._update();
 	};
 	//TODO: Optimize output slicing.
-	output._longestCommonPrefix = function(values) {
+	output._LongestCommonPrefix = function(values) {
 		var output = undefined;
 		var valuesLength = values.length;
 		if(valuesLength === 0) {
@@ -360,7 +360,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			if(containsVal.length === 1) {
 				this.targetElementInput.value = prefixValues + valSpace + containsVal[0];
 			} else {
-				this.targetElementInput.value = prefixValues + valSpace + this._longestCommonPrefix(startsVal);
+				this.targetElementInput.value = prefixValues + valSpace + this._LongestCommonPrefix(startsVal);
 			}
 			this._update();
 			if(fullVal.length > 0) {
