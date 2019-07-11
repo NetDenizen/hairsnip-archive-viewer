@@ -218,7 +218,7 @@ function newRangeSearcher(name, lookup, manager) {
 	return output;
 }
 
-function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, lookup, manager) {
+function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhoveredClass, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementInput = undefined;
@@ -427,7 +427,7 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		}
 		this._SetDataList("", "", []);
 	};
-	output.init = function(name, listHoveredClass, listUnhoveredClass, lookup, manager) {
+	output.init = function(name, listHeight, listHoveredClass, listUnhoveredClass, lookup, manager) {
 		this.targetElementInput = document.createElement('input');
 		this.targetElementInput.setAttribute("type", "text");
 		this.targetElementInput.setAttribute("id", name);
@@ -435,7 +435,7 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		this.targetElementInput.setAttribute("placeholder", "<Keyword>[,<Keyword>]...");
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
-		this.targetList = newAutocompleteList(listHoveredClass, listUnhoveredClass, this.targetElementInput);
+		this.targetList = newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, this.targetElementInput);
 		this.targetElement = document.createElement('div');
 		this.targetElement.appendChild(this.targetElementInput);
 		this.targetElement.appendChild(this.targetList.targetElement);
@@ -443,6 +443,6 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		this._manager = manager;
 		this._BuildDatalistValues();
 	};
-	output.init(name, listHoveredClass, listUnhoveredClass, lookup, manager);
+	output.init(name, listHeight, listHoveredClass, listUnhoveredClass, lookup, manager);
 	return output;
 }

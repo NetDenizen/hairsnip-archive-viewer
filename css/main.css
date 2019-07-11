@@ -19,7 +19,8 @@ section {
 }
 
 .ScrollField {
-	height: 20%;
+	height: 20em;
+	max-height: 20em;
 	overflow: scroll;
 	resize: vertical;
 }
@@ -32,4 +33,25 @@ section#PageControls > button {
 
 section#ErrorField {
 	font-family: monospace, courier;
+	display: none;
+}
+
+section#SearchField {
+}
+section#SearchResults {
+}
+
+section#StoryArea {
+	white-space: normal;
+}
+
+div.AutocompleteArea {
+	cursor: pointer;
+}
+
+div.AutocompleteArea.hovered {
+	background-color: LightGrey;
+}
+
+div.AutocompleteArea.unhovered {
 }

@@ -1,4 +1,4 @@
-function newAutocompleteList(listHoveredClass, listUnhoveredClass, targetElementOutput) {
+function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementOutput = undefined;
@@ -16,7 +16,7 @@ function newAutocompleteList(listHoveredClass, listUnhoveredClass, targetElement
 	}
 	output.activate = function() {
 		//TODO: Should we check if there are options available?
-		this.targetElement.style.display = "initial";
+		this.targetElement.style.display = "block";
 		this._SelectNewOption(0);
 	};
 	output.deactivate = function() {
@@ -118,15 +118,20 @@ function newAutocompleteList(listHoveredClass, listUnhoveredClass, targetElement
 		this._optionValues = optionValues;
 		this._SetDataList();
 	};
-	output.init = function(listHoveredClass, listUnhoveredClass, targetElementOutput) {
+	output.init = function(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput) {
+		this._listHoveredClass = listHoveredClass;
+		this._listUnhoveredClass = listUnhoveredClass;
 		this.targetElementOutput = targetElementOutput;
 		this.targetElement = document.createElement("div");
 		//TODO: Class/styling. We really want this to be scrollable, for one.
 		this.targetElement.style.display = "none";
+		this.targetElement.style.overflow = "scroll";
+		this.targetElement.style.maxHeight = listHeight;
+		this.targetElement.style.height = listHeight;
 		this.targetElementOutput.addEventListener("keydown", this, false);
 		this.targetElementOutput.addEventListener("click", this, false);
 		document.addEventListener("click", this, false);
 	};
-	output.init(listHoveredClass, listUnhoveredClass, targetElementOutput);
+	output.init(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput);
 	return output;
 }
