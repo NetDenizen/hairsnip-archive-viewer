@@ -1,28 +1,37 @@
-function autocompleteMenu(targetElementOutput) {
+function newAutocompleteList(listHoveredClass, listUnhoveredClass, targetElementOutput) {
 	var output = {};
-	output._targetElement = undefined;
+	output.targetElement = undefined;
 	output.targetElementOutput = undefined;
 	output._optionKeys = [];
 	output._optionValues = [];
 	output._optionElements = [];
 	output._optionSelected = -1;
+	output._listHoveredClass = undefined;
+	output._listUnhoveredClass = undefined;
 
 	output._ResetOptionElements = function() {
-		this._targetElement.innerHTML = "";
+		this.targetElement.innerHTML = "";
 		this._optionElements = [];
 		this._optionSelected = -1;
 	}
-	output._EscapeHTML = function(text) {
-		return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	output.activate = function() {
+		//TODO: Should we check if there are options available?
+		this.targetElement.style.display = "initial";
+		this._SelectNewOption(0);
+	};
+	output.deactivate = function() {
+		this.targetElement.style.display = "none";
+		this._SelectNewOption(-1);
 	};
 	output._CreateOptionElement = function(idx) {
 		var option = document.createElement('div');
 		option.setAttribute("data-value", idx);
-		option.className = //TODO
-		option.innerHTML = this._EscapeHTML(this._optionValues[idx]);
+		option.className = this._listUnhoveredClass;
+		option.innerHTML = this._optionValues[idx];
 		option.addEventListener("click", this, false);
+		option.addEventListener("mouseover", this, false);
 		this._optionElements.push(option);
-		this._targetElement.appendChild(option);
+		this.targetElement.appendChild(option);
 	};
 	output._SetDataList = function() {
 		var optionsLength = this._optionKeys.length;
@@ -41,14 +50,16 @@ function autocompleteMenu(targetElementOutput) {
 		return output;
 	}
 	output._OutputOptionKey = function(optionSelected) {
-		this.targetElementOutput.value = this._optionKeys(optionSelected);
+		this.targetElementOutput.value = this._optionKeys[optionSelected];
 	}
 	output._ClickListener = function(e) {
 		var value = this._GetOptionElementValue(e.target);
-		if(value === -1) {
-			this._ResetOptionElements();
-		} else {
-			this.targetElementOutput.value = this._optionKeys(value);
+		if(e.target === this.targetElement || e.target === this.targetElementOutput) {
+			this.activate();
+		} else if(value === -1) {
+			this.deactivate();
+		} else if(this._optionElements[value] === e.target) {
+			this._OutputOptionKey(value);
 		}
 	};
 	output._SelectNewOption = function(newOptionSelected) {
@@ -56,15 +67,15 @@ function autocompleteMenu(targetElementOutput) {
 		if(optionElementsLength > 0) {
 			var fixedOptionSelected = newOptionSelected;
 			if(this._optionSelected >= 0 && this._optionSelected < optionElementsLength) {
-				this._optionElements[this._optionSelected].className = //TODO
+				this._optionElements[this._optionSelected].className = this._listUnhoveredClass;
 			}
 			if(fixedOptionSelected < 0) {
 				fixedOptionSelected = 0;
 			} else if(fixedOptionSelected >= optionElementsLength) {
 				fixedOptionSelected = optionElementsLength - 1;
 			}
-			this._optionSelected = newOptionSelected;
-			this._optionElements[this._optionSelected].className = //TODO
+			this._optionSelected = fixedOptionSelected;
+			this._optionElements[this._optionSelected].className = this._listHoveredClass;
 		}
 	};
 	output._MouseoverListener = function(e) {
@@ -73,7 +84,7 @@ function autocompleteMenu(targetElementOutput) {
 	output._OnEnter = function() {
 		if(this._optionSelected !== -1) {
 			this._OutputOptionKey(this._optionSelected);
-			this._ResetOptionElements();
+			this._ResetOptionElements(); // TODO: Deactivate or reset?
 		}
 	};
 	output._OnArrowUp = function() {
@@ -107,21 +118,15 @@ function autocompleteMenu(targetElementOutput) {
 		this._optionValues = optionValues;
 		this._SetDataList();
 	};
-	output.init = function(targetElementOutput) {
+	output.init = function(listHoveredClass, listUnhoveredClass, targetElementOutput) {
 		this.targetElementOutput = targetElementOutput;
-		this._targetElement = document.createElement("div");
+		this.targetElement = document.createElement("div");
 		//TODO: Class/styling. We really want this to be scrollable, for one.
-		option.style.display = "none";
+		this.targetElement.style.display = "none";
+		this.targetElementOutput.addEventListener("keydown", this, false);
+		this.targetElementOutput.addEventListener("click", this, false);
+		document.addEventListener("click", this, false);
 	};
-	output.activate = function() {
-		//TODO: Should we check if there are options available?
-		option.style.display = //TODO: Default state
-		this._SelectNewOption(0);
-	};
-	output.deactivate = function() {
-		option.style.display = "none";
-		this._SelectNewOption(-1);
-	};
-	output.init(targetElementOutput);
+	output.init(listHoveredClass, listUnhoveredClass, targetElementOutput);
 	return output;
 }

@@ -5,6 +5,8 @@
 
 var defaultResultsPerPage = 10;
 var defaultPageNumber = 0;
+var defaultListHoveredClass = "";
+var defaultListUnhoveredClass = "";
 
 function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	var output = {};
@@ -46,7 +48,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 			if( this._displayStates.hasOwnProperty(id) ) {
 				e.style.display = this._displayStates[id];
 			} else {
-				e.style.display = initial;
+				e.style.display = "initial";
 			}
 		} else {
 			this._displayStates[id] = e.style.display;
@@ -318,20 +320,20 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this.viewcountManager = newRangeSearcher("ViewcountQuery", this.searcher.viewcountLookup, this);
 
 		// autocompleteSearcher
-		this.sha256Manager = newAutocompleteSearcher("Sha256Query", "Sha256QueryList", this.searcher.sha256Lookup, this);
-		this.domainManager = newAutocompleteSearcher("DomainQuery", "DomainQueryList", this.searcher.domainLookup, this);
-		this.languageManager = newAutocompleteSearcher("LanguageQuery", "LanguageQueryList", this.searcher.languageLookup, this);
-		this.contentManager = newAutocompleteSearcher("ContentQuery", "ContentQueryList", this.searcher.contentLookup, this);
-		this.typeManager = newAutocompleteSearcher("TypeQuery", "TypeQueryList", this.searcher.typeLookup, this);
-		this.categoryManager = newAutocompleteSearcher("CategoryQuery", "CategoryQueryList", this.searcher.categoryLookup, this);
-		this.locationManager = newAutocompleteSearcher("LocationQuery", "LocationQueryList", this.searcher.locationLookup, this);
-		this.formatManager = newAutocompleteSearcher("FormatQuery", "FormatQueryList", this.searcher.formatLookup, this);
-		this.authorManager = newAutocompleteSearcher("AuthorQuery", "AuthorQueryList", this.searcher.authorLookup, this);
-		this.emailManager = newAutocompleteSearcher("EmailQuery", "EmailQueryList", this.searcher.emailLookup, this);
-		this.tagManager = newAutocompleteSearcher("TagQuery", "TagQueryList", this.searcher.tagLookup, this);
-		this.originManager = newAutocompleteSearcher("OriginQuery", "OriginQueryList", this.searcher.originLookup, this);
-		this.siteManager = newAutocompleteSearcher("SiteQuery", "SiteQueryList", this.searcher.siteLookup, this);
-		this.titleManager = newAutocompleteSearcher("TitleQuery", "TitleQueryList", this.searcher.titleLookup, this);
+		this.sha256Manager = newAutocompleteSearcher("Sha256Query", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.sha256Lookup, this);
+		this.domainManager = newAutocompleteSearcher("DomainQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.domainLookup, this);
+		this.languageManager = newAutocompleteSearcher("LanguageQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.languageLookup, this);
+		this.contentManager = newAutocompleteSearcher("ContentQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.contentLookup, this);
+		this.typeManager = newAutocompleteSearcher("TypeQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.typeLookup, this);
+		this.categoryManager = newAutocompleteSearcher("CategoryQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.categoryLookup, this);
+		this.locationManager = newAutocompleteSearcher("LocationQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.locationLookup, this);
+		this.formatManager = newAutocompleteSearcher("FormatQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.formatLookup, this);
+		this.authorManager = newAutocompleteSearcher("AuthorQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.authorLookup, this);
+		this.emailManager = newAutocompleteSearcher("EmailQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.emailLookup, this);
+		this.tagManager = newAutocompleteSearcher("TagQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.tagLookup, this);
+		this.originManager = newAutocompleteSearcher("OriginQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.originLookup, this);
+		this.siteManager = newAutocompleteSearcher("SiteQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.siteLookup, this);
+		this.titleManager = newAutocompleteSearcher("TitleQuery", defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.titleLookup, this);
 
 		sha256Th.innerHTML = "Story Checksum";
 		sha256Td.appendChild(this.sha256Manager.targetElement);

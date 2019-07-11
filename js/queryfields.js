@@ -218,11 +218,11 @@ function newRangeSearcher(name, lookup, manager) {
 	return output;
 }
 
-function newAutocompleteSearcher(name, listName, lookup, manager) {
+function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementInput = undefined;
-	output.targetElementList = undefined;
+	output.targetList = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
 	output.edited = false;
@@ -246,23 +246,24 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 		return output;
 	};
 	output._SetDataList = function(prefix, currentValue, keys, values) {
+		var prefixedKeys = [];
+		var prefixedValues = [];
 		var datalistLength = this._datalistKeys.length;
 		var idx = undefined;
-		this.targetElementList.innerHTML = "";
 		for(idx = 0; idx < datalistLength; ++idx) {
 			if(keys[idx].indexOf(currentValue) !== -1) {
-				var option = document.createElement('option');
-				option.setAttribute("value", prefix + keys[idx]);
-				option.innerHTML = this._EscapeHTML(values[idx]);
-				this.targetElementList.appendChild(option);
+				prefixedKeys.push(prefix + keys[idx]);
+				prefixedValues.push(values[idx]);
 			}
 		}
+		this.targetList.update(prefixedKeys, prefixedValues);
 	};
 	output._update = function() {
 		var fullValue = this.targetElementInput.value;
 		if(fullValue === "") {
 			this.results = undefined;
 			this._SetDataList("", "", this._datalistKeys, this._datalistValues);
+			this.targetList.deactivate();
 		} else if( !fullValue.includes(',') ) {
 			var value = fullValue.trim();
 			if(value === "-") {
@@ -271,6 +272,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			this.results = newIdRecord([], []);
 			this.results.extend( this.lookup.get(value) );
 			this._SetDataList("", value, this._datalistKeys, this._datalistValues);
+			this.targetList.activate();
 		} else {
 			var cleanValues = [];
 			var values = fullValue.split(',');
@@ -288,6 +290,7 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			}
 			this.results = this.lookup.get(cleanValues);
 			this._SetDataList(fullValue.slice(0, this._FindPrefix(fullValue) + 1), values[valuesLength - 1].trim(), this._datalistKeys, this._datalistValues);
+			this.targetList.activate();
 		}
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
@@ -368,12 +371,21 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 			}
 		}
 	};
+	output._ClickListener = function(e) {
+		if(e.target === this.targetElementInput) {
+			this.targetList.activate();
+		} else {
+			this.targetList.deactivate();
+		}
+	};
 	output.handleEvent = function(e) {
 		var eType = e.type;
 		if(eType === "input") {
 			this._InputListener(e);
 		} else if(eType === "keydown") {
 			this._KeyDownListener(e);
+		} else if(eType === "click") {
+			this._ClickListener(e);
 		}
 	};
 	output._BuildDatalistValues = function() {
@@ -388,28 +400,26 @@ function newAutocompleteSearcher(name, listName, lookup, manager) {
 				val = "-";
 			}
 			this._datalistKeys.push(val);
-			this._datalistValues.push(val + " [" + values.values[idx].size.toString() + "]");
+			this._datalistValues.push( this._EscapeHTML(val + " [" + values.values[idx].size.toString() + "]") );
 		}
 		this._SetDataList("", "", this._datalistKeys, this._datalistValues);
 	};
-	output.init = function(name, listName, lookup, manager) {
+	output.init = function(name, listHoveredClass, listUnhoveredClass, lookup, manager) {
 		this.targetElementInput = document.createElement('input');
 		this.targetElementInput.setAttribute("type", "text");
 		this.targetElementInput.setAttribute("id", name);
-		this.targetElementInput.setAttribute("list", listName);
 		this.targetElementInput.setAttribute("autocomplete", "on");
 		this.targetElementInput.setAttribute("placeholder", "<Keyword>[,<Keyword>]...");
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
-		this.targetElementList = document.createElement('datalist');
-		this.targetElementList.setAttribute("id", listName);
+		this.targetList = newAutocompleteList(listHoveredClass, listUnhoveredClass, this.targetElementInput);
 		this.targetElement = document.createElement('div');
 		this.targetElement.appendChild(this.targetElementInput);
-		this.targetElement.appendChild(this.targetElementList);
+		this.targetElement.appendChild(this.targetList.targetElement);
 		this.lookup = lookup;
 		this._manager = manager;
 		this._BuildDatalistValues();
 	};
-	output.init(name, listName, lookup, manager);
+	output.init(name, listHoveredClass, listUnhoveredClass, lookup, manager);
 	return output;
 }
