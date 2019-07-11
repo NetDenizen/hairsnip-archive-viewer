@@ -258,10 +258,14 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		for(idx = 0; idx < datalistLength; ++idx) {
 			if( this._datalistKeys[idx].indexOf(currentValue) !== -1 &&
 			    !excludedValues.includes(this._datalistKeys[idx]) ) {
-				this._currentKeys.push(this._datalistKeys[idx]);
-				this._currentValues.push(this._datalistValues[idx]);
-				prefixedKeys.push(prefix + this._datalistKeys[idx]);
-				prefixedValues.push(this._datalistValues[idx]);
+				var k =  this._datalistKeys[idx];
+				var v = this._datalistValues[idx];
+				var strongStart = this._datalistValues[idx].indexOf(currentValue);
+				var strongEnd = strongStart + currentValue.length;
+				this._currentKeys.push(k);
+				this._currentValues.push(v);
+				prefixedKeys.push(prefix + k);
+				prefixedValues.push( v.slice(0, strongStart) + "<strong>" + v.slice(strongStart, strongEnd) + "</strong>" + v.slice(strongEnd, v.length) );
 			}
 		}
 		this.targetList.update(prefixedKeys, prefixedValues);
