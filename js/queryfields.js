@@ -231,6 +231,9 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 	output._datalistKeys = undefined;
 	output._datalistValues = undefined;
 
+	output._currentKeys = undefined;
+	output._currentValues = undefined;
+
 	output._EscapeHTML = function(text) {
 		return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
 	};
@@ -245,15 +248,20 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		}
 		return output;
 	};
-	output._SetDataList = function(prefix, currentValue, keys, values) {
+	output._SetDataList = function(prefix, currentValue, excludedValues) {
 		var prefixedKeys = [];
 		var prefixedValues = [];
 		var datalistLength = this._datalistKeys.length;
 		var idx = undefined;
+		this._currentKeys = [];
+		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
-			if(keys[idx].indexOf(currentValue) !== -1) {
-				prefixedKeys.push(prefix + keys[idx]);
-				prefixedValues.push(values[idx]);
+			if( this._datalistKeys[idx].indexOf(currentValue) !== -1 &&
+			    !excludedValues.includes(this._datalistKeys[idx]) ) {
+				this._currentKeys.push(this._datalistKeys[idx]);
+				this._currentValues.push(this._datalistValues[idx]);
+				prefixedKeys.push(prefix + this._datalistKeys[idx]);
+				prefixedValues.push(this._datalistValues[idx]);
 			}
 		}
 		this.targetList.update(prefixedKeys, prefixedValues);
@@ -262,7 +270,7 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		var fullValue = this.targetElementInput.value;
 		if(fullValue === "") {
 			this.results = undefined;
-			this._SetDataList("", "", this._datalistKeys, this._datalistValues);
+			this._SetDataList("", "", []);
 			this.targetList.deactivate();
 		} else if( !fullValue.includes(',') ) {
 			var value = fullValue.trim();
@@ -271,15 +279,17 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 			}
 			this.results = newIdRecord([], []);
 			this.results.extend( this.lookup.get(value) );
-			this._SetDataList("", value, this._datalistKeys, this._datalistValues);
+			this._SetDataList("", value, []);
 			this.targetList.activate();
 		} else {
 			var cleanValues = [];
+			var trimmedValues = [];
 			var values = fullValue.split(',');
 			var valuesLength = values.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
 				var trimmed = values[idx].trim();
+				trimmedValues.push(trimmed);
 				if(trimmed === "") {
 					continue;
 				} else if(trimmed === "-") {
@@ -289,7 +299,10 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 				}
 			}
 			this.results = this.lookup.get(cleanValues);
-			this._SetDataList(fullValue.slice(0, this._FindPrefix(fullValue) + 1), values[valuesLength - 1].trim(), this._datalistKeys, this._datalistValues);
+			this._SetDataList( fullValue.slice(0, this._FindPrefix(fullValue) + 1),
+							   trimmedValues[valuesLength - 1],
+							   trimmedValues.slice(0, valuesLength - 1)
+							 );
 			this.targetList.activate();
 		}
 		this.edited = true;
@@ -345,10 +358,10 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 			var valSpace = rawVal.slice(0, rawVal.length - rawVal.trimLeft().length);
 			var containsVal = [];
 			var startsVal = [];
-			var datalistLength = this._datalistKeys.length;
+			var currentLength = this._currentKeys.length;
 			var idx = undefined;
-			for(idx = 0; idx < datalistLength; ++idx) {
-				var s = this._datalistKeys[idx];
+			for(idx = 0; idx < currentLength; ++idx) {
+				var s = this._currentKeys[idx];
 				var sLower = s.toLowerCase();
 				if( sLower.indexOf(val) !== -1 ) {
 					containsVal.push(s);
@@ -402,7 +415,7 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 			this._datalistKeys.push(val);
 			this._datalistValues.push( this._EscapeHTML(val + " [" + values.values[idx].size.toString() + "]") );
 		}
-		this._SetDataList("", "", this._datalistKeys, this._datalistValues);
+		this._SetDataList("", "", []);
 	};
 	output.init = function(name, listHoveredClass, listUnhoveredClass, lookup, manager) {
 		this.targetElementInput = document.createElement('input');
