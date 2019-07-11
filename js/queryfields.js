@@ -288,7 +288,7 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 			}
 			this.results = newIdRecord([], []);
 			this.results.extend( this.lookup.get(value) );
-			this._SetDataList("", value, []);
+			this._SetDataList("", value.toLowerCase(), []);
 		} else {
 			var cleanValues = [];
 			var searchValues = [];
