@@ -7,6 +7,8 @@ var defaultResultsPerPage = 10;
 var defaultPageNumber = 0;
 var defaultListHoveredClass = "AutocompleteArea hovered";
 var defaultListUnhoveredClass = "AutocompleteArea unhovered";
+var defaultSearchResultClass = "SearchResult";
+var defaultSearchResultSelectedClass = "SearchResult selected";
 var defaultListHeight = "10em";
 
 function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
@@ -80,6 +82,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	output._pageNumber = undefined;
 	output._maxPageNumber = undefined;
 
+	output._currentResultTarget = undefined;
 	output._resultsDisplayTarget = undefined;
 	output._storyDisplayTarget = undefined;
 
@@ -149,6 +152,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		var item = document.createElement("div");
 		var titleItem = document.createElement("h3"); // Title, and Author
 		var infoItem = document.createElement("p"); // Date, Domain, Format
+		item.className = defaultSearchResultClass;
 		titleItem.innerHTML = title +  " - " + author;
 		if(date !== "") {
 			infoItem.innerHTML = new Date( parseInt(date) ).toISOString() + " - " + domain + " | Format: " + format;
@@ -157,7 +161,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		}
 		item.appendChild(titleItem);
 		item.appendChild(infoItem);
-		item.setAttribute("onclick", this.name + ".LoadStory(" + id.toString() + ")");
+		item.setAttribute("onclick", this.name + ".LoadStory(this, " + id.toString() + ")");
 		this._resultsDisplayTarget.appendChild(item);
 	};
 	output._UpdateResults = function() {
@@ -238,7 +242,12 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
-	output.LoadStory = function(id) {
+	output.LoadStory = function(e, id) {
+		if(this._currentResultTarget !== undefined) {
+			this._currentResultTarget.className = defaultSearchResultClass;
+		}
+		this._currentResultTarget = e;
+		this._currentResultTarget.className = defaultSearchResultSelectedClass;
 		this._storyDisplayTarget.innerHTML = this.searcher.GetBody(id);
 	};
 	output._range = function(start, end) {
