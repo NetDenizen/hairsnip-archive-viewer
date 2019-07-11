@@ -286,8 +286,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			if(value === "-") {
 				value = "";
 			}
-			this.results = newIdRecord([], []);
-			this.results.extend( this.lookup.get(value) );
+			this.results = this.lookup.get(value);
 			this._SetDataList("", value.toLowerCase(), []);
 		} else {
 			var cleanValues = [];

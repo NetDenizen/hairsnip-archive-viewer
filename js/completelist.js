@@ -18,6 +18,7 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 		//TODO: Should we check if there are options available?
 		this.targetElement.style.display = "block";
 		this._SelectNewOption(0);
+		this.targetElement.scrollTo(0, 0);
 	};
 	output.deactivate = function() {
 		this.targetElement.style.display = "none";
@@ -51,6 +52,7 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 	}
 	output._OutputOptionKey = function(optionSelected) {
 		this.targetElementOutput.value = this._optionKeys[optionSelected];
+		this.targetElementOutput.dispatchEvent( new Event('input', {'bubbles': true, 'cancelable': true}) );
 	}
 	output._ClickListener = function(e) {
 		var value = this._GetOptionElementValue(e.target);
@@ -70,9 +72,9 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 				this._optionElements[this._optionSelected].className = this._listUnhoveredClass;
 			}
 			if(fixedOptionSelected < 0) {
-				fixedOptionSelected = 0;
-			} else if(fixedOptionSelected >= optionElementsLength) {
 				fixedOptionSelected = optionElementsLength - 1;
+			} else if(fixedOptionSelected >= optionElementsLength) {
+				fixedOptionSelected = 0;
 			}
 			this._optionSelected = fixedOptionSelected;
 			this._optionElements[this._optionSelected].className = this._listHoveredClass;
@@ -87,11 +89,18 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 			this._ResetOptionElements(); // TODO: Deactivate or reset?
 		}
 	};
+	output._ScrollToItem = function() {
+		if(this._optionSelected >= 0 && this._optionSelected < this._optionElements.length) {
+			this._optionElements[this._optionSelected].scrollIntoView(false);
+		}
+	};
 	output._OnArrowUp = function() {
 		this._SelectNewOption(this._optionSelected - 1);
+		this._ScrollToItem();
 	};
 	output._OnArrowDown = function() {
 		this._SelectNewOption(this._optionSelected + 1);
+		this._ScrollToItem();
 	};
 	output._KeydownListener = function(e) {
 		if(e.keyCode === 13) { // Enter
