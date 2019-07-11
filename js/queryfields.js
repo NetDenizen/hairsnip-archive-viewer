@@ -256,11 +256,12 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		this._currentKeys = [];
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
-			if( this._datalistKeys[idx].indexOf(currentValue) !== -1 &&
-			    !excludedValues.includes(this._datalistKeys[idx]) ) {
-				var k =  this._datalistKeys[idx];
+			var k =  this._datalistKeys[idx];
+			var kLower = k.toLowerCase();
+			if( kLower.indexOf(currentValue) !== -1 &&
+			    !excludedValues.includes(kLower) ) {
 				var v = this._datalistValues[idx];
-				var strongStart = v.indexOf(currentValue);
+				var strongStart = v.toLowerCase().indexOf(currentValue);
 				var strongEnd = strongStart + currentValue.length;
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
@@ -275,6 +276,7 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		this.targetList.update(prefixedKeys, prefixedValues);
 	};
 	output._update = function() {
+		//TODO: Make this smaller?
 		var fullValue = this.targetElementInput.value;
 		if(fullValue === "") {
 			this.results = undefined;
@@ -291,13 +293,13 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 			this.targetList.activate();
 		} else {
 			var cleanValues = [];
-			var trimmedValues = [];
+			var searchValues = [];
 			var values = fullValue.split(',');
 			var valuesLength = values.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
 				var trimmed = values[idx].trim();
-				trimmedValues.push(trimmed);
+				searchValues.push( trimmed.toLowerCase() );
 				if(trimmed === "") {
 					continue;
 				} else if(trimmed === "-") {
@@ -308,8 +310,8 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 			}
 			this.results = this.lookup.get(cleanValues);
 			this._SetDataList( fullValue.slice(0, this._FindPrefix(fullValue) + 1),
-							   trimmedValues[valuesLength - 1],
-							   trimmedValues.slice(0, valuesLength - 1)
+							   searchValues[valuesLength - 1],
+							   searchValues.slice(0, valuesLength - 1)
 							 );
 			this.targetList.activate();
 		}
