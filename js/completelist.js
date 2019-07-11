@@ -111,6 +111,9 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 			this._OnArrowDown();
 		}
 	};
+	output._FocusListener = function(e) {
+		this.activate();
+	};
 	output.handleEvent = function(e) {
 		var eType = e.type;
 		if(eType === "click") {
@@ -119,6 +122,8 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 			this._MouseoverListener(e);
 		} else if(eType === "keydown") {
 			this._KeydownListener(e);
+		} else if(eType === "focus") {
+			this._FocusListener(e);
 		}
 	};
 	output.update = function(optionKeys, optionValues) {
@@ -139,6 +144,7 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 		this.targetElement.style.height = listHeight;
 		this.targetElementOutput.addEventListener("keydown", this, false);
 		this.targetElementOutput.addEventListener("click", this, false);
+		this.targetElementOutput.addEventListener("focus", this, false);
 		document.addEventListener("click", this, false);
 	};
 	output.init(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput);
