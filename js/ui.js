@@ -79,6 +79,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	output._pageNumberLeftTarget = undefined;
 	output._pageNumberRightTarget = undefined;
 	output._maxPageNumberTarget = undefined;
+	output._storyAmountTarget = undefined;
 	output._pageNumber = undefined;
 	output._maxPageNumber = undefined;
 
@@ -92,6 +93,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 			this._maxPageNumber -= 1;
 		}
 		this._maxPageNumberTarget.innerHTML = " / " + (this._maxPageNumber + 1).toString();
+		this._storyAmountTarget.innerHTML = " (" + this._storyIndexes.length.toString() + ")";
 	};
 	output._UpdateSingleQuery = function(idx) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
@@ -377,6 +379,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 
 		this._maxPageNumberTarget = document.createElement("span");
+		this._storyAmountTarget = document.createElement("span");
 
 		this._pageNumberRightTarget = document.createElement("button");
 		this._pageNumberRightTarget.innerHTML = ">";
@@ -387,6 +390,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		pageNumberP.appendChild(this._pageNumberLeftTarget);
 		pageNumberP.appendChild(this._pageNumberTarget);
 		pageNumberP.appendChild(this._maxPageNumberTarget);
+		pageNumberP.appendChild(this._storyAmountTarget);
 		pageNumberP.appendChild(this._pageNumberRightTarget);
 
 		resultsControl.appendChild(resultsPerPageTitle);
