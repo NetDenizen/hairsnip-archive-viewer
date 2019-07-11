@@ -281,7 +281,6 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 		if(fullValue === "") {
 			this.results = undefined;
 			this._SetDataList("", "", []);
-			this.targetList.deactivate();
 		} else if( !fullValue.includes(',') ) {
 			var value = fullValue.trim();
 			if(value === "-") {
@@ -290,7 +289,6 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 			this.results = newIdRecord([], []);
 			this.results.extend( this.lookup.get(value) );
 			this._SetDataList("", value, []);
-			this.targetList.activate();
 		} else {
 			var cleanValues = [];
 			var searchValues = [];
@@ -313,6 +311,8 @@ function newAutocompleteSearcher(name, listHoveredClass, listUnhoveredClass, loo
 							   searchValues[valuesLength - 1],
 							   searchValues.slice(0, valuesLength - 1)
 							 );
+		}
+		if(this._currentKeys.length > 1) {
 			this.targetList.activate();
 		}
 		this.edited = true;
