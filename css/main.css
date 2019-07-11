@@ -31,6 +31,11 @@ section#PageControls > button {
 	background-color: white;
 }
 
+section#PageControls > button:hover {
+	cursor: pointer;
+	background-color: LightGrey;
+}
+
 section#ErrorField {
 	font-family: monospace, courier;
 	display: none;
@@ -38,11 +43,13 @@ section#ErrorField {
 
 section#SearchField {
 }
+
 section#SearchResults {
 }
 
 section#StoryArea {
 	white-space: normal;
+	padding: 0.25em;
 }
 
 div.AutocompleteArea {
