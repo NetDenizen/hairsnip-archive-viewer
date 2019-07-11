@@ -51,7 +51,7 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 		return output;
 	}
 	output._OutputOptionKey = function(optionSelected) {
-		this.targetElementOutput.value = this._optionKeys[optionSelected];
+		this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
 		this.targetElementOutput.dispatchEvent( new Event('input', {'bubbles': true, 'cancelable': true}) );
 	}
 	output._ClickListener = function(e) {

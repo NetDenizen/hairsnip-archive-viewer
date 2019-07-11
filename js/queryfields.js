@@ -383,9 +383,14 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 				prefixValues += ',';
 			}
 			if(containsVal.length === 1) {
-				this.targetElementInput.value = prefixValues + valSpace + containsVal[0];
+				this.targetElementInput.value = prefixValues + valSpace + containsVal[0] + ", ";
 			} else {
-				this.targetElementInput.value = prefixValues + valSpace + this._LongestCommonPrefix(startsVal);
+				var lcp = this._LongestCommonPrefix(startsVal);
+				if( startsVal.includes(lcp) && startsVal.length === 1 ) {
+					this.targetElementInput.value = prefixValues + valSpace + lcp + ", ";
+				} else if(lcp.length > 0) {
+					this.targetElementInput.value = prefixValues + valSpace + lcp;
+				}
 			}
 			this._update();
 			if(fullVal.length > 0) {
