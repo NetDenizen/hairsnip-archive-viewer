@@ -386,7 +386,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 				this.targetElementInput.value = prefixValues + valSpace + containsVal[0] + ", ";
 			} else {
 				var lcp = this._LongestCommonPrefix(startsVal);
-				if( startsVal.includes(lcp) && startsVal.length === 1 ) {
+				if(startsVal.includes(lcp) && startsVal.length === 1) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp + ", ";
 				} else if(lcp.length > 0) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp;
