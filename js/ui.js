@@ -44,21 +44,6 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	output.siteManager = undefined;
 	output.titleManager = undefined;
 
-	output._displayStates = {};
-	output.ToggleDisplay = function(id) {
-		var e = document.getElementById(id);
-		if(e.style.display === "none") {
-			if( this._displayStates.hasOwnProperty(id) ) {
-				e.style.display = this._displayStates[id];
-			} else {
-				e.style.display = "initial";
-			}
-		} else {
-			this._displayStates[id] = e.style.display;
-			e.style.display = "none";
-		}
-	};
-
 	// logManager
 	output.logger = undefined;
 
@@ -402,4 +387,30 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	};
 	output.init(logger, searcher, name, pageNumber, resultsPerPage);
 	return output;
+}
+
+function ToggleSection(button, buttonOnText, buttonOffText, section) {
+	if(section.style.display === "" || section.style.display === "none") {
+		section.style.display = "block";
+		button.innerHTML = buttonOffText;
+	} else {
+		section.style.display = "none";
+		button.innerHTML = buttonOnText;
+	}
+}
+
+function ToggleErrorField(button, section) {
+	ToggleSection( button, "Error Messages v", "Error Messages ^", document.getElementById("ErrorField") );
+}
+
+function ToggleSearchFields(button, section) {
+	ToggleSection( button, "Search Fields v", "Search Fields ^", document.getElementById("SearchFields") );
+}
+
+function ToggleSearchResults(button, section) {
+	ToggleSection( button, "Search Results v", "Search Results ^", document.getElementById("SearchResults") );
+}
+
+function ToggleStoryArea(button, section) {
+	ToggleSection( button, "Story Area v", "Story Area ^", document.getElementById("StoryArea") );
 }
