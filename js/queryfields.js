@@ -257,7 +257,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			var k =  this._datalistKeys[idx];
 			var kLower = k.toLowerCase();
 			if( kLower.indexOf(currentValue) !== -1 &&
-			    !excludedValues.includes(kLower) ) {
+			    !excludedValues.includes(k) ) {
 				var v = this._datalistValues[idx];
 				var strongStart = v.toLowerCase().indexOf(currentValue);
 				var strongEnd = strongStart + currentValue.length;
@@ -294,7 +294,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
 				var trimmed = values[idx].trim();
-				searchValues.push( trimmed.toLowerCase() );
+				searchValues.push(trimmed);
 				if(trimmed === "") {
 					continue;
 				} else if(trimmed === "-") {
