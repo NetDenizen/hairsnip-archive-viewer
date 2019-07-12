@@ -1,3 +1,5 @@
+"use strict";
+
 function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput) {
 	var output = {};
 	output.targetElement = undefined;
