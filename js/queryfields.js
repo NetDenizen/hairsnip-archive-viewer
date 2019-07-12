@@ -149,7 +149,6 @@ function newDateSearcher(minName, maxName, lookup, manager) {
 	return output;
 }
 
-//TODO: Deal with naked ends and decimals
 function newRangeSearcher(name, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
@@ -160,7 +159,6 @@ function newRangeSearcher(name, lookup, manager) {
 
 	output._ExtractValues = function(valueString) {
 		//TODO: Rewrite?
-		//TODO: What if we leave one of these blank? Default to highest?
 		return valueString.split(",").map( function(e) {
 											var pair = e.split("-", 2);
 											var output = pair;
@@ -320,7 +318,6 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 	output._InputListener = function(e) {
 		this._update();
 	};
-	//TODO: Optimize output slicing.
 	output._LongestCommonPrefix = function(values) {
 		var output = undefined;
 		var valuesLength = values.length;

@@ -137,7 +137,6 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 		this._listUnhoveredClass = listUnhoveredClass;
 		this.targetElementOutput = targetElementOutput;
 		this.targetElement = document.createElement("div");
-		//TODO: Class/styling. We really want this to be scrollable, for one.
 		this.targetElement.style.display = "none";
 		this.targetElement.style.overflow = "scroll";
 		this.targetElement.style.maxHeight = listHeight;

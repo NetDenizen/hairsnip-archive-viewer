@@ -1,4 +1,3 @@
-// TODO: Check all
 "use strict";
 
 function newIdRecord(keys, values) {

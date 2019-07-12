@@ -1,5 +1,3 @@
-// TODO: Update search query options on change
-// TODO: Add dropdown in search results
 // TODO: Rewrite onclick to event handler
 "use strict";
 
@@ -171,7 +169,6 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	};
 	output._UpdatePageNumber = function(e) {
 		//TODO: Optimize
-		// TODO: Make proportional to number of pages
 		var value = Number(this._pageNumberTarget.value);
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._pageNumberTarget.value = (this._pageNumber + 1).toString();

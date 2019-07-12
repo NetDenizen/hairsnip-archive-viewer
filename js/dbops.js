@@ -3,7 +3,6 @@
 // TODO: Try to shrink functions
 // TODO: constructors capitalize 'new'
 // TODO: We build some SQLite requests in toxic ways, but shit if we have a documented API.
-// TODO: Add info messages
 "use strict";
 
 function newStorySearcher(logger, _db) {
@@ -43,7 +42,6 @@ function newStorySearcher(logger, _db) {
 	output._bodyLookup = undefined;
 	output._bodyLookupReverse = undefined;
 
-	//TODO: Refactor
 	output._LoadBodyIds = function() {
 		var bodyLookup = this._db.exec("SELECT body_id FROM stories ORDER BY id")[0]['values'];
 		var bodyLookupLength = bodyLookup.length;
@@ -248,8 +246,6 @@ function newStorySearcher(logger, _db) {
 		return newIdRecord(outputKeywords, outputIds);
 	};
 	output.GetBody = function(id) {
-		//TODO: Rewrite?
-		//TODO: Should we make sure input is sanitary, here?
 		var output = "";
 		var idNum = parseInt(id, 10);
 		if( isNaN(idNum) ) {
