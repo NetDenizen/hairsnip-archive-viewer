@@ -140,7 +140,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		item.className = defaultSearchResultClass;
 		titleItem.innerHTML = title +  " - " + author;
 		if(date !== "") {
-			infoItem.innerHTML = new Date( parseInt(date) ).toISOString() + " - " + domain + " | Format: " + format;
+			infoItem.innerHTML = new Date( parseInt(date) * 1000 ).toISOString() + " - " + domain + " | Format: " + format;
 		} else {
 			infoItem.innerHTML = "Date not found - " + domain + " | Format: " + format;
 		}
