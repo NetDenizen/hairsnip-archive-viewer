@@ -66,6 +66,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	output._pageNumber = undefined;
 	output._maxPageNumber = undefined;
 
+	output._currentResultId = undefined;
 	output._currentResultTarget = undefined;
 	output._resultsDisplayTarget = undefined;
 	output._storyDisplayTarget = undefined;
@@ -146,8 +147,10 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		}
 		item.appendChild(titleItem);
 		item.appendChild(infoItem);
-		item.setAttribute("onclick", this.name + ".LoadStory(this, " + id.toString() + ")");
+		item.setAttribute( "data-value", id.toString() );
+		item.addEventListener("click", this, false);
 		this._resultsDisplayTarget.appendChild(item);
+		return item
 	};
 	output._UpdateResults = function() {
 		var resultsStart = this._pageNumber * this._resultsPerPage;
@@ -155,8 +158,13 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		var indexesLength = indexes.length;
 		var idx = undefined;
 		this._resultsDisplayTarget.innerHTML = "";
+		this._currentResultTarget = undefined;
 		for(idx = 0; idx < indexesLength; ++idx) {
-			this._UpdateSingleResult( indexes[idx] );
+			var id = indexes[idx];
+			var item = this._UpdateSingleResult(id);
+			if(id === this._currentResultId) {
+				item.dispatchEvent( new Event('click', {'bubbles': true, 'cancelable': true}) );
+			}
 		}
 	};
 	output._UpdateSearch = function() {
@@ -196,6 +204,20 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._UpdateResults();
 		this._UpdateMaxPageNumber();
 	};
+	output._LoadStory = function(e) {
+		var id = parseInt(e.getAttribute("data-value"), 10);
+		if(this._currentResultTarget !== e) {
+			if(this._currentResultTarget !== undefined) {
+				this._currentResultTarget.className = defaultSearchResultClass;
+			}
+			this._currentResultTarget = e;
+			this._currentResultTarget.className = defaultSearchResultSelectedClass;
+		}
+		if(this._currentResultId !== id) {
+			this._currentResultId = id;
+			this._storyDisplayTarget.innerHTML = this.searcher.GetBody(id);
+		}
+	};
 	output.handleEvent = function(e) {
 		if(e.type === "keyup") {
 			if(e.target == this._pageNumberTarget) {
@@ -203,6 +225,8 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 			} else if(e.target == this._resultsPerPageTarget) {
 				this._UpdateResultsPerPage(e);
 			}
+		} else if(e.type === "click") {
+			this._LoadStory(e.currentTarget);
 		}
 	};
 	//TODO: Remove duplication
@@ -223,14 +247,6 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		}
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
-	};
-	output.LoadStory = function(e, id) {
-		if(this._currentResultTarget !== undefined) {
-			this._currentResultTarget.className = defaultSearchResultClass;
-		}
-		this._currentResultTarget = e;
-		this._currentResultTarget.className = defaultSearchResultSelectedClass;
-		this._storyDisplayTarget.innerHTML = this.searcher.GetBody(id);
 	};
 	output._range = function(start, end) {
 		var idx = undefined;
