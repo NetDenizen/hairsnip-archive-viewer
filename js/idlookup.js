@@ -60,13 +60,16 @@ function newIdRecord(keys, values) {
 function newIdLookup() {
 	var output = {};
 	output._keys = [];
-	output._items = [];
 	output._lookup = {};
 	output._lookupReverse = {};
 	output._all = undefined;
 	output._allChanged = true;
+	output._GetKey = function(key) {
+		return newIdRecord([key], [ Array.from(this._lookup[key]) ]);
+	};
 	output._GetIdx = function(idx) {
-		return newIdRecord([ this._keys[idx] ], [ Array.from(this._items[idx]) ]);
+		var key = this._keys[idx];
+		return this._GetKey(key);
 	};
 	output._GetIdxRange = function(startIdx, endIdx) {
 		var output = newIdRecord([], []);
@@ -88,7 +91,7 @@ function newIdLookup() {
 		var output = newIdRecord([], []);
 		var strKey = key.toString();
 		if( this._lookup.hasOwnProperty(strKey) ) {
-			output = this._GetIdx(this._lookup[strKey]);
+			output = this._GetKey(strKey);
 		}
 		return output;
 	};
@@ -113,12 +116,12 @@ function newIdLookup() {
 	output._AddSingle = function(key, item) {
 		var strKey = key.toString();
 		if( this._lookup.hasOwnProperty(strKey) ) {
-			this._items[ this._lookup[strKey] ].add(item);
+			this._lookup[strKey].add(item);
 		} else {
 			var idx = this._bisect(strKey, this._keys);
+			var itemSet = new Set([item]);
 			this._keys.splice(idx, 0, strKey);
-			this._items.splice( idx, 0, new Set([item]) );
-			this._lookup[strKey] = this._items.length - 1;
+			this._lookup[strKey] = itemSet;
 		}
 		this._allChanged = true;
 		this._AddSingleReverse(item, strKey);
@@ -201,7 +204,7 @@ function newIdLookup() {
 	output.GetAll = function() {
 		var output = newIdRecord([], []);
 		if(this._allChanged) {
-			this._all = this._GetIdxRange(0, this._items.length);
+			this._all = this._GetIdxRange(0, this._keys.length);
 		}
 		output.extend(this._all);
 		return output;
