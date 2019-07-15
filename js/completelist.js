@@ -88,7 +88,6 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 	output._OnEnter = function() {
 		if(this._optionSelected !== -1) {
 			this._OutputOptionKey(this._optionSelected);
-			this.deactivate()
 		}
 	};
 	output._ScrollToItem = function() {
