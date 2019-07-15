@@ -240,12 +240,44 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 		var valueLength = value.length;
 		var idx = undefined;
 		for(idx = 0; idx < valueLength; ++idx) {
-			if( value[idx] === ',' || value[idx] !== value[idx].trim() ) {
+			if( ( value[idx] === ',' && (value[idx] === 0 || value[idx - 1] !== '\\') ) || value[idx] !== value[idx].trim() ) {
 				output = idx + 1;
 			}
 		}
 		return output;
 	};
+	output._SplitValues = function(value) {
+		var output = undefined;
+		if( value.indexOf('\\,') !== -1 ) {
+			output = [];
+			var currentString = "";
+			var slash = false;
+			var valueLength = value.length;
+			var idx = 0;
+			while(idx < valueLength) {
+				var v = value[idx];
+				if(slash) {
+					currentString += v;
+					slash = false;
+				} else if(v === '\\') {
+					currentString += v;
+					slash = true;
+				} else if(v === ',') {
+					output.push(currentString);
+					currentString = "";
+				} else {
+					currentString += v;
+				}
+				idx += 1;
+			}
+			if(currentString !== "") {
+				output.push(currentString);
+			}
+		} else {
+			output = value.split(',');
+		}
+		return output;
+	}
 	output._SetDataList = function(prefix, currentValue, excludedValues) {
 		var prefixedKeys = [];
 		var prefixedValues = [];
@@ -282,7 +314,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 		} else {
 			var cleanValues = [];
 			var searchValues = [];
-			var values = fullValue.split(',');
+			var values = this._SplitValues(fullValue);
 			var valuesLength = values.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
@@ -293,7 +325,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 				} else if(trimmed === "-") {
 					cleanValues.push("");
 				} else {
-					cleanValues.push(trimmed);
+					cleanValues.push( trimmed.replace(/\\,/g, ',') );
 				}
 			}
 			this.results = this.lookup.get(cleanValues);
@@ -349,7 +381,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
 			var fullVal = this.targetElementInput.value;
-			var allValues = fullVal.split(',');
+			var allValues = this._SplitValues(fullVal);
 			var allValuesLength = allValues.length;
 			var prefixValues = allValues.slice(0, allValuesLength - 1).join(',');
 			var rawVal = allValues[allValuesLength - 1];
@@ -412,7 +444,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 		this._datalistKeys = [];
 		this._datalistValues = [];
 		for(idx = 0; idx < valuesLength; ++idx) {
-			var val = values.keys[idx];
+			var val = values.keys[idx].replace(/,/g, '\\,');
 			if(val === "") {
 				val = "-";
 			}
