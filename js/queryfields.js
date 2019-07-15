@@ -233,7 +233,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 	output._currentValues = undefined;
 
 	output._EscapeHTML = function(text) {
-		return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+		return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 	};
 	output._FindPrefix = function(value) {
 		var output = 0;
