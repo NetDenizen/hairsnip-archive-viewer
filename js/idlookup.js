@@ -104,11 +104,30 @@ function newIdLookup() {
 		}
 	};
 	output._bisect = function(value, lookup) {
+		var numValue = parseFloat(value);
 		var lookupLength = lookup.length;
 		var idx = undefined;
-		for(idx = 0; idx < lookupLength; ++idx) {
-			if(value < lookup[idx]) {
-				break;
+		if( isNaN(numValue) ) {
+			for(idx = 0; idx < lookupLength; ++idx) {
+				if(value < lookup[idx]) {
+					break;
+				}
+			}
+		} else {
+			var done = false;
+			for(idx = 0; idx < lookupLength; ++idx) {
+				var lookupVal = lookup[idx];
+				var numLookupVal = parseFloat(lookupVal);
+				if( !isNaN(numLookupVal) ) {
+					if(numValue < numLookupVal) {
+						done = true;
+					}
+				} else if(value < lookupVal) {
+					done = true;
+				}
+				if(done) {
+					break;
+				}
 			}
 		}
 		return idx;
