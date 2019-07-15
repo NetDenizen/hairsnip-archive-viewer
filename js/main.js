@@ -11,6 +11,12 @@ var db = undefined;
 var searcher = undefined;
 var documentUi = undefined;
 
+function LoadDefaultStyles() {
+	document.getElementById("SearchFields").style.display = "block";
+	document.getElementById("SearchResults").style.display = "block";
+	document.getElementById("StoryArea").style.display = "block";
+}
+
 function LoadSearcher() {
 	searcher = newStorySearcher(logger, db);
 	logger.LogInfo("Building UI.");
@@ -37,6 +43,7 @@ function OnSQLSelect() {
 }
 
 function OnPageLoad() {
+	LoadDefaultStyles();
 	logger = newLogManager(errorId, undefined);
 	logger.LogInfo("Log started.");
 	initSqlJs(config);
