@@ -100,13 +100,24 @@ function newIdLookup() {
 			this._lookupReverse[strItem] = new Set([strKey]);
 		}
 	};
+	output._bisect = function(value, lookup) {
+		var lookupLength = lookup.length;
+		var idx = undefined;
+		for(idx = 0; idx < lookupLength; ++idx) {
+			if(value < lookup[idx]) {
+				break;
+			}
+		}
+		return idx;
+	};
 	output._AddSingle = function(key, item) {
 		var strKey = key.toString();
 		if( this._lookup.hasOwnProperty(strKey) ) {
 			this._items[ this._lookup[strKey] ].add(item);
 		} else {
-			this._keys.push(strKey);
-			this._items.push( new Set([item]) );
+			var idx = this._bisect(strKey, this._keys);
+			this._keys.splice(idx, 0, strKey);
+			this._items.splice( idx, 0, new Set([item]) );
 			this._lookup[strKey] = this._items.length - 1;
 		}
 		this._allChanged = true;
