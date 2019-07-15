@@ -241,7 +241,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 		var idx = undefined;
 		for(idx = 0; idx < valueLength; ++idx) {
 			if( value[idx] === ',' || value[idx] !== value[idx].trim() ) {
-				output = idx;
+				output = idx + 1;
 			}
 		}
 		return output;
@@ -279,13 +279,6 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 		if(fullValue === "") {
 			this.results = undefined;
 			this._SetDataList("", "", []);
-		} else if( !fullValue.includes(',') ) {
-			var value = fullValue.trim();
-			if(value === "-") {
-				value = "";
-			}
-			this.results = this.lookup.get(value);
-			this._SetDataList("", value.toLowerCase(), []);
 		} else {
 			var cleanValues = [];
 			var searchValues = [];
@@ -304,7 +297,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 				}
 			}
 			this.results = this.lookup.get(cleanValues);
-			this._SetDataList( fullValue.slice(0, this._FindPrefix(fullValue) + 1),
+			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
 							   searchValues[valuesLength - 1].toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)
 							 );
