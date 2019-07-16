@@ -230,7 +230,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		}
 	};
 	//TODO: Remove duplication
-	output.pageNumberRight = function() {
+	output.PageNumberRight = function() {
 		if(this._pageNumber < this._maxPageNumber) {
 			this._pageNumber += 1;
 		} else if(this._maxPageNumber >= 0) {
@@ -239,7 +239,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
-	output.pageNumberLeft = function() {
+	output.PageNumberLeft = function() {
 		if(this._pageNumber > this._maxPageNumber || this._pageNumber <= 0) {
 			this._pageNumber = this._maxPageNumber;
 		} else {
@@ -256,7 +256,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		}
 		return output;
 	};
-	output._initQueryTable = function(parentField, names, managers) {
+	output._InitQueryTable = function(parentField, names, managers) {
 		var table = document.createElement("table");
 		var headings = document.createElement("tr");
 		var queries = document.createElement("tr");
@@ -346,13 +346,13 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 
 		this._allStoryIndexes = this._range(0, this.titleManager.lookup.GetAll().AllValues().length);
 
-		this._initQueryTable(searchFields, ["Story Checksum"], [this.sha256Manager]);
-		this._initQueryTable(searchFields, ["Title", "Author", "Date Range", "Story Language"], [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]);
-		this._initQueryTable(searchFields, ["Site Domain", "Archive Format", "Archive Comment"], [this.domainManager, this.formatManager, this.commentsManager]);
-		this._initQueryTable(searchFields, ["Views", "Rating", "Raters"], [this.viewcountManager, this.ratingManager, this.ratersManager]);
-		this._initQueryTable(searchFields, ["Content Rating", "Story Type", "Category", "Story Location"], [this.contentManager, this.typeManager, this.categoryManager, this.locationManager]);
-		this._initQueryTable(searchFields, ["Author Website", "Author Email", "Author Description"], [this.siteManager, this.emailManager, this.descriptionManager]);
-		this._initQueryTable(searchFields, ["Story Origin", "Story Tags", "Body Keywords"], [this.originManager, this.tagManager, this.bodyManager]);
+		this._InitQueryTable(searchFields, ["Story Checksum"], [this.sha256Manager]);
+		this._InitQueryTable(searchFields, ["Title", "Author", "Date Range", "Story Language"], [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]);
+		this._InitQueryTable(searchFields, ["Site Domain", "Archive Format", "Archive Comment"], [this.domainManager, this.formatManager, this.commentsManager]);
+		this._InitQueryTable(searchFields, ["Views", "Rating", "Raters"], [this.viewcountManager, this.ratingManager, this.ratersManager]);
+		this._InitQueryTable(searchFields, ["Content Rating", "Story Type", "Category", "Story Location"], [this.contentManager, this.typeManager, this.categoryManager, this.locationManager]);
+		this._InitQueryTable(searchFields, ["Author Website", "Author Email", "Author Description"], [this.siteManager, this.emailManager, this.descriptionManager]);
+		this._InitQueryTable(searchFields, ["Story Origin", "Story Tags", "Body Keywords"], [this.originManager, this.tagManager, this.bodyManager]);
 
 		resultsPerPageTitle.innerHTML = "Results per page:"
 
@@ -367,7 +367,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		this._pageNumberLeftTarget.innerHTML = "<";
-		this._pageNumberLeftTarget.setAttribute("onclick", this.name + ".pageNumberLeft()");
+		this._pageNumberLeftTarget.setAttribute("onclick", this.name + ".PageNumberLeft()");
 
 		this._pageNumber = pageNumber;
 		this._pageNumberTarget = document.createElement("input");
@@ -381,7 +381,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 
 		this._pageNumberRightTarget = document.createElement("button");
 		this._pageNumberRightTarget.innerHTML = ">";
-		this._pageNumberRightTarget.setAttribute("onclick", this.name + ".pageNumberRight()");
+		this._pageNumberRightTarget.setAttribute("onclick", this.name + ".PageNumberRight()");
 
 		resultsPerPageP.appendChild(this._resultsPerPageTarget);
 

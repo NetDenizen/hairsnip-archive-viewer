@@ -99,10 +99,10 @@ function newStorySearcher(logger, _db) {
 		}
 		return output;
 	};
-	output._resetPanic = function() {
+	output._ResetPanic = function() {
 		this._panic = false;
 	};
-	output._newLookups = function() {
+	output._NewLookups = function() {
 		this.sha256Lookup = newIdLookup();
 		this.commentsLookup = newIdLookup();
 		this.descriptionLookup = newIdLookup();
@@ -126,7 +126,7 @@ function newStorySearcher(logger, _db) {
 		this.siteLookup = newIdLookup();
 		this.titleLookup = newIdLookup();
 	};
-	output._populateContainers = function() {
+	output._PopulateContainers = function() {
 		var intArrays = this._db.exec("SELECT id, array_id, idx, val FROM int_arrays")[0]['values'];
 
 		var sha256 = this._db.exec("SELECT id, sha256 FROM stories ORDER BY sha256")[0]['values'];
@@ -227,9 +227,9 @@ function newStorySearcher(logger, _db) {
 		this._errors = logger;
 		this._db = _db;
 		this._errors.LogInfo("Initializing story searcher.");
-		this._resetPanic();
-		this._newLookups();
-		this._populateContainers();
+		this._ResetPanic();
+		this._NewLookups();
+		this._PopulateContainers();
 		this._SortLookups();
 		this._errors.LogInfo("Story searcher initialized.");
 	};
