@@ -136,7 +136,7 @@ function newIdLookup() {
 			var output = undefined;
 			var numA = parseFloat(a);
 			var numB = parseFloat(b);
-			if( !isNaN(numA) && !isNaN(numB) ) {
+			if( isNaN(numA) || isNaN(numB) ) {
 				output = numA - numB;
 			} else {
 				output = a - b;
