@@ -133,13 +133,23 @@ function newIdLookup() {
 	};
 	output.sort = function() {
 		this._keys.sort(function(a, b) {
-			var output = undefined;
+			var output = 0;
 			var numA = parseFloat(a);
 			var numB = parseFloat(b);
-			if( isNaN(numA) || isNaN(numB) ) {
-				output = numA - numB;
+			if( !isNaN(numA) && !isNaN(numB) ) {
+				if(numA < numB) {
+					output = -1;
+				} else if(numA > numB) {
+					output = 1;
+				}
 			} else {
-				output = a - b;
+				var aLower = a.toLowerCase();
+				var bLower = b.toLowerCase();
+				if(aLower < bLower) {
+					output = -1;
+				} else if(aLower > bLower) {
+					output = 1;
+				}
 			}
 			return output;
 		});
