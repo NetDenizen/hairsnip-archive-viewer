@@ -456,21 +456,12 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			}
 		}
 	};
-	output._ClickListener = function(e) {
-		if(e.target === this.targetElementInput) {
-			this.targetList.activate();
-		} else {
-			this.targetList.deactivate();
-		}
-	};
 	output.handleEvent = function(e) {
 		var eType = e.type;
 		if(eType === "input") {
 			this._InputListener(e);
 		} else if(eType === "keydown") {
 			this._KeyDownListener(e);
-		} else if(eType === "click") {
-			this._ClickListener(e);
 		}
 	};
 	output._BuildDatalistValues = function() {
