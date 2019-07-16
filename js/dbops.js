@@ -17,11 +17,6 @@ function newStorySearcher(logger, _db) {
 
 	output.ratingLookup = undefined;
 	output.ratersLookup = undefined;
-	output.rating1Lookup = undefined;
-	output.rating2Lookup = undefined;
-	output.rating3Lookup = undefined;
-	output.rating4Lookup = undefined;
-	output.rating5Lookup = undefined;
 	output.viewcountLookup = undefined;
 	output.posixdateLookup = undefined;
 
@@ -114,11 +109,6 @@ function newStorySearcher(logger, _db) {
 
 		this.ratingLookup = newIdLookup();
 		this.ratersLookup = newIdLookup();
-		this.rating1Lookup = newIdLookup();
-		this.rating2Lookup = newIdLookup();
-		this.rating3Lookup = newIdLookup();
-		this.rating4Lookup = newIdLookup();
-		this.rating5Lookup = newIdLookup();
 		this.viewcountLookup = newIdLookup();
 		this.posixdateLookup = newIdLookup();
 
@@ -148,11 +138,6 @@ function newStorySearcher(logger, _db) {
 		var category_id = this._db.exec("SELECT id, category_id FROM stories ORDER BY category_id")[0]['values'];
 		var location_id = this._db.exec("SELECT id, location_id FROM stories ORDER BY location_id")[0]['values'];
 		var rating = this._db.exec("SELECT id, rating FROM stories ORDER BY rating")[0]['values'];
-		var rating1 = this._db.exec("SELECT id, rating1 FROM stories ORDER BY rating1")[0]['values'];
-		var rating2 = this._db.exec("SELECT id, rating2 FROM stories ORDER BY rating2")[0]['values'];
-		var rating3 = this._db.exec("SELECT id, rating3 FROM stories ORDER BY rating3")[0]['values'];
-		var rating4 = this._db.exec("SELECT id, rating4 FROM stories ORDER BY rating4")[0]['values'];
-		var rating5 = this._db.exec("SELECT id, rating5 FROM stories ORDER BY rating5")[0]['values'];
 		var raters = this._db.exec("SELECT id, raters FROM stories ORDER BY raters")[0]['values'];
 		var viewcount = this._db.exec("SELECT id, viewcount FROM stories ORDER BY viewcount")[0]['values'];
 		var format_id = this._db.exec("SELECT id, format_id FROM stories ORDER BY format_id")[0]['values'];
@@ -192,11 +177,6 @@ function newStorySearcher(logger, _db) {
 
 			this.ratingLookup.add(rating[idx][1], rating[idx][0]);
 			this.ratersLookup.add(raters[idx][1], raters[idx][0]);
-			this.rating1Lookup.add(rating1[idx][1], rating1[idx][0]);
-			this.rating2Lookup.add(rating2[idx][1], rating2[idx][0]);
-			this.rating3Lookup.add(rating3[idx][1], rating3[idx][0]);
-			this.rating4Lookup.add(rating4[idx][1], rating4[idx][0]);
-			this.rating5Lookup.add(rating5[idx][1], rating5[idx][0]);
 			this.viewcountLookup.add(viewcount[idx][1], viewcount[idx][0]);
 			this.posixdateLookup.add(posixdate[idx][1], posixdate[idx][0]);
 
@@ -226,11 +206,6 @@ function newStorySearcher(logger, _db) {
 
 		this.ratingLookup.sort();
 		this.ratersLookup.sort();
-		this.rating1Lookup.sort();
-		this.rating2Lookup.sort();
-		this.rating3Lookup.sort();
-		this.rating4Lookup.sort();
-		this.rating5Lookup.sort();
 		this.viewcountLookup.sort();
 		this.posixdateLookup.sort();
 
