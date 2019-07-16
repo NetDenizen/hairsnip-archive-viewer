@@ -73,6 +73,7 @@ function newStorySearcher(logger, _db) {
 			}
 			this._errors.LogInfo("Loaded table: '" + table + "'");
 		}
+		output.sort();
 		return output;
 	};
 	output._LoadIntArray = function(intArrays, arrayId) {
@@ -218,6 +219,35 @@ function newStorySearcher(logger, _db) {
 
 		this._LoadBodyIds();
 	};
+	output._SortLookups = function() {
+		this.sha256Lookup.sort();
+		this.commentsLookup.sort();
+		this.descriptionLookup.sort();
+
+		this.ratingLookup.sort();
+		this.ratersLookup.sort();
+		this.rating1Lookup.sort();
+		this.rating2Lookup.sort();
+		this.rating3Lookup.sort();
+		this.rating4Lookup.sort();
+		this.rating5Lookup.sort();
+		this.viewcountLookup.sort();
+		this.posixdateLookup.sort();
+
+		this.domainLookup.sort();
+		this.languageLookup.sort();
+		this.contentLookup.sort();
+		this.typeLookup.sort();
+		this.categoryLookup.sort();
+		this.locationLookup.sort();
+		this.formatLookup.sort();
+		this.authorLookup.sort();
+		this.emailLookup.sort();
+		this.tagLookup.sort();
+		this.originLookup.sort();
+		this.siteLookup.sort();
+		this.titleLookup.sort();
+	};
 	output.init = function(logger, _db) {
 		this._errors = logger;
 		this._db = _db;
@@ -225,6 +255,7 @@ function newStorySearcher(logger, _db) {
 		this._resetPanic();
 		this._newLookups();
 		this._populateContainers();
+		this._SortLookups();
 		this._errors.LogInfo("Story searcher initialized.");
 	};
 	output.LookupBody = function(keywords) {

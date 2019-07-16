@@ -103,43 +103,13 @@ function newIdLookup() {
 			this._lookupReverse[strItem] = new Set([strKey]);
 		}
 	};
-	output._bisect = function(value, lookup) {
-		var numValue = parseFloat(value);
-		var lookupLength = lookup.length;
-		var idx = undefined;
-		if( isNaN(numValue) ) {
-			for(idx = 0; idx < lookupLength; ++idx) {
-				if(value < lookup[idx]) {
-					break;
-				}
-			}
-		} else {
-			var done = false;
-			for(idx = 0; idx < lookupLength; ++idx) {
-				var lookupVal = lookup[idx];
-				var numLookupVal = parseFloat(lookupVal);
-				if( !isNaN(numLookupVal) ) {
-					if(numValue < numLookupVal) {
-						done = true;
-					}
-				} else if(value < lookupVal) {
-					done = true;
-				}
-				if(done) {
-					break;
-				}
-			}
-		}
-		return idx;
-	};
 	output._AddSingle = function(key, item) {
 		var strKey = key.toString();
 		if( this._lookup.hasOwnProperty(strKey) ) {
 			this._lookup[strKey].add(item);
 		} else {
-			var idx = this._bisect(strKey, this._keys);
 			var itemSet = new Set([item]);
-			this._keys.splice(idx, 0, strKey);
+			this._keys.push(strKey);
 			this._lookup[strKey] = itemSet;
 		}
 		this._allChanged = true;
@@ -160,6 +130,19 @@ function newIdLookup() {
 				}
 			}
 		}
+	};
+	output.sort = function() {
+		this._keys.sort(function(a, b) {
+			var output = undefined;
+			var numA = parseFloat(a);
+			var numB = parseFloat(b);
+			if( isNaN(numA) || isNaN(numB) ) {
+				output = numA - numB;
+			} else {
+				output = a - b;
+			}
+			return output;
+		});
 	};
 	output.get = function(key) {
 		var output = newIdRecord([], []);
