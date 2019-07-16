@@ -207,8 +207,11 @@ function newRangeSearcher(name, lookup, manager) {
 												}
 											} else if(pair.length === 1) {
 												var pair0 = pair[0].trim();
-												pair0 = pair0 !== "" ? pair0 : undefined;
-												output = [ pair0, pair0 ];
+												if(pair0 === "") {
+													output = [];
+												} else {
+													output = [ pair0, pair0 ];
+												}
 											}
 											return output;
 									       }
