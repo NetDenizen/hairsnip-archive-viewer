@@ -311,6 +311,9 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		// logManager
 		this.logger = logger;
 
+		// checksumSearcher
+		this.sha256Manager = newChecksumSearcher("Sha256Query", this.searcher.sha256Lookup, this);
+
 		// keywordSearcher
 		this.commentsManager = newKeywordSearcher("CommentsQuery", this.searcher.commentsLookup, this);
 		this.descriptionManager = newKeywordSearcher("DescriptionQuery", this.searcher.descriptionLookup, this);
@@ -327,7 +330,6 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this.viewcountManager = newRangeSearcher("ViewcountQuery", this.searcher.viewcountLookup, this);
 
 		// autocompleteSearcher
-		this.sha256Manager = newAutocompleteSearcher("Sha256Query", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.sha256Lookup, this);
 		this.domainManager = newAutocompleteSearcher("DomainQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.domainLookup, this);
 		this.languageManager = newAutocompleteSearcher("LanguageQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.languageLookup, this);
 		this.contentManager = newAutocompleteSearcher("ContentQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.contentLookup, this);

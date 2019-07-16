@@ -3,6 +3,39 @@
 //TODO: Trim all?
 "use strict";
 
+function newChecksumSearcher(name, lookup, manager) {
+	var output = {};
+	output.targetElement = undefined;
+	output.lookup = undefined;
+	output._manager = undefined;
+	output.edited = false;
+	output.results = undefined;
+
+	output._InputListener = function(e) {
+		if(this.targetElement.value === "") {
+			this.results = undefined;
+		} else {
+			this.results = lookup.get( this.targetElement.value.toLowerCase() );
+		}
+		this.edited = true;
+		this._manager.UpdateSearchCallback(this._manager);
+	};
+	output.handleEvent = function(e) {
+		this._InputListener(e);
+	};
+	output.init = function(name, lookup, manager) {
+		this.targetElement = document.createElement('input');
+		this.targetElement.setAttribute("type", "text");
+		this.targetElement.setAttribute("id", name);
+		this.targetElement.setAttribute("placeholder", "<Checksum>");
+		this.targetElement.addEventListener("input", this, false);
+		this.lookup = lookup;
+		this._manager = manager;
+	};
+	output.init(name, lookup, manager);
+	return output;
+}
+
 function newFulltextSearcher(name, searcher, manager) {
 	var output = {};
 	output.targetElement = undefined;
