@@ -27,7 +27,7 @@ function newChecksumSearcher(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("placeholder", "<Checksum>");
+		this.targetElement.setAttribute("placeholder", "<checksum>");
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._manager = manager;
@@ -74,7 +74,7 @@ function newFulltextSearcher(name, searcher, manager) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("placeholder", "<Keyword>[,<Keyword>]...");
+		this.targetElement.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElement.addEventListener("input", this, false);
 		this.searcher = searcher;
 		this._manager = manager;
@@ -124,7 +124,7 @@ function newKeywordSearcher(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("placeholder", "<Keyword>[,<Keyword>]...");
+		this.targetElement.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._manager = manager;
@@ -243,7 +243,7 @@ function newRangeSearcher(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("placeholder", "<Value 1>-<Value 2>[,<Value 1>-<Value 2>...]");
+		this.targetElement.setAttribute("placeholder", "<[value 1]-[value 2]>[,...]");
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._manager = manager;
@@ -485,7 +485,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 		this.targetElementInput.setAttribute("type", "text");
 		this.targetElementInput.setAttribute("id", name);
 		this.targetElementInput.setAttribute("autocomplete", "on");
-		this.targetElementInput.setAttribute("placeholder", "<Keyword>[,<Keyword>]...");
+		this.targetElementInput.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
 		this.targetList = newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, this.targetElementInput);
