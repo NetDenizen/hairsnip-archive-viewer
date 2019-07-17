@@ -109,44 +109,112 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		}
 	};
 	output._LookupTerm = function(manager, id) {
-		return manager.lookup.GetReverse(id).join(", ");
+		// TODO: Consolidate this into a helper function
+		return manager.lookup.GetReverse(id).join(", ").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 	};
+	output._BuildResultString = function(start, prefix, value) {
+		var output = start;
+		if(value !== "") {
+			if(output !== "") {
+				output += " | ";
+			}
+			output = output + prefix + value;
+		}
+		return output;
+	}
 	output._UpdateSingleResult = function(id) {
 		// Main items
+		var sha256 = this._LookupTerm(this.sha256Manager, id);
 		var title = this._LookupTerm(this.titleManager, id);
 		var domain = this._LookupTerm(this.domainManager, id);
 		var format = this._LookupTerm(this.formatManager, id);
 		var author = this._LookupTerm(this.authorManager, id);
 		var date = this._LookupTerm(this.posixdateManager, id);
-		//TODO
+		var language = this._LookupTerm(this.languageManager, id);
 		// Hideable items
-		//var comments = this._LookupTerm(this.commentsManager, id);
-		//var description = this._LookupTerm(this.descriptionManager, id);
-		//var rating = this._LookupTerm(this.ratingManager, id);
-		//var raters = this._LookupTerm(this.ratersManager, id);
-		//var viewcount = this._LookupTerm(this.viewcountManager, id);
-		//var language = this._LookupTerm(this.languageManager, id);
-		//var content = this._LookupTerm(this.contentManager, id);
-		//var type = this._LookupTerm(this.typeManager, id);
-		//var category = this._LookupTerm(this.categoryManager, id);
-		//var storyLocation = this._LookupTerm(this.locationManager, id);
-		//var email = this._LookupTerm(this.emailManager, id);
-		//var tag = this._LookupTerm(this.tagManager, id);
-		//var origin = this._LookupTerm(this.originManager, id);
-		//var site = this._LookupTerm(this.siteManager, id);
+		var comments = this._LookupTerm(this.commentsManager, id);
+		var description = this._LookupTerm(this.descriptionManager, id);
+		var rating = this._LookupTerm(this.ratingManager, id);
+		var raters = this._LookupTerm(this.ratersManager, id);
+		var viewcount = this._LookupTerm(this.viewcountManager, id);
+		var content = this._LookupTerm(this.contentManager, id);
+		var type = this._LookupTerm(this.typeManager, id);
+		var category = this._LookupTerm(this.categoryManager, id);
+		var storyLocation = this._LookupTerm(this.locationManager, id);
+		var email = this._LookupTerm(this.emailManager, id);
+		var tag = this._LookupTerm(this.tagManager, id);
+		var origin = this._LookupTerm(this.originManager, id);
+		var site = this._LookupTerm(this.siteManager, id);
 		// HTML Elements
+		// Main items
 		var item = document.createElement("div");
-		var titleItem = document.createElement("h3"); // Title, and Author
+		var titleItem = document.createElement("h3"); // Title, Author, Language
 		var infoItem = document.createElement("p"); // Date, Domain, Format
+		// Hideable items
+		var hideableItems = document.createElement("div");
+		// Main items
+		if(language !== "") {
+			language = " | " + language;
+		}
 		item.className = defaultSearchResultClass;
-		titleItem.innerHTML = title +  " - " + author;
+		titleItem.innerHTML = title +  " - " + author + " (" + sha256 + ")";
 		if(date !== "") {
-			infoItem.innerHTML = new Date( parseInt(date) * 1000 ).toISOString() + " - " + domain + " | Format: " + format;
+			infoItem.innerHTML = new Date( parseInt(date) * 1000 ).toISOString() + " | " + domain + language + " | Format: " + format;
 		} else {
-			infoItem.innerHTML = "Date not found - " + domain + " | Format: " + format;
+			infoItem.innerHTML = "Date not found | " + domain + language + " | Format: " + format;
+		}
+		// TODO: Fugly code... make it less fugly... maybe.
+		// Hideable items
+		if(comments !== "") {
+			var commentsItem = document.createElement("p"); // Comments
+			commentsItem.innerHTML = comments;
+			hideableItems.appendChild(commentsItem);
+		}
+		if(description !== "") {
+			var descriptionItem = document.createElement("p"); // Description
+			descriptionItem.innerHTML = description;
+			hideableItems.appendChild(descriptionItem);
+		}
+		if(viewcount !== "" || rating !== "" || raters !== "") {
+			var statsItemsString = "";
+			var statsItems = document.createElement("p"); // Views, Rating, Raters
+			statsItemsString = this._BuildResultString(statsItemsString, "Views: ", viewcount);
+			statsItemsString = this._BuildResultString(statsItemsString, "Rating: ", rating);
+			statsItemsString = this._BuildResultString(statsItemsString, "Raters: ", raters);
+			statsItems.innerHTML =  statsItemsString;
+			hideableItems.appendChild(statsItems);
+		}
+		if(content !== "" || type !== "" || category !== "" || storyLocation !== "") {
+			var categoryItemsString = "";
+			var categoryItems = document.createElement("p"); // Content, Type, Category, Location
+			categoryItemsString = this._BuildResultString(categoryItemsString, "Content Rating: ", content);
+			categoryItemsString = this._BuildResultString(categoryItemsString, "Story Type: ", type);
+			categoryItemsString = this._BuildResultString(categoryItemsString, "Category: ", category);
+			categoryItemsString = this._BuildResultString(categoryItemsString, "Story Location: ", storyLocation);
+			categoryItems.innerHTML = categoryItemsString;
+			hideableItems.appendChild(categoryItems);
+		}
+		if(email !== "" || site !== "") {
+			var authorInfoItemsString = "";
+			var authorInfoItems = document.createElement("p"); // Email, Site
+			authorInfoItemsString = this._BuildResultString(authorInfoItemsString, "Author Email: ", email);
+			authorInfoItemsString = this._BuildResultString(authorInfoItemsString, "Author Site: ", site);
+			authorInfoItems.innerHTML = authorInfoItemsString;
+			hideableItems.appendChild(authorInfoItems);
+		}
+		if(origin !== "" || tag !== "") {
+			var storyInfoItemsString = "";
+			var storyInfoItems = document.createElement("p"); // Origin, Tag
+			storyInfoItemsString = this._BuildResultString(storyInfoItemsString, "Origin Site: ", origin);
+			storyInfoItemsString = this._BuildResultString(storyInfoItemsString, "Story Tags: ", tag);
+			storyInfoItems.innerHTML = storyInfoItemsString;
+			hideableItems.appendChild(storyInfoItems);
 		}
 		item.appendChild(titleItem);
 		item.appendChild(infoItem);
+		if(hideableItems.innerHTML !== "") {
+			item.appendChild(hideableItems);
+		}
 		item.setAttribute( "data-value", id.toString() );
 		item.addEventListener("click", this, false);
 		this._resultsDisplayTarget.appendChild(item);
