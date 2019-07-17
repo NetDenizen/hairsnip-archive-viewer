@@ -9,6 +9,22 @@ section {
 	padding: 0.25em;
 }
 
+input {
+	color: black;
+	background-color: white;
+}
+
+button {
+	color: black;
+	border: black solid thin;
+	background-color: white;
+}
+
+button:hover {
+	cursor: pointer;
+	background-color: LightGrey;
+}
+
 .border {
 	border: black solid thin;
 }
@@ -28,13 +44,7 @@ section {
 
 section#PageControls > button {
 	font-size: large;
-	color: black;
 	background-color: white;
-}
-
-section#PageControls > button:hover {
-	cursor: pointer;
-	background-color: LightGrey;
 }
 
 section#ErrorField {

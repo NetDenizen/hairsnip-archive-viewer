@@ -454,9 +454,11 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		resultsPerPageTargetContainer.appendChild(this._resultsPerPageTarget);
 
 		pageNumberTargetContainer.appendChild(this._pageNumberLeftTarget);
+		pageNumberTargetContainer.appendChild( document.createTextNode(" ") );
 		pageNumberTargetContainer.appendChild(this._pageNumberTarget);
 		pageNumberTargetContainer.appendChild(this._maxPageNumberTarget);
 		pageNumberTargetContainer.appendChild(this._storyAmountTarget);
+		pageNumberTargetContainer.appendChild( document.createTextNode(" ") );
 		pageNumberTargetContainer.appendChild(this._pageNumberRightTarget);
 
 		resultsPerPageContainer.appendChild(resultsPerPageTitle);
