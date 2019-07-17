@@ -358,15 +358,15 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 	output.init = function(logger, searcher, name, pageNumber, resultsPerPage) {
 		var searchFields = document.getElementById("SearchFields");
 		var searchResults = document.getElementById("SearchResults");
-		var resultsControl = document.createElement("div");
+		var resultsControlTable = document.createElement("table");
 		var resultsDisplay = document.createElement("div");
-		var resultsPerPageTitle = document.createElement("p");
-		var resultsPerPageP = document.createElement("p");
-		var pageNumberTitle = document.createElement("p");
-		var pageNumberP = document.createElement("p");
+		var resultsPerPageContainer = document.createElement("tr");
+		var resultsPerPageTitle = document.createElement("td");
+		var resultsPerPageTargetContainer = document.createElement("td");
+		var pageNumberContainer = document.createElement("tr");
+		var pageNumberTitle = document.createElement("td");
+		var pageNumberTargetContainer = document.createElement("td");
 
-		searchResults.appendChild(resultsControl);
-		searchResults.appendChild(resultsDisplay);
 
 		resultsDisplay.className = "ScrollField";
 
@@ -422,7 +422,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._InitQueryTable(searchFields, ["Author Website", "Author Email", "Author Description"], [this.siteManager, this.emailManager, this.descriptionManager]);
 		this._InitQueryTable(searchFields, ["Story Origin", "Story Tags", "Body Keywords"], [this.originManager, this.tagManager, this.bodyManager]);
 
-		resultsPerPageTitle.innerHTML = "Results per page:"
+		resultsPerPageTitle.innerHTML = "Results per page: "
 
 		this._resultsPerPage = resultsPerPage;
 		this._resultsPerPageTarget = document.createElement("input"),
@@ -431,7 +431,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._resultsPerPageTarget.addEventListener("keyup", this, false);
 		this._resultsPerPageTarget.value = this._resultsPerPage.toString();
 
-		pageNumberTitle.innerHTML = "Page number:"
+		pageNumberTitle.innerHTML = "Page number: "
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		this._pageNumberLeftTarget.innerHTML = "<";
@@ -451,18 +451,26 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this._pageNumberRightTarget.innerHTML = ">";
 		this._pageNumberRightTarget.setAttribute("onclick", this.name + ".PageNumberRight()");
 
-		resultsPerPageP.appendChild(this._resultsPerPageTarget);
+		resultsPerPageTargetContainer.appendChild(this._resultsPerPageTarget);
 
-		pageNumberP.appendChild(this._pageNumberLeftTarget);
-		pageNumberP.appendChild(this._pageNumberTarget);
-		pageNumberP.appendChild(this._maxPageNumberTarget);
-		pageNumberP.appendChild(this._storyAmountTarget);
-		pageNumberP.appendChild(this._pageNumberRightTarget);
+		pageNumberTargetContainer.appendChild(this._pageNumberLeftTarget);
+		pageNumberTargetContainer.appendChild(this._pageNumberTarget);
+		pageNumberTargetContainer.appendChild(this._maxPageNumberTarget);
+		pageNumberTargetContainer.appendChild(this._storyAmountTarget);
+		pageNumberTargetContainer.appendChild(this._pageNumberRightTarget);
 
-		resultsControl.appendChild(resultsPerPageTitle);
-		resultsControl.appendChild(resultsPerPageP);
-		resultsControl.appendChild(pageNumberTitle);
-		resultsControl.appendChild(pageNumberP);
+		resultsPerPageContainer.appendChild(resultsPerPageTitle);
+		resultsPerPageContainer.appendChild(resultsPerPageTargetContainer);
+
+		pageNumberContainer.appendChild(pageNumberTitle);
+		pageNumberContainer.appendChild(pageNumberTargetContainer);
+
+		resultsControlTable.appendChild(resultsPerPageContainer);
+		resultsControlTable.appendChild(pageNumberContainer);
+
+		searchResults.appendChild(resultsControlTable);
+		searchResults.appendChild( document.createElement("hr") );
+		searchResults.appendChild(resultsDisplay);
 
 		this._UpdateSearch();
 	};
