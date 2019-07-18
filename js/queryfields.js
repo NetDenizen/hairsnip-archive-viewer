@@ -11,11 +11,21 @@ function newChecksumSearcher(name, lookup, manager) {
 	output.edited = false;
 	output.results = undefined;
 
+	output._ParseKeywords = function() {
+		var cleanChecksums = [];
+		var checksums = this.targetElement.value.split(",");
+		var checksumsLength = checksums.length;
+		var idx = undefined;
+		for(idx = 0; idx < checksumsLength; ++idx) {
+			cleanChecksums.push( checksums[idx].trim() );
+		}
+		this.results = lookup.get(cleanChecksums);
+	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
 		} else {
-			this.results = lookup.get( this.targetElement.value.toLowerCase() );
+			this._ParseKeywords();
 		}
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
@@ -27,7 +37,7 @@ function newChecksumSearcher(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("placeholder", "<checksum>");
+		this.targetElement.setAttribute("placeholder", "<checksum>[,...]");
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._manager = manager;
