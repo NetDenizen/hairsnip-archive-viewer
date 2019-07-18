@@ -283,12 +283,22 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 	};
 	output._FindPrefix = function(value) {
 		var output = 0;
+		var lastSpace = -1;
+		var nonSpaceEncountered = false;
 		var valueLength = value.length;
 		var idx = undefined;
 		for(idx = 0; idx < valueLength; ++idx) {
 			if( value[idx] === ',' && (value[idx] === 0 || value[idx - 1] !== '\\') ) {
 				output = idx + 1;
+				nonSpaceEncountered = false;
+			} else if( !nonSpaceEncountered && value[idx] !== value[idx].trim() ) {
+				lastSpace = idx + 1;
+			} else {
+				nonSpaceEncountered = true;
 			}
+		}
+		if(lastSpace > output) {
+			output = lastSpace;
 		}
 		return output;
 	};
