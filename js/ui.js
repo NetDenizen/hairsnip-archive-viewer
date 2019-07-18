@@ -153,15 +153,21 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		// Hideable items
 		var hideableItems = document.createElement("div");
 		// Main items
+		if(domain !== "") {
+			domain = " | " + domain;
+		}
 		if(language !== "") {
 			language = " | " + language;
+		}
+		if(format !== "") {
+			format = " | Format: " + format;
 		}
 		item.className = defaultSearchResultClass;
 		titleItem.innerHTML = title +  " - " + author + " (" + sha256 + ")";
 		if(date !== "") {
-			infoItem.innerHTML = new Date( parseInt(date) * 1000 ).toISOString() + " | " + domain + language + " | Format: " + format;
+			infoItem.innerHTML = new Date( parseInt(date) * 1000 ).toISOString() + domain + language + format;
 		} else {
-			infoItem.innerHTML = "Date not found | " + domain + language + " | Format: " + format;
+			infoItem.innerHTML = "Date not found " + domain + language + format;
 		}
 		// TODO: Fugly code... make it less fugly... maybe.
 		// Hideable items
