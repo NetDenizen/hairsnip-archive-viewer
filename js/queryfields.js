@@ -380,7 +380,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 							   searchValues.slice(0, valuesLength - 1)
 							 );
 		}
-		if(this._currentKeys.length > 1) {
+		if(this._currentKeys.length > 0) {
 			this.targetList.activate();
 		}
 		this.edited = true;
