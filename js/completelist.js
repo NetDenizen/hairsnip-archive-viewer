@@ -20,7 +20,7 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 		//TODO: Should we check if there are options available?
 		this.targetElement.style.display = "block";
 		this._SelectNewOption(this._optionSelected);
-		this.targetElement.scrollTo(0, 0);
+		this._ScrollToItem();
 	};
 	output.deactivate = function() {
 		this.targetElement.style.display = "none";
