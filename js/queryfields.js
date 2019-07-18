@@ -465,7 +465,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 					useVal = startsVal;
 				}
 				var lcp = this._LongestCommonPrefix(useVal);
-				if(startsVal.includes(lcp) && startsVal.length === 1) {
+				if(useVal.includes(lcp) && useVal.length === 1) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp + ", ";
 				} else if(lcp.length > 0) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp;
