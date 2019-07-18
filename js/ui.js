@@ -167,12 +167,12 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		// Hideable items
 		if(comments !== "") {
 			var commentsItem = document.createElement("p"); // Comments
-			commentsItem.innerHTML = comments;
+			commentsItem.innerHTML = "Archiver Comments: " + comments;
 			hideableItems.appendChild(commentsItem);
 		}
 		if(description !== "") {
 			var descriptionItem = document.createElement("p"); // Description
-			descriptionItem.innerHTML = description;
+			descriptionItem.innerHTML = "Author Description: " + description;
 			hideableItems.appendChild(descriptionItem);
 		}
 		if(viewcount !== "" || rating !== "" || raters !== "") {
