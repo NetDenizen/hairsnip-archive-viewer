@@ -286,7 +286,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 		var valueLength = value.length;
 		var idx = undefined;
 		for(idx = 0; idx < valueLength; ++idx) {
-			if( ( value[idx] === ',' && (value[idx] === 0 || value[idx - 1] !== '\\') ) || value[idx] !== value[idx].trim() ) {
+			if( value[idx] === ',' && (value[idx] === 0 || value[idx - 1] !== '\\') ) {
 				output = idx + 1;
 			}
 		}
@@ -376,7 +376,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			}
 			this.results = this.lookup.get(cleanValues);
 			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
-							   searchValues[valuesLength - 1].toLowerCase(),
+							   values[valuesLength - 1].toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)
 							 );
 		}
