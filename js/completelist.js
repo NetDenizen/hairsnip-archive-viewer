@@ -24,7 +24,7 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 	};
 	output.deactivate = function() {
 		this.targetElement.style.display = "none";
-		this._SelectNewOption(-1);
+		this._SelectNewOption(0);
 	};
 	output._CreateOptionElement = function(idx) {
 		var option = document.createElement('div');
