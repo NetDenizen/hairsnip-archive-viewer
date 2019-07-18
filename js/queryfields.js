@@ -431,19 +431,24 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			var allValuesLength = allValues.length;
 			var prefixValues = allValues.slice(0, allValuesLength - 1).join(',');
 			var rawVal = allValues[allValuesLength - 1];
-			var val = rawVal.trim().toLowerCase();
+			var val = rawVal.trim();
+			var valLower = val.toLowerCase();
 			var valSpace = rawVal.slice(0, rawVal.length - rawVal.trimLeft().length);
 			var containsVal = [];
 			var startsVal = [];
+			var exactStartsVal = [];
 			var currentLength = this._currentKeys.length;
 			var idx = undefined;
 			for(idx = 0; idx < currentLength; ++idx) {
 				var s = this._currentKeys[idx];
 				var sLower = s.toLowerCase();
-				if( sLower.indexOf(val) !== -1 ) {
+				if( sLower.indexOf(valLower) !== -1 ) {
 					containsVal.push(s);
 				}
-				if( sLower.startsWith(val) ) {
+				if( s.startsWith(val) ) {
+					exactStartsVal.push(s);
+				}
+				if( sLower.startsWith(valLower) ) {
 					startsVal.push(s);
 				}
 			}
@@ -453,7 +458,13 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			if(containsVal.length === 1) {
 				this.targetElementInput.value = prefixValues + valSpace + containsVal[0] + ", ";
 			} else {
-				var lcp = this._LongestCommonPrefix(startsVal);
+				var useVal = undefined;
+				if(exactStartsVal.length > 0) {
+					useVal = exactStartsVal;
+				} else {
+					useVal = startsVal;
+				}
+				var lcp = this._LongestCommonPrefix(useVal);
 				if(startsVal.includes(lcp) && startsVal.length === 1) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp + ", ";
 				} else if(lcp.length > 0) {
