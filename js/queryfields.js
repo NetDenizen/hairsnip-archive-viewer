@@ -376,7 +376,7 @@ function newAutocompleteSearcher(name, listHeight, listHoveredClass, listUnhover
 			}
 			this.results = this.lookup.get(cleanValues);
 			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
-							   values[valuesLength - 1].toLowerCase(),
+							   searchValues[valuesLength - 1].toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)
 							 );
 		}
