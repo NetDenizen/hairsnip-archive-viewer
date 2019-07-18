@@ -19,7 +19,7 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 	output.activate = function() {
 		//TODO: Should we check if there are options available?
 		this.targetElement.style.display = "block";
-		this._SelectNewOption(0);
+		this._SelectNewOption(this._optionSelected);
 		this.targetElement.scrollTo(0, 0);
 	};
 	output.deactivate = function() {
