@@ -1,9 +1,5 @@
 # Changelog
 
-## 2019-07-17.1
-
-* Initial release.
-
 ## 2019-07-19.1
 
 * Include licences.
@@ -18,3 +14,6 @@
 
 * Many bugfixes.
 
+## 2019-07-17.1
+
+* Initial release.
