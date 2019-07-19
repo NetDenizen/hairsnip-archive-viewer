@@ -261,7 +261,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		var value = Number(this._pageNumberTarget.value);
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._pageNumberTarget.value = (this._pageNumber + 1).toString();
-		} else if(value === 0) {
+		} else if(value <= 0) {
 			this._pageNumber = 0;
 			this._pageNumberTarget.value = "1";
 		} else if(value > this._maxPageNumber) {
@@ -276,7 +276,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		var value = Number(this._resultsPerPageTarget.value);
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._resultsPerPageTarget.value = this._resultsPerPage.toString();
-		} else if(value === 0) {
+		} else if(value <= 0) {
 			this._resultsPerPage = 1;
 			this._resultsPerPageTarget.value = "1";
 		} else {
