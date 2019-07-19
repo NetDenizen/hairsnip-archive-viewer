@@ -7,14 +7,13 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	output._optionKeys = [];
 	output._optionValues = [];
 	output._optionElements = [];
-	output._optionSelected = -1;
+	output._optionSelected = 0;
 	output._listHoveredClass = undefined;
 	output._listUnhoveredClass = undefined;
 
 	output._ResetOptionElements = function() {
 		this.targetElement.innerHTML = "";
 		this._optionElements = [];
-		this._optionSelected = -1;
 	}
 	output.activate = function() {
 		//TODO: Should we check if there are options available?
@@ -132,7 +131,6 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this._optionKeys = optionKeys;
 		this._optionValues = optionValues;
 		this._SetDataList();
-		this._SelectNewOption(0);
 	};
 	output.init = function(listHeight, classes, targetElementOutput) {
 		this._listHoveredClass = classes.listHoveredClass;
