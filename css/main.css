@@ -62,14 +62,23 @@ section#StoryArea {
 }
 
 div.AutocompleteArea {
+	background-color: white;
+}
+
+div.AutocompleteArea.container {
+	position: absolute;
+	z-index: 1;
+}
+
+div.AutocompleteArea.option {
 	cursor: pointer;
 }
 
-div.AutocompleteArea.hovered {
+div.AutocompleteArea.option.hovered {
 	background-color: LightGrey;
 }
 
-div.AutocompleteArea.unhovered {
+div.AutocompleteArea.option.unhovered {
 }
 
 div.SearchResult {

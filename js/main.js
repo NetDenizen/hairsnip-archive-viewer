@@ -20,7 +20,7 @@ function LoadDefaultStyles() {
 function LoadSearcher() {
 	searcher = newStorySearcher(logger, db);
 	logger.LogInfo("Building UI.");
-	documentUi = newUiManager(logger, searcher, 'documentUi', defaultPageNumber, defaultResultsPerPage);
+	documentUi = newUiManager(logger, searcher, 'documentUi', defaultListClasses, defaultPageNumber, defaultResultsPerPage);
 	logger.LogInfo("Init completed.");
 }
 

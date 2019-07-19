@@ -1,6 +1,6 @@
 "use strict";
 
-function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput) {
+function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementOutput = undefined;
@@ -133,11 +133,12 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 		this._optionValues = optionValues;
 		this._SetDataList();
 	};
-	output.init = function(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput) {
-		this._listHoveredClass = listHoveredClass;
-		this._listUnhoveredClass = listUnhoveredClass;
+	output.init = function(listHeight, classes, targetElementOutput) {
+		this._listHoveredClass = classes.listHoveredClass;
+		this._listUnhoveredClass = classes.listUnhoveredClass;
 		this.targetElementOutput = targetElementOutput;
 		this.targetElement = document.createElement("div");
+		this.targetElement.className = classes.listContainerClass;
 		this.targetElement.style.display = "none";
 		this.targetElement.style.overflow = "scroll";
 		this.targetElement.style.maxHeight = listHeight;
@@ -147,6 +148,6 @@ function newAutocompleteList(listHeight, listHoveredClass, listUnhoveredClass, t
 		this.targetElementOutput.addEventListener("focus", this, false);
 		document.addEventListener("click", this, false);
 	};
-	output.init(listHeight, listHoveredClass, listUnhoveredClass, targetElementOutput);
+	output.init(listHeight, classes, targetElementOutput);
 	return output;
 }

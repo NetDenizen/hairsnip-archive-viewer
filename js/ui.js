@@ -3,13 +3,20 @@
 
 var defaultResultsPerPage = 10;
 var defaultPageNumber = 0;
-var defaultListHoveredClass = "AutocompleteArea hovered";
-var defaultListUnhoveredClass = "AutocompleteArea unhovered";
 var defaultSearchResultClass = "SearchResult";
 var defaultSearchResultSelectedClass = "SearchResult selected";
 var defaultListHeight = "10em";
 
-function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
+var defaultListContainerClass = "border AutocompleteArea container"
+var defaultListHoveredClass = "AutocompleteArea option hovered";
+var defaultListUnhoveredClass = "AutocompleteArea option unhovered";
+var defaultListClasses = {
+	listContainerClass: defaultListContainerClass,
+	listHoveredClass: defaultListHoveredClass,
+	listUnhoveredClass: defaultListUnhoveredClass
+}
+
+function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPage) {
 	var output = {};
 	// keywordSearcher
 	output.commentsManager = undefined;
@@ -363,7 +370,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		table.appendChild(occurrences);
 		parentField.appendChild(table);
 	};
-	output.init = function(logger, searcher, name, pageNumber, resultsPerPage) {
+	output.init = function(logger, searcher, name, classes, pageNumber, resultsPerPage) {
 		var searchFields = document.getElementById("SearchFields");
 		var searchResults = document.getElementById("SearchResults");
 		var resultsControlTable = document.createElement("table");
@@ -406,19 +413,19 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 		this.viewcountManager = newRangeSearcher("ViewcountQuery", this.searcher.viewcountLookup, this);
 
 		// autocompleteSearcher
-		this.domainManager = newAutocompleteSearcher("DomainQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.domainLookup, this);
-		this.languageManager = newAutocompleteSearcher("LanguageQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.languageLookup, this);
-		this.contentManager = newAutocompleteSearcher("ContentQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.contentLookup, this);
-		this.typeManager = newAutocompleteSearcher("TypeQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.typeLookup, this);
-		this.categoryManager = newAutocompleteSearcher("CategoryQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.categoryLookup, this);
-		this.locationManager = newAutocompleteSearcher("LocationQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.locationLookup, this);
-		this.formatManager = newAutocompleteSearcher("FormatQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.formatLookup, this);
-		this.authorManager = newAutocompleteSearcher("AuthorQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.authorLookup, this);
-		this.emailManager = newAutocompleteSearcher("EmailQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.emailLookup, this);
-		this.tagManager = newAutocompleteSearcher("TagQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.tagLookup, this);
-		this.originManager = newAutocompleteSearcher("OriginQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.originLookup, this);
-		this.siteManager = newAutocompleteSearcher("SiteQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.siteLookup, this);
-		this.titleManager = newAutocompleteSearcher("TitleQuery", defaultListHeight, defaultListHoveredClass, defaultListUnhoveredClass, this.searcher.titleLookup, this);
+		this.domainManager = newAutocompleteSearcher("DomainQuery", defaultListHeight, classes, this.searcher.domainLookup, this);
+		this.languageManager = newAutocompleteSearcher("LanguageQuery", defaultListHeight, classes, this.searcher.languageLookup, this);
+		this.contentManager = newAutocompleteSearcher("ContentQuery", defaultListHeight, classes, this.searcher.contentLookup, this);
+		this.typeManager = newAutocompleteSearcher("TypeQuery", defaultListHeight, classes, this.searcher.typeLookup, this);
+		this.categoryManager = newAutocompleteSearcher("CategoryQuery", defaultListHeight, classes, this.searcher.categoryLookup, this);
+		this.locationManager = newAutocompleteSearcher("LocationQuery", defaultListHeight, classes, this.searcher.locationLookup, this);
+		this.formatManager = newAutocompleteSearcher("FormatQuery", defaultListHeight, classes, this.searcher.formatLookup, this);
+		this.authorManager = newAutocompleteSearcher("AuthorQuery", defaultListHeight, classes, this.searcher.authorLookup, this);
+		this.emailManager = newAutocompleteSearcher("EmailQuery", defaultListHeight, classes, this.searcher.emailLookup, this);
+		this.tagManager = newAutocompleteSearcher("TagQuery", defaultListHeight, classes, this.searcher.tagLookup, this);
+		this.originManager = newAutocompleteSearcher("OriginQuery", defaultListHeight, classes, this.searcher.originLookup, this);
+		this.siteManager = newAutocompleteSearcher("SiteQuery", defaultListHeight, classes, this.searcher.siteLookup, this);
+		this.titleManager = newAutocompleteSearcher("TitleQuery", defaultListHeight, classes, this.searcher.titleLookup, this);
 
 		this._allStoryIndexes = this._range(0, this.titleManager.lookup.GetAll().AllValues().length);
 
@@ -484,7 +491,7 @@ function newUiManager(logger, searcher, name, pageNumber, resultsPerPage) {
 
 		this._UpdateSearch();
 	};
-	output.init(logger, searcher, name, pageNumber, resultsPerPage);
+	output.init(logger, searcher, name, classes, pageNumber, resultsPerPage);
 	return output;
 }
 
