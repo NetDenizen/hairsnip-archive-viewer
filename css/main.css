@@ -37,7 +37,6 @@ button:hover {
 
 .ScrollField {
 	height: 20em;
-	max-height: 20em;
 	overflow: scroll;
 	resize: vertical;
 }
