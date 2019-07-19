@@ -127,7 +127,6 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		}
 	};
 	output.update = function(optionKeys, optionValues) {
-		this._ResetOptionElements();
 		this._optionKeys = optionKeys;
 		this._optionValues = optionValues;
 		this._SetDataList();
