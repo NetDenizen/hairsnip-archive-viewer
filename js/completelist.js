@@ -51,6 +51,13 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		}
 		return output;
 	}
+	output._AdjustOptionSelected = function(optionSelected) {
+		if(optionSelected > 0) {
+			this._optionSelected = optionSelected - 1;
+		} else {
+			this._optionSelected = optionSelected;
+		}
+	}
 	output._OutputOptionKey = function(optionSelected) {
 		this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
 		this.targetElementOutput.dispatchEvent( new Event('input', {'bubbles': true, 'cancelable': true}) );
@@ -62,6 +69,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		} else if(value === -1) {
 			this.deactivate();
 		} else if(this._optionElements[value] === e.target) {
+			this._AdjustOptionSelected(value);
 			this._OutputOptionKey(value);
 		}
 	};
@@ -87,6 +95,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	output._OnEnter = function() {
 		if(this._optionSelected !== -1) {
 			this._OutputOptionKey(this._optionSelected);
+			this._AdjustOptionSelected(value);
 		}
 	};
 	output._ScrollToItem = function() {
