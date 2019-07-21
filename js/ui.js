@@ -386,7 +386,6 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		var pageNumberTitle = document.createElement("td");
 		var pageNumberTargetContainer = document.createElement("td");
 
-
 		resultsDisplay.className = "ScrollField";
 
 		this._resultsDisplayTarget = resultsDisplay;
@@ -394,6 +393,10 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 
 		this.searcher = searcher;
 		this.name = name; // TODO: Where to put this?
+
+		searchFields.innerHTML = "";
+		searchResults.innerHTML = "";
+		this._storyDisplayTarget.innerHTML = "";
 
 		// logManager
 		this.logger = logger;
