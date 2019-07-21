@@ -10,6 +10,10 @@ var defaultListHeight = "10em";
 var defaultListContainerClass = "border AutocompleteArea container"
 var defaultListHoveredClass = "AutocompleteArea option hovered";
 var defaultListUnhoveredClass = "AutocompleteArea option unhovered";
+
+var defaultVerticalSectionClass = "border VerticalSection";
+var defaultHorizontalSectionClass = "border HorizontalSection";
+
 var defaultListClasses = {
 	listContainerClass: defaultListContainerClass,
 	listHoveredClass: defaultListHoveredClass,
@@ -496,8 +500,8 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 }
 
 function ToggleSection(button, buttonOnText, buttonOffText, section) {
-	if(section.style.display === "" || section.style.display === "none") {
-		section.style.display = "block";
+	if(section.style.display === "none") {
+		section.style.display = "";
 		button.innerHTML = buttonOffText;
 	} else {
 		section.style.display = "none";
@@ -519,4 +523,16 @@ function ToggleSearchResults(button, section) {
 
 function ToggleStoryArea(button, section) {
 	ToggleSection( button, "Story Area v", "Story Area ^", document.getElementById("StoryArea") );
+}
+
+function OnBodyResize() {
+	var searchFields = document.getElementById("SearchFields");
+	var searchResults = document.getElementById("SearchResults");
+	if(searchFields.offsetWidth + searchResults.offsetWidth <= document.body.clientWidth) {
+		searchFields.className = defaultHorizontalSectionClass;
+		searchResults.className = defaultHorizontalSectionClass;
+	} else {
+		searchFields.className = defaultVerticalSectionClass;
+		searchResults.className = defaultVerticalSectionClass;
+	}
 }

@@ -9,6 +9,14 @@ section {
 	padding: 0.25em;
 }
 
+section.HorizontalSection {
+	display: inline-block;
+}
+
+section.VerticalSection {
+	display: block;
+}
+
 input {
 	color: black;
 	background-color: white;
@@ -47,7 +55,6 @@ section#PageControls > button {
 
 section#ErrorField {
 	font-family: monospace, courier;
-	display: none;
 }
 
 section#SearchField {
