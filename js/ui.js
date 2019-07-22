@@ -120,8 +120,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		}
 	};
 	output._LookupTerm = function(manager, id) {
-		// TODO: Consolidate this into a helper function
-		return manager.lookup.GetReverse(id).join(", ").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+		return EscapeHTML( manager.lookup.GetReverse(id).join(", ") );
 	};
 	output._BuildResultString = function(start, prefix, value) {
 		var output = start;

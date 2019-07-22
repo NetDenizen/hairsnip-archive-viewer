@@ -20,8 +20,7 @@ function newLogManager(id, updateCallback) {
 	output._updateCallback = updateCallback;
 	output.edited = false;
 	output._FlushSingle = function() {
-		//TODO: Seriously move that replace to a function somewhere.
-		this._targetElement.innerHTML += ( this._records.shift().toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") ) + "\n";
+		this._targetElement.innerHTML += (EscapeHTML( this._records.shift().toString() )  + "\n");
 	};
 	output.FlushAll = function(level, values) {
 		while(this._records.length > 0) {

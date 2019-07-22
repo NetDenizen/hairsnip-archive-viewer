@@ -278,9 +278,6 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._currentKeys = undefined;
 	output._currentValues = undefined;
 
-	output._EscapeHTML = function(text) {
-		return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-	};
 	output._FindPrefix = function(value) {
 		var output = 0;
 		var lastSpace = -1;
@@ -509,7 +506,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				val = "-";
 			}
 			this._datalistKeys.push(val);
-			this._datalistValues.push( this._EscapeHTML(val + " [" + values.values[idx].size.toString() + "]") );
+			this._datalistValues.push( EscapeHTML(val + " [" + values.values[idx].size.toString() + "]") );
 		}
 		this._SetDataList("", "", []);
 	};
