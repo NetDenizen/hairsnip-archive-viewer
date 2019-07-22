@@ -103,9 +103,17 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			found.edited = false;
 		}
 		if(this.queryManagerResultsLookup[idx] !== undefined) {
+			var filteredStoryIndexes = [];
 			var allValues = this.queryManagerResultsLookup[idx];
-			//TODO: Rewrite
-			this._storyIndexes = this._storyIndexes.filter( function(e) { return allValues.has(e); } );
+			var storyIndexesLength = this._storyIndexes.length;
+			var idx = undefined;
+			for(idx = 0; idx < storyIndexesLength; ++idx) {
+				var storyIdx = this._storyIndexes[idx]
+				if( allValues.has(storyIdx) ) {
+					filteredStoryIndexes.push(storyIdx);
+				}
+			}
+			this._storyIndexes = filteredStoryIndexes;
 			SetHTMLToText( target, allValues.size.toString() );
 		} else {
 			ClearChildren(target);

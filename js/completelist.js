@@ -16,7 +16,6 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this._optionElements = [];
 	}
 	output.activate = function() {
-		//TODO: Should we check if there are options available?
 		if(this._optionElements.length > 0) {
 			this.targetElement.style.display = "block";
 			this._SelectNewOption(this._optionSelected);

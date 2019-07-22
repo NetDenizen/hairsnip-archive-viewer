@@ -153,7 +153,6 @@ function newDateSearcher(minName, maxName, lookup, manager) {
 	output.results = undefined;
 
 	output._ParseDate = function() {
-		//TODO: Formatting
 		var minDateTime = ( this.targetMinElement.valueAsDate === null ? new Date(1970, 0, 1, 0, 0, 0).getTime() : this.targetMinElement.valueAsDate.getTime() ) / 1000;
 		var maxDateTime = ( this.targetMaxElement.valueAsDate === null ? new Date(2038, 0, 19, 3, 14, 7).getTime() : this.targetMaxElement.valueAsDate.getTime() ) / 1000;
 		this.results = newIdRecord([], []);
@@ -201,32 +200,31 @@ function newRangeSearcher(name, lookup, manager) {
 	output.results = undefined;
 
 	output._ExtractValues = function(valueString) {
-		//TODO: Rewrite?
-		return valueString.split(",").map( function(e) {
-											var pair = e.split("-", 2);
-											var output = pair;
-										 	if(pair.length === 2) {
-												var pair0 = pair[0].trim();
-												var pair1 = pair[1].trim();
-												pair0 = pair0 !== "" ? pair0 : undefined;
-												pair1 = pair1 !== "" ? pair1 : undefined;
-												if(pair1 < pair0) {
-													output = [ pair1, pair0 ];
-												} else {
-													output = [ pair0, pair1 ];
-												}
-											} else if(pair.length === 1) {
-												var pair0 = pair[0].trim();
-												if(pair0 === "") {
-													output = [];
-												} else {
-													output = [ pair0, pair0 ];
-												}
-											}
-											return output;
-									       }
-										 )
-									 .filter( function(e) { return e.length === 2; } );
+		var output = [];
+		var values = valueString.split(",")
+		var valuesLength = values.length;
+		var idx = undefined;
+		for(idx = 0; idx < valuesLength; ++idx) {
+			var pair = values[idx].split("-", 2);
+			var cleanPair = pair;
+			if(pair.length === 2) {
+				var pair0 = pair[0].trim();
+				var pair1 = pair[1].trim();
+				pair0 = pair0 !== "" ? pair0 : undefined;
+				pair1 = pair1 !== "" ? pair1 : undefined;
+				if(pair1 < pair0) {
+					output.push([ pair1, pair0 ]);
+				} else {
+					output.push([ pair0, pair1 ]);
+				}
+			} else if(pair.length === 1) {
+				var pair0 = pair[0].trim();
+				if(pair0 !== "") {
+					output.push([ pair0, pair0 ]);
+				}
+			}
+		}
+		return output;
 	};
 	output._ParseRanges = function() {
 		var values = this._ExtractValues(this.targetElement.value);
