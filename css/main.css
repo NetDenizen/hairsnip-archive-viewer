@@ -55,6 +55,7 @@ section#PageControls > button {
 
 section#ErrorField {
 	font-family: monospace, courier;
+	white-space: pre;
 }
 
 section#SearchField {

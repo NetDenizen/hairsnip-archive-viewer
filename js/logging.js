@@ -20,11 +20,8 @@ function newLogManager(id, updateCallback) {
 	output._updateCallback = updateCallback;
 	output.edited = false;
 	output._FlushSingle = function() {
-		var record = this._records.shift();
-		var contentSpan = document.createElement('span');
-		contentSpan.textContent = record.toString();
-		this._targetElement.appendChild(contentSpan);
-		this._targetElement.appendChild( document.createElement('br') );
+		//TODO: Seriously move that replace to a function somewhere.
+		this._targetElement.innerHTML += ( this._records.shift().toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") ) + "\n";
 	};
 	output.FlushAll = function(level, values) {
 		while(this._records.length > 0) {
