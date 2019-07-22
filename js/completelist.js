@@ -12,7 +12,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	output._listUnhoveredClass = undefined;
 
 	output._ResetOptionElements = function() {
-		this.targetElement.innerHTML = "";
+		ClearChildren(this.targetElement);
 		this._optionElements = [];
 	}
 	output.activate = function() {
@@ -31,7 +31,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		var option = document.createElement('div');
 		option.setAttribute("data-value", idx);
 		option.className = this._listUnhoveredClass;
-		option.innerHTML = this._optionValues[idx];
+		AppendChildren(option, this._optionValues[idx]);
 		option.addEventListener("click", this, false);
 		option.addEventListener("mouseover", this, false);
 		this._optionElements.push(option);

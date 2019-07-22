@@ -20,7 +20,7 @@ function newLogManager(id, updateCallback) {
 	output._updateCallback = updateCallback;
 	output.edited = false;
 	output._FlushSingle = function() {
-		this._targetElement.innerHTML += (EscapeHTML( this._records.shift().toString() )  + "\n");
+		this._targetElement.appendChild( document.createTextNode(EscapeHTML( this._records.shift().toString() )  + "\n") );
 	};
 	output.FlushAll = function(level, values) {
 		while(this._records.length > 0) {

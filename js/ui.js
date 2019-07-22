@@ -87,8 +87,8 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		if(this._storyIndexes.length % this._resultsPerPage === 0) {
 			this._maxPageNumber -= 1;
 		}
-		this._maxPageNumberTarget.innerHTML = " / " + (this._maxPageNumber + 1).toString();
-		this._storyAmountTarget.innerHTML = " (" + this._storyIndexes.length.toString() + ")";
+		SetHTMLToText( this._maxPageNumberTarget, " / " + (this._maxPageNumber + 1).toString() );
+		SetHTMLToText( this._storyAmountTarget, " (" + this._storyIndexes.length.toString() + ")" );
 	};
 	output._UpdateSingleQuery = function(idx) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
@@ -106,9 +106,9 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			var allValues = this.queryManagerResultsLookup[idx];
 			//TODO: Rewrite
 			this._storyIndexes = this._storyIndexes.filter( function(e) { return allValues.has(e); } );
-			target.innerHTML = allValues.size.toString();
+			SetHTMLToText( target, allValues.size.toString() );
 		} else {
-			target.innerHTML = "";
+			ClearChildren(target);
 		}
 	};
 	output._UpdateQueries = function() {
@@ -173,22 +173,22 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			format = " | Format: " + format;
 		}
 		item.className = defaultSearchResultClass;
-		titleItem.innerHTML = title +  " - " + author + " (" + sha256 + ")";
+		SetHTMLToText(titleItem, title +  " - " + author + " (" + sha256 + ")");
 		if(date !== "") {
-			infoItem.innerHTML = new Date( parseInt(date) * 1000 ).toISOString() + domain + language + format;
+			SetHTMLToText(infoItem, new Date( parseInt(date) * 1000 ).toISOString() + domain + language + format);
 		} else {
-			infoItem.innerHTML = "Date not found " + domain + language + format;
+			SetHTMLToText(infoItem, "Date not found " + domain + language + format);
 		}
 		// TODO: Fugly code... make it less fugly... maybe.
 		// Hideable items
 		if(comments !== "") {
 			var commentsItem = document.createElement("p"); // Comments
-			commentsItem.innerHTML = "Archiver Comments: " + comments;
+			SetHTMLToText(commentsItem, "Archiver Comments: " + comments);
 			hideableItems.appendChild(commentsItem);
 		}
 		if(description !== "") {
 			var descriptionItem = document.createElement("p"); // Description
-			descriptionItem.innerHTML = "Author Description: " + description;
+			SetHTMLToText(descriptionItem, "Author Description: " + description);
 			hideableItems.appendChild(descriptionItem);
 		}
 		if(viewcount !== "" || rating !== "" || raters !== "") {
@@ -197,7 +197,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			statsItemsString = this._BuildResultString(statsItemsString, "Views: ", viewcount);
 			statsItemsString = this._BuildResultString(statsItemsString, "Rating: ", rating);
 			statsItemsString = this._BuildResultString(statsItemsString, "Raters: ", raters);
-			statsItems.innerHTML =  statsItemsString;
+			SetHTMLToText(statsItems, statsItemsString);
 			hideableItems.appendChild(statsItems);
 		}
 		if(content !== "" || type !== "" || category !== "" || storyLocation !== "") {
@@ -207,7 +207,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			categoryItemsString = this._BuildResultString(categoryItemsString, "Story Type: ", type);
 			categoryItemsString = this._BuildResultString(categoryItemsString, "Category: ", category);
 			categoryItemsString = this._BuildResultString(categoryItemsString, "Story Location: ", storyLocation);
-			categoryItems.innerHTML = categoryItemsString;
+			SetHTMLToText(categoryItems, categoryItemsString);
 			hideableItems.appendChild(categoryItems);
 		}
 		if(email !== "" || site !== "") {
@@ -215,7 +215,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			var authorInfoItems = document.createElement("p"); // Email, Site
 			authorInfoItemsString = this._BuildResultString(authorInfoItemsString, "Author Email: ", email);
 			authorInfoItemsString = this._BuildResultString(authorInfoItemsString, "Author Site: ", site);
-			authorInfoItems.innerHTML = authorInfoItemsString;
+			SetHTMLToText(authorInfoItems, authorInfoItemsString);
 			hideableItems.appendChild(authorInfoItems);
 		}
 		if(origin !== "" || tag !== "") {
@@ -223,12 +223,12 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			var storyInfoItems = document.createElement("p"); // Origin, Tag
 			storyInfoItemsString = this._BuildResultString(storyInfoItemsString, "Origin Site: ", origin);
 			storyInfoItemsString = this._BuildResultString(storyInfoItemsString, "Story Tags: ", tag);
-			storyInfoItems.innerHTML = storyInfoItemsString;
+			SetHTMLToText(storyInfoItems, storyInfoItemsString);
 			hideableItems.appendChild(storyInfoItems);
 		}
 		item.appendChild(titleItem);
 		item.appendChild(infoItem);
-		if(hideableItems.innerHTML !== "") {
+		if( HasChildren(hideableItems) ) {
 			item.appendChild(hideableItems);
 		}
 		item.setAttribute( "data-value", id.toString() );
@@ -241,7 +241,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		var indexes = this._storyIndexes.slice(resultsStart, resultsStart + this._resultsPerPage);
 		var indexesLength = indexes.length;
 		var idx = undefined;
-		this._resultsDisplayTarget.innerHTML = "";
+		ClearChildren(this._resultsDisplayTarget);
 		this._currentResultTarget = undefined;
 		for(idx = 0; idx < indexesLength; ++idx) {
 			var id = indexes[idx];
@@ -393,9 +393,9 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		this.searcher = searcher;
 		this.name = name; // TODO: Where to put this?
 
-		searchFields.innerHTML = "";
-		searchResults.innerHTML = "";
-		this._storyDisplayTarget.innerHTML = "";
+		ClearChildren(searchFields);
+		ClearChildren(searchResults);
+		ClearChildren(this._storyDisplayTarget);
 
 		// logManager
 		this.logger = logger;
