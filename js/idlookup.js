@@ -30,18 +30,21 @@ function newIdRecord(keys, values) {
 		return output;
 	};
 	output.ExtendRaw = function(keys, values) {
+		var thisLookup = this.lookup;
+		var thisKeys = this.keys;
+		var thisValues = this.values;
 		var keysLength = keys.length;
 		var idx = 0;
 		for(idx = 0; idx < keysLength; ++idx) {
 			var k = keys[idx];
-			if( !this.lookup.hasOwnProperty(k) ) {
+			if( !thisLookup.hasOwnProperty(k) ) {
 				var v = new Set(values[idx]);
-				this.keys.push(k);
-				this.values.push(v);
-				this.lookup[k] = v;
+				thisKeys.push(k);
+				thisValues.push(v);
+				thisLookup[k] = v;
 			} else {
 				var v = values[idx];
-				var found = this.lookup[k];
+				var found = thisLookup[k];
 				var vLength = v.length;
 				var vIdx = undefined;
 				for(vIdx = 0; vIdx < vLength; ++vIdx) {
