@@ -95,8 +95,8 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	};
 	output._OnEnter = function() {
 		if(this._optionSelected !== -1) {
+			this._AdjustOptionSelected(this._optionSelected);
 			this._OutputOptionKey(this._optionSelected);
-			this._AdjustOptionSelected(value);
 		}
 	};
 	output._ScrollToItem = function() {
