@@ -392,6 +392,8 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		if(this._currentKeys.length > 0) {
 			this.targetList.activate();
+		} else {
+			this.targetList.deactivate();
 		}
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);

@@ -17,9 +17,11 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	}
 	output.activate = function() {
 		//TODO: Should we check if there are options available?
-		this.targetElement.style.display = "block";
-		this._SelectNewOption(this._optionSelected);
-		this._ScrollToItem();
+		if(this._optionElements.length > 0) {
+			this.targetElement.style.display = "block";
+			this._SelectNewOption(this._optionSelected);
+			this._ScrollToItem();
+		}
 	};
 	output.deactivate = function() {
 		this.targetElement.style.display = "none";
