@@ -164,13 +164,10 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		var origin = this._LookupTerm(this.originManager, id);
 		var site = this._LookupTerm(this.siteManager, id);
 		// HTML Elements
-		// Main items
 		var item = document.createElement("div");
+		// Main items
 		var titleItem = document.createElement("h3"); // Title, Author, Language
 		var infoItem = document.createElement("p"); // Date, Domain, Format
-		// Hideable items
-		var hideableItems = document.createElement("div");
-		// Main items
 		if(domain !== "") {
 			domain = " | " + domain;
 		}
@@ -187,17 +184,19 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		} else {
 			SetHTMLToText(infoItem, "Date not found " + domain + language + format);
 		}
+		item.appendChild(titleItem);
+		item.appendChild(infoItem);
 		// TODO: Fugly code... make it less fugly... maybe.
 		// Hideable items
 		if(comments !== "") {
 			var commentsItem = document.createElement("p"); // Comments
 			SetHTMLToText(commentsItem, "Archiver Comments: " + comments);
-			hideableItems.appendChild(commentsItem);
+			item.appendChild(commentsItem);
 		}
 		if(description !== "") {
 			var descriptionItem = document.createElement("p"); // Description
 			SetHTMLToText(descriptionItem, "Author Description: " + description);
-			hideableItems.appendChild(descriptionItem);
+			item.appendChild(descriptionItem);
 		}
 		if(viewcount !== "" || rating !== "" || raters !== "") {
 			var statsItemsString = "";
@@ -206,7 +205,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			statsItemsString = this._BuildResultString(statsItemsString, "Rating: ", rating);
 			statsItemsString = this._BuildResultString(statsItemsString, "Raters: ", raters);
 			SetHTMLToText(statsItems, statsItemsString);
-			hideableItems.appendChild(statsItems);
+			item.appendChild(statsItems);
 		}
 		if(content !== "" || type !== "" || category !== "" || storyLocation !== "") {
 			var categoryItemsString = "";
@@ -216,7 +215,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			categoryItemsString = this._BuildResultString(categoryItemsString, "Category: ", category);
 			categoryItemsString = this._BuildResultString(categoryItemsString, "Story Location: ", storyLocation);
 			SetHTMLToText(categoryItems, categoryItemsString);
-			hideableItems.appendChild(categoryItems);
+			item.appendChild(categoryItems);
 		}
 		if(email !== "" || site !== "") {
 			var authorInfoItemsString = "";
@@ -224,7 +223,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			authorInfoItemsString = this._BuildResultString(authorInfoItemsString, "Author Email: ", email);
 			authorInfoItemsString = this._BuildResultString(authorInfoItemsString, "Author Site: ", site);
 			SetHTMLToText(authorInfoItems, authorInfoItemsString);
-			hideableItems.appendChild(authorInfoItems);
+			item.appendChild(authorInfoItems);
 		}
 		if(origin !== "" || tag !== "") {
 			var storyInfoItemsString = "";
@@ -232,12 +231,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 			storyInfoItemsString = this._BuildResultString(storyInfoItemsString, "Origin Site: ", origin);
 			storyInfoItemsString = this._BuildResultString(storyInfoItemsString, "Story Tags: ", tag);
 			SetHTMLToText(storyInfoItems, storyInfoItemsString);
-			hideableItems.appendChild(storyInfoItems);
-		}
-		item.appendChild(titleItem);
-		item.appendChild(infoItem);
-		if( HasChildren(hideableItems) ) {
-			item.appendChild(hideableItems);
+			item.appendChild(storyInfoItems);
 		}
 		item.setAttribute( "data-value", id.toString() );
 		item.addEventListener("click", this, false);

@@ -344,14 +344,18 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				var v = this._datalistValues[idx];
 				var strongStart = v.toLowerCase().indexOf(currentValue);
 				var strongEnd = strongStart + currentValue.length;
-				var strongStartSlice = document.createTextNode( v.slice(0, strongStart) );
-				var strong = document.createElement('strong');
-				var strongEndSlice = document.createTextNode( v.slice(strongEnd, v.length) );
-				strong.appendChild( document.createTextNode( v.slice(strongStart, strongEnd) ) )
+				if(strongEnd > strongStart) {
+					var strongStartSlice = document.createTextNode( v.slice(0, strongStart) );
+					var strong = document.createElement('strong');
+					var strongEndSlice = document.createTextNode( v.slice(strongEnd, v.length) );
+					strong.appendChild( document.createTextNode( v.slice(strongStart, strongEnd) ) )
+					prefixedValues.push([strongStartSlice, strong, strongEndSlice]);
+				} else {
+					prefixedValues.push([document.createTextNode(v)]);
+				}
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
 				prefixedKeys.push(prefix + k);
-				prefixedValues.push([strongStartSlice, strong, strongEndSlice]);
 			}
 		}
 		this.targetList.update(prefixedKeys, prefixedValues);
