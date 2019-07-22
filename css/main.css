@@ -2,21 +2,6 @@ h1 {
 	text-align: center;
 }
 
-section {
-	display: block;
-	margin-bottom: 2%;
-	white-space: nowrap;
-	padding: 0.25em;
-}
-
-section.HorizontalSection {
-	display: inline-block;
-}
-
-section.VerticalSection {
-	display: block;
-}
-
 input {
 	color: black;
 	background-color: white;
@@ -47,59 +32,4 @@ button:hover {
 	height: 20em;
 	overflow: scroll;
 	resize: vertical;
-}
-
-section#PageControls > button {
-	font-size: large;
-}
-
-section#ErrorField {
-	font-family: monospace, courier;
-	white-space: pre;
-}
-
-section#SearchField {
-}
-
-section#SearchResults {
-}
-
-section#StoryArea {
-	white-space: normal;
-}
-
-div.AutocompleteArea {
-	background-color: white;
-}
-
-div.AutocompleteArea.container {
-	position: absolute;
-	z-index: 1;
-}
-
-div.AutocompleteArea.option {
-	cursor: pointer;
-}
-
-div.AutocompleteArea.option.hovered {
-	background-color: LightGrey;
-}
-
-div.AutocompleteArea.option.unhovered {
-}
-
-div.SearchResult {
-}
-
-div.SearchResult:hover {
-	background-color: LightGrey;
-	cursor: pointer;
-}
-
-div.SearchResult.selected {
-	background-color: DarkGrey;
-}
-
-div.SearchResult.selected:hover {
-	background-color: grey;
 }

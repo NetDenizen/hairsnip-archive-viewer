@@ -1,0 +1,33 @@
+section {
+	display: block;
+	margin-bottom: 2%;
+	white-space: nowrap;
+	padding: 0.25em;
+}
+
+section.HorizontalSection {
+	display: inline-block;
+}
+
+section.VerticalSection {
+	display: block;
+}
+
+section#PageControls > button {
+	font-size: large;
+}
+
+section#ErrorField {
+	font-family: monospace, courier;
+	white-space: pre;
+}
+
+section#SearchField {
+}
+
+section#SearchResults {
+}
+
+section#StoryArea {
+	white-space: normal;
+}

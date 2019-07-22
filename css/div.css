@@ -1,0 +1,35 @@
+div.AutocompleteArea {
+	background-color: white;
+}
+
+div.AutocompleteArea.container {
+	position: absolute;
+	z-index: 1;
+}
+
+div.AutocompleteArea.option {
+	cursor: pointer;
+}
+
+div.AutocompleteArea.option.hovered {
+	background-color: LightGrey;
+}
+
+div.AutocompleteArea.option.unhovered {
+}
+
+div.SearchResult {
+}
+
+div.SearchResult:hover {
+	background-color: LightGrey;
+	cursor: pointer;
+}
+
+div.SearchResult.selected {
+	background-color: DarkGrey;
+}
+
+div.SearchResult.selected:hover {
+	background-color: grey;
+}
