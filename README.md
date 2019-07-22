@@ -5,7 +5,7 @@ This webapp is meant to browse and display archives of the body of stories once 
 
 ## Installation and Dependencies
 
-To use the webapp, you will need a modern web browser with support for HTML5 and the set of features included by ECMAScript 6 (Which was released in 2015, as the most modern of these two hard dependencies.). Otherwise, the webapp should be entirely self-contained, and include any necessary code.
+To use the webapp, you will need a modern web browser with support for HTML5, asm.js, and the set of features included by ECMAScript 6 (Which was released in 2015, as the most recent of these three hard dependencies.). Otherwise, the webapp should be entirely self-contained, and include any necessary code.
 
 The only third-party dependency, which is already included with the webapp, is https://github.com/kripken/sql.js/ custom-compiled to support FTS5. Please refer to the documentation of that project for building instructions.
 
@@ -26,6 +26,8 @@ An example interface of the webapp is as follows; features are annotated with bl
 ![screenshot](https://i.imgur.com/a1TM2W6.png)
 
 Fields 7, 8, 10, 11-13, and 17-26 may have multiple options, each separated by a comma. A `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank. Commas themselves may be represented by `\,`.
+
+These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected.
 
 Fields 14-16 may also have multiple options, each separated by a comma. Here, an option is a single number, or a range. A range is two numbers separated by a `-`, their order being irrelevant. If either of these numbers is left out, the maximum or minimum is available is assumed.
 
@@ -87,7 +89,7 @@ Fields 14-16 may also have multiple options, each separated by a comma. Here, an
 
 25. Select stories by their related tags. Note that tags were separated by comma, but commas were not consistently used in the original website, which might produce some odd options. Only applies to format 4.\* stories.
 
-26. Select stories by keywords in the body itself.
+26. Select stories by keywords in the body, or actual contents of the story itself.
 
 27. Set the number of results available in each page. Must be a natural number greater than 0. Invalid entries will be replaced by 1.
 
