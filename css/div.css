@@ -5,6 +5,7 @@ div.AutocompleteArea {
 div.AutocompleteArea.container {
 	position: absolute;
 	z-index: 1;
+	padding-left: 0.1em;
 }
 
 div.AutocompleteArea.option {
