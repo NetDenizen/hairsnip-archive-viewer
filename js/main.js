@@ -15,6 +15,7 @@ function LoadSearcher() {
 	searcher = newStorySearcher(logger, db);
 	logger.LogInfo("Building UI.");
 	documentUi = newUiManager(logger, searcher, 'documentUi', defaultListClasses, defaultPageNumber, defaultResultsPerPage);
+	OnBodyResize();
 	logger.LogInfo("Init completed.");
 }
 
@@ -41,6 +42,7 @@ function OnPageLoad() {
 	logger.LogInfo("Log started.");
 	initSqlJs(config);
 	logger.LogInfo("SQL.js initialized.");
+	OnBodyResize();
 }
 
 document.addEventListener("DOMContentLoaded", OnPageLoad);
