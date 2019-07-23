@@ -29,13 +29,13 @@ function OpenDb(path) {
 		};
 		reader.readAsArrayBuffer(path);
 	} catch (err) {
-		logger.LogError("Failed to open database file at '" + path + "' because: " + err);
+		logger.LogError("Failed to open database file at '" + path.name + "' because: " + err);
 	}
 }
 
 function OnSQLSelect() {
 	var path = document.getElementById(dbId).files[0];
-	logger.LogInfo("Loading DB file at path: '" + path + "'");
+	logger.LogInfo("Loading DB file at path: '" + path.name + "'");
 	OpenDb(path);
 }
 
