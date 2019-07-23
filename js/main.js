@@ -34,7 +34,9 @@ function OpenDb(path) {
 }
 
 function OnSQLSelect() {
-	OpenDb(document.getElementById(dbId).files[0]);
+	var path = document.getElementById(dbId).files[0];
+	logger.LogInfo("Loading DB file at path: '" + path + "'");
+	OpenDb(path);
 }
 
 function OnPageLoad() {
