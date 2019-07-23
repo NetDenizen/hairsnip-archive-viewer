@@ -508,7 +508,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				val = "-";
 			}
 			this._datalistKeys.push(val);
-			this._datalistValues.push( EscapeHTML(val + " [" + values.values[idx].size.toString() + "]") );
+			this._datalistValues.push( val + " [" + values.values[idx].size.toString() + "]" );
 		}
 		this._SetDataList("", "", []);
 	};

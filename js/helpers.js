@@ -1,9 +1,5 @@
 "use strict";
 
-function EscapeHTML(text) {
-	return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-};
-
 function AppendChildren(e, children) {
 	var childrenLength = children.length;
 	var idx = undefined;

@@ -125,7 +125,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		}
 	};
 	output._LookupTerm = function(manager, id) {
-		return EscapeHTML( manager.lookup.GetReverse(id).join(", ") );
+		return manager.lookup.GetReverse(id).join(", ");
 	};
 	output._BuildResultString = function(start, prefix, value) {
 		var output = start;
