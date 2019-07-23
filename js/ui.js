@@ -20,7 +20,7 @@ var defaultListClasses = {
 	listUnhoveredClass: defaultListUnhoveredClass
 }
 
-function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPage) {
+function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	var output = {};
 	// keywordSearcher
 	output.commentsManager = undefined;
@@ -52,9 +52,6 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 	output.originManager = undefined;
 	output.siteManager = undefined;
 	output.titleManager = undefined;
-
-	// logManager
-	output.logger = undefined;
 
 	output.queryManagerLookup = [];
 	output.queryManagerResultsLookup = [];
@@ -375,7 +372,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		table.appendChild(occurrences);
 		parentField.appendChild(table);
 	};
-	output.init = function(logger, searcher, name, classes, pageNumber, resultsPerPage) {
+	output.init = function(searcher, name, classes, pageNumber, resultsPerPage) {
 		var searchFields = document.getElementById("SearchFields");
 		var searchResults = document.getElementById("SearchResults");
 		var resultsControlTable = document.createElement("table");
@@ -398,9 +395,6 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 		ClearChildren(searchFields);
 		ClearChildren(searchResults);
 		ClearChildren(this._storyDisplayTarget);
-
-		// logManager
-		this.logger = logger;
 
 		// checksumSearcher
 		this.sha256Manager = newChecksumSearcher("Sha256Query", this.searcher.sha256Lookup, this);
@@ -499,7 +493,7 @@ function newUiManager(logger, searcher, name, classes, pageNumber, resultsPerPag
 
 		this._UpdateSearch();
 	};
-	output.init(logger, searcher, name, classes, pageNumber, resultsPerPage);
+	output.init(searcher, name, classes, pageNumber, resultsPerPage);
 	return output;
 }
 
