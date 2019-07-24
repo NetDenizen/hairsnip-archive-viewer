@@ -149,14 +149,37 @@ function newDateSearcher(minName, maxName, lookup, manager) {
 	output.edited = false;
 	output.results = undefined;
 
-	output._ParseDate = function() {
-		var minDateTime = ( this.targetMinElement.valueAsDate === null ? new Date(1970, 0, 1, 0, 0, 0).getTime() : this.targetMinElement.valueAsDate.getTime() ) / 1000;
-		var maxDateTime = ( this.targetMaxElement.valueAsDate === null ? new Date(2038, 0, 19, 3, 14, 7).getTime() : this.targetMaxElement.valueAsDate.getTime() ) / 1000;
-		if(minDateTime <= maxDateTime) {
-			this.results = this.lookup.GetNumericalRange(minDateTime, maxDateTime);
-		} else {
-			this.results = this.lookup.GetNumericalRange(maxDateTime, minDateTime);
+	output.minDateTime = undefined;
+	output.maxDateTime = undefined;
+
+	output._ParseMinElement = function() {
+		output = undefined;
+		if(this.targetMinElement.valueAsDate !== null) {
+			output = this.targetMinElement.valueAsDate.getTime();
+			if(output < this.minDateTime) {
+				this.targetMinElement.valueAsDate = new Date(this.minDateTime);
+				output = this.minDateTime;
+			}
+			output /= 1000;
 		}
+		return output;
+	};
+	output._ParseMaxElement = function() {
+		output = undefined;
+		if(this.targetMaxElement.valueAsDate !== null) {
+			output = this.targetMaxElement.valueAsDate.getTime();
+			if(output > this.maxDateTime) {
+				this.targetMaxElement.valueAsDate = new Date(this.maxDateTime);
+				output = this.maxDateTime;
+			}
+			output /= 1000;
+		}
+		return output;
+	};
+	output._ParseDate = function() {
+		var minDateTime = this._ParseMinElement();
+		var maxDateTime = this._ParseMaxElement();
+		this.results = this.lookup.GetNumericalRange(minDateTime, maxDateTime);
 	};
 	output._InputListener = function(e) {
 		if(this.targetMinElement.valueAsDate === null && this.targetMaxElement.valueAsDate === null) {
@@ -178,10 +201,15 @@ function newDateSearcher(minName, maxName, lookup, manager) {
 		return inputElement;
 	};
 	output.init = function(minName, maxName, lookup, manager) {
+		var allValues = lookup.GetAll();
 		this.targetMinElement = this._MakeInputElement(minName);
 		this.targetMaxElement = this._MakeInputElement(maxName);
 		this.lookup = lookup;
 		this._manager = manager;
+		this.minDateTime = allValues.keys.length > 0 ? allValues.keys[0] * 1000
+													 : new Date(1970, 0, 1, 0, 0, 0).getTime();
+		this.maxDateTime = allValues.keys.length > 1 ? allValues.keys[allValues.keys.length - 1] * 1000
+													 : new Date(2038, 0, 19, 3, 14, 7).getTime();
 	};
 	output.init(minName, maxName, lookup, manager);
 	return output;
