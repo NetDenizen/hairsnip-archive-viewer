@@ -1,6 +1,3 @@
-//TODO: Functionalize some loops
-//TODO: Use ternary conditions where possible
-//TODO: Trim all?
 "use strict";
 
 function newChecksumSearcher(name, lookup, manager) {
