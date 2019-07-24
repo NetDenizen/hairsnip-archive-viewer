@@ -155,11 +155,10 @@ function newDateSearcher(minName, maxName, lookup, manager) {
 	output._ParseDate = function() {
 		var minDateTime = ( this.targetMinElement.valueAsDate === null ? new Date(1970, 0, 1, 0, 0, 0).getTime() : this.targetMinElement.valueAsDate.getTime() ) / 1000;
 		var maxDateTime = ( this.targetMaxElement.valueAsDate === null ? new Date(2038, 0, 19, 3, 14, 7).getTime() : this.targetMaxElement.valueAsDate.getTime() ) / 1000;
-		this.results = newIdRecord([], []);
 		if(minDateTime <= maxDateTime) {
-			this.results.extend( this.lookup.GetNumericalRange(minDateTime, maxDateTime) )
+			this.results = this.lookup.GetNumericalRange(minDateTime, maxDateTime);
 		} else {
-			this.results.extend( this.lookup.GetNumericalRange(maxDateTime, minDateTime) )
+			this.results = this.lookup.GetNumericalRange(maxDateTime, minDateTime);
 		}
 	};
 	output._InputListener = function(e) {
