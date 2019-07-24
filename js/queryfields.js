@@ -408,7 +408,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				} else if(currentValue === "--") {
 					negativeValues.push("");
 				} else if( currentValue.startsWith("-") ) {
-					var cleanCurrentValu = currentValue.slice(1, currentValue.length).replace(/\\,/g, ',');
+					var cleanCurrentValue = currentValue.slice(1, currentValue.length).replace(/\\,/g, ',');
 					negativeValues.push(cleanCurrentValue);
 					searchValue = cleanCurrentValue;
 				} else if(currentValue !== "") {
