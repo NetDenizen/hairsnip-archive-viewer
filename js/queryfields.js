@@ -277,14 +277,14 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._currentValues = undefined;
 
 	output._FindPrefix = function(value) {
-		var output = 0;
+		var lastComma = 0;
 		var lastSpace = -1;
 		var nonSpaceEncountered = false;
 		var valueLength = value.length;
 		var idx = undefined;
 		for(idx = 0; idx < valueLength; ++idx) {
 			if( value[idx] === ',' && (value[idx] === 0 || value[idx - 1] !== '\\') ) {
-				output = idx + 1;
+				lastComma = idx + 1;
 				nonSpaceEncountered = false;
 			} else if( !nonSpaceEncountered && value[idx] !== value[idx].trim() ) {
 				lastSpace = idx + 1;
@@ -292,10 +292,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				nonSpaceEncountered = true;
 			}
 		}
-		if(lastSpace > output) {
-			output = lastSpace;
-		}
-		return output;
+		return lastSpace > lastComma ? lastSpace : lastComma;
 	};
 	output._SplitValues = function(value) {
 		var output = undefined;
@@ -330,21 +327,19 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		return output;
 	}
 	output._SetDataList = function(prefix, currentValue, excludedValues) {
-		var negator = "";
 		var prefixedKeys = [];
 		var prefixedValues = [];
 		var datalistLength = this._datalistKeys.length;
 		var idx = undefined;
-		if( currentValue !== "-" && currentValue.startsWith("-") ) {
-			negator = "-";
-		}
+		var negator = currentValue !== "-" && currentValue.startsWith("-") ? "-" : "";
 		this._currentKeys = [];
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
-			var k =  negator + this._datalistKeys[idx];
+			var rawK = this._datalistKeys[idx]
+			var k =  negator + rawK;
 			var kLower = k.toLowerCase();
 			if( kLower.indexOf(currentValue) !== -1 &&
-			    !excludedValues.includes(this._datalistKeys[idx]) ) {
+			    !excludedValues.includes(rawK) ) {
 				var v = negator + this._datalistValues[idx];
 				var strongStart = v.toLowerCase().indexOf(currentValue);
 				var strongEnd = strongStart + currentValue.length;
@@ -364,8 +359,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		this.targetList.update(prefixedKeys, prefixedValues);
 	};
-	output._update = function() {
-		//TODO: Make this smaller?
+	output._ParseKeywords = function() {
 		var fullValue = this.targetElementInput.value;
 		if(fullValue === "") {
 			this.results = undefined;
@@ -383,39 +377,32 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
 				currentValue = values[idx].trim();
-				if(currentValue === "") {
-					searchValues.push(currentValue);
-				} else if(currentValue === "-") {
+				var searchValue = currentValue;
+				if(currentValue === "-") {
 					cleanValues.push("");
-					searchValues.push(currentValue);
 				} else if(currentValue === "--") {
 					negativeValues.push("");
-					searchValues.push(currentValue);
 				} else if( currentValue.startsWith("-") ) {
-					negativeValues.push( currentValue.slice(1, currentValue.length).replace(/\\,/g, ',') );
-					searchValues.push( currentValue.slice(1, currentValue.length).replace(/\\,/g, ',') );
-				} else {
+					var cleanCurrentValu = currentValue.slice(1, currentValue.length).replace(/\\,/g, ',');
+					negativeValues.push(cleanCurrentValue);
+					searchValue = cleanCurrentValue;
+				} else if(currentValue !== "") {
 					cleanValues.push( currentValue.replace(/\\,/g, ',') );
-					searchValues.push(currentValue);
 				}
+				searchValues.push(searchValue);
 			}
 			results = this.lookup.get(cleanValues);
-			if(results.keys.length > 0) {
-				this.results = results
-			} else {
-				this.results = undefined;
-			}
+			this.results = results.keys.length > 0 ? results : undefined;
 			negativeResults = this.lookup.get(negativeValues);
-			if(negativeResults.keys.length > 0) {
-				this.negativeResults = negativeResults;
-			} else {
-				this.negativeResults = undefined;
-			}
+			this.negativeResults = negativeResults.keys.length > 0 ? negativeResults : undefined;
 			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)
 							 );
 		}
+	};
+	output._update = function() {
+		this._ParseKeywords();
 		if(this._currentKeys.length > 0) {
 			this.targetList.activate();
 		} else {

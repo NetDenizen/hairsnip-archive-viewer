@@ -23,11 +23,7 @@ function newIdRecord(keys, values) {
 		return Array.from(output);
 	};
 	output.empty = function() {
-		var output = true;
-		if(this.keys.length > 0) {
-			output = false;
-		}
-		return output;
+		return this.keys.length > 0 ? false : true;
 	};
 	output.ExtendRaw = function(keys, values) {
 		var thisLookup = this.lookup;
@@ -71,8 +67,7 @@ function newIdLookup() {
 		return newIdRecord([key], [ Array.from(this._lookup[key]) ]);
 	};
 	output._GetIdx = function(idx) {
-		var key = this._keys[idx];
-		return this._GetKey(key);
+		return this._GetKey(this._keys[idx]);
 	};
 	output._GetIdxRange = function(startIdx, endIdx) {
 		var output = newIdRecord([], []);

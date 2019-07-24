@@ -21,11 +21,7 @@ function ClearChildren(e) {
 }
 
 function HasChildren(e) {
-	var output = false;
-	if(e.firstChild !== null) {
-		output = true;
-	}
-	return output;
+	return e.firstChild !== null ? true : false;
 }
 
 function SetHTMLToText(e, text) {

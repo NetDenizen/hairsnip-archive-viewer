@@ -45,19 +45,11 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		}
 	};
 	output._GetOptionElementValue = function(e) {
-		var output = -1;
 		var raw = e.getAttribute("data-value");
-		if(raw !== null && raw !== "") {
-			output = parseInt(raw, 10);
-		}
-		return output;
+		return raw !== null && raw !== "" ? parseInt(raw, 10) : -1;
 	}
 	output._AdjustOptionSelected = function(optionSelected) {
-		if(optionSelected > 0) {
-			this._optionSelected = optionSelected - 1;
-		} else {
-			this._optionSelected = optionSelected;
-		}
+		this._optionSelected = optionSelected > 0 ? optionSelected - 1 : optionSelected
 	}
 	output._OutputOptionKey = function(optionSelected) {
 		this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
