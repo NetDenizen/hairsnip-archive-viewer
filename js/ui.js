@@ -91,19 +91,13 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQueryData = function(idx) {
 		var found = this.queryManagerLookup[idx]
 		if(found.edited) {
-			var results = found.results;
-			if(results !== undefined){
-				this.queryManagerResultsLookup[idx] = new Set( results.AllValues() );
-			} else {
-				this.queryManagerResultsLookup[idx] = undefined;
-			}
+			this.queryManagerResultsLookup[idx] = found.results !== undefined ?;
+												  new Set( found.results.AllValues() ) :
+												  undefined;
 			if( found.hasOwnProperty("negativeResults") ) {
-				var negativeResults = found.negativeResults;
-				if(negativeResults !== undefined) {
-					this.queryManagerNegativeResultsLookup[idx] = new Set( negativeResults.AllValues() )
-				} else {
-					this.queryManagerNegativeResultsLookup[idx] = undefined;
-				}
+				this.queryManagerNegativeResultsLookup[idx] = found.negativeResults !== undefined ?;
+															  new Set( found.negativeResults.AllValues() ) :
+															  undefined;
 			}
 			found.edited = false;
 		}

@@ -203,11 +203,9 @@ function newIdLookup() {
 			}
 		}
 		if(startIdx !== undefined && endIdx !== undefined) {
-			if(startIdx > endIdx) {
-				output = this._GetIdxRangeReverse(startIdx, endIdx - 1);
-			} else {
-				output = this._GetIdxRange(startIdx, endIdx + 1);
-			}
+			output = startIdx > endIdx ?
+					 this._GetIdxRangeReverse(startIdx, endIdx - 1) :
+					 this._GetIdxRange(startIdx, endIdx + 1);
 		}
 		return output;
 	};

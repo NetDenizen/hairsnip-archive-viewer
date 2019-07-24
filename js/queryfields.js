@@ -473,12 +473,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			if(containsVal.length === 1) {
 				this.targetElementInput.value = prefixValues + valSpace + containsVal[0] + ", ";
 			} else {
-				var useVal = undefined;
-				if(exactStartsVal.length > 0) {
-					useVal = exactStartsVal;
-				} else {
-					useVal = startsVal;
-				}
+				var useVal = exactStartsVal.length > 0 ? exactStartsVal : startsVal;
 				var lcp = LongestCommonPrefix(useVal);
 				if(useVal.includes(lcp) && useVal.length === 1) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp + ", ";
