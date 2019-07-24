@@ -375,14 +375,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
-	output._range = function(start, end) {
-		var idx = undefined;
-		var output = [];
-		for(idx = start; idx < end; ++idx) {
-			output.push(idx);
-		}
-		return output;
-	};
 	output._InitQueryTable = function(parentField, names, managers) {
 		var table = document.createElement("table");
 		var headings = document.createElement("tr");
@@ -472,7 +464,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this.siteManager = newAutocompleteSearcher("SiteQuery", defaultListHeight, classes, this.searcher.siteLookup, this);
 		this.titleManager = newAutocompleteSearcher("TitleQuery", defaultListHeight, classes, this.searcher.titleLookup, this);
 
-		this._allStoryIndexes = this._range(0, this.titleManager.lookup.GetAll().AllValues().length);
+		this._allStoryIndexes = range(0, this.titleManager.lookup.GetAll().AllValues().length);
 
 		this._InitQueryTable(searchFields, ["Story Checksum"], [this.sha256Manager]);
 		this._InitQueryTable(searchFields, ["Title", "Author", "Date Range", "Story Language"], [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]);

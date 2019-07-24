@@ -427,41 +427,6 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._InputListener = function(e) {
 		this._update();
 	};
-	output._LongestCommonPrefix = function(values) {
-		var output = undefined;
-		var valuesLength = values.length;
-		if(valuesLength === 0) {
-			output = "";
-		} else if(valuesLength === 1) {
-			output = values[0];
-		} else {
-			var min = values[0];
-			var minLength = min.length;
-			var max = values[0];
-			var maxLength = max.length;
-			var idx = undefined;
-			for(idx = 0; idx < valuesLength; ++idx) {
-				var val = values[idx];
-				var valLength = val.length;
-				if(val < min) {
-					min = val;
-					minLength = valLength;
-				}
-				if(val > max) {
-					max = val;
-					maxLength = valLength;
-				}
-			}
-			output = min;
-			for(idx = 0; idx < minLength && idx < maxLength; ++idx) {
-				if(min[idx] !== max[idx]) {
-					output = min.slice(0, idx);
-					break;
-				}
-			}
-		}
-		return output;
-	};
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
 			var fullVal = this.targetElementInput.value;
@@ -502,7 +467,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				} else {
 					useVal = startsVal;
 				}
-				var lcp = this._LongestCommonPrefix(useVal);
+				var lcp = LongestCommonPrefix(useVal);
 				if(useVal.includes(lcp) && useVal.length === 1) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp + ", ";
 				} else if(lcp.length > 0) {
