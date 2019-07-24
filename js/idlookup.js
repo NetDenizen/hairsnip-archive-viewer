@@ -198,7 +198,7 @@ function newIdLookup() {
 		} else {
 			endNum = parseFloat(end);
 			if( !isNaN(endNum) ) {
-				for(keysIdx = keysLength - 1; keysIdx > 0; --keysIdx) {
+				for(keysIdx = keysLength - 1; keysIdx >= 0; --keysIdx) {
 					var keyFloat = parseFloat(this._keys[keysIdx]);
 					if(!isNaN(keyFloat) && keyFloat <= endNum) {
 						endIdx = keysIdx;
