@@ -369,6 +369,37 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
+	output._BuildRangeTitleString = function(prefix, lookup) {
+		var allValues = lookup.GetAll();
+		var output = prefix;
+		if(allValues.keys.length > 0) {
+			output += (" (" + allValues.keys[0]);
+			if(allValues.keys.length > 1) {
+				output += (" - " + allValues.keys[allValues.keys.length - 1] + ")");
+			} else {
+				output += (" - " + allValues.keys[0] + ")");
+			}
+		}
+		return output;
+	};
+	//TODO: Remove code duplication
+	output._BuildDateRangeTitleString = function(prefix, lookup) {
+		var allValues = lookup.GetAll();
+		var output = prefix;
+		if(allValues.keys.length > 0) {
+			var minDate = new Date( parseInt(allValues.keys[0]) * 1000 ).toISOString().slice(0, 10);
+			output += (" (" + minDate);
+			if(allValues.keys.length > 1) {
+				output += (" - " +
+						   new Date( parseInt(allValues.keys[allValues.keys.length - 1]) * 1000 ).toISOString().slice(0, 10) +
+						   ")"
+						  );
+			} else {
+				output += (" - " + minDate + ")");
+			}
+		}
+		return output;
+	}
 	output._InitQueryTable = function(parentField, names, managers) {
 		var table = document.createElement("table");
 		var headings = document.createElement("tr");
@@ -461,12 +492,37 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._allStoryIndexes = range(0, this.titleManager.lookup.GetAll().AllValues().length);
 
 		this._InitQueryTable(searchFields, ["Story Checksum"], [this.sha256Manager]);
-		this._InitQueryTable(searchFields, ["Title", "Author", "Date Range", "Story Language"], [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]);
-		this._InitQueryTable(searchFields, ["Site Domain", "Archive Format", "Archive Comment"], [this.domainManager, this.formatManager, this.commentsManager]);
-		this._InitQueryTable(searchFields, ["Views", "Rating", "Raters"], [this.viewcountManager, this.ratingManager, this.ratersManager]);
-		this._InitQueryTable(searchFields, ["Content Rating", "Story Type", "Category", "Story Location"], [this.contentManager, this.typeManager, this.categoryManager, this.locationManager]);
-		this._InitQueryTable(searchFields, ["Author Website", "Author Email", "Author Description"], [this.siteManager, this.emailManager, this.descriptionManager]);
-		this._InitQueryTable(searchFields, ["Story Origin", "Story Tags", "Body Keywords"], [this.originManager, this.tagManager, this.bodyManager]);
+		this._InitQueryTable(searchFields,
+							 ["Title",
+							  "Author",
+							  this._BuildDateRangeTitleString("Date Range", this.searcher.posixdateLookup),
+							  "Story Language"
+							 ],
+							 [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]
+							);
+		this._InitQueryTable(searchFields,
+							 ["Site Domain", "Archive Format", "Archive Comment"],
+							 [this.domainManager, this.formatManager, this.commentsManager]
+							);
+		this._InitQueryTable(searchFields,
+							 [this._BuildRangeTitleString("Views", this.searcher.viewcountLookup),
+							  this._BuildRangeTitleString("Rating", this.searcher.ratingLookup),
+							  this._BuildRangeTitleString("Raters", this.searcher.ratersLookup)
+							 ],
+							 [this.viewcountManager, this.ratingManager, this.ratersManager]
+							);
+		this._InitQueryTable(searchFields,
+							 ["Content Rating", "Story Type", "Category", "Story Location"],
+							 [this.contentManager, this.typeManager, this.categoryManager, this.locationManager]
+							);
+		this._InitQueryTable(searchFields,
+							 ["Author Website", "Author Email", "Author Description"],
+							 [this.siteManager, this.emailManager, this.descriptionManager]
+							);
+		this._InitQueryTable(searchFields,
+							 ["Story Origin", "Story Tags", "Body Keywords"],
+							 [this.originManager, this.tagManager, this.bodyManager]
+							);
 
 		resultsPerPageTitle.innerHTML = "Results per page: "
 
