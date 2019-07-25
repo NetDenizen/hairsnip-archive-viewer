@@ -360,7 +360,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this._currentKeys = [];
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
-			var rawK = this._datalistKeys[idx]
+			var rawK = this._datalistKeys[idx];
 			var k =  negator + rawK;
 			var kLower = k.toLowerCase();
 			if( kLower.indexOf(currentValue) !== -1 &&

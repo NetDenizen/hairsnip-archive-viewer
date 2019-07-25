@@ -49,7 +49,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		return raw !== null && raw !== "" ? parseInt(raw, 10) : -1;
 	}
 	output._AdjustOptionSelected = function(optionSelected) {
-		this._optionSelected = optionSelected > 0 ? optionSelected - 1 : optionSelected
+		this._optionSelected = optionSelected > 0 ? optionSelected - 1 : optionSelected;
 	}
 	output._OutputOptionKey = function(optionSelected) {
 		this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
