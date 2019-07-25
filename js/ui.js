@@ -91,11 +91,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQueryData = function(idx) {
 		var found = this.queryManagerLookup[idx]
 		if(found.edited) {
-			this.queryManagerResultsLookup[idx] = found.results !== undefined ?;
+			this.queryManagerResultsLookup[idx] = found.results !== undefined ?
 												  new Set( found.results.AllValues() ) :
 												  undefined;
 			if( found.hasOwnProperty("negativeResults") ) {
-				this.queryManagerNegativeResultsLookup[idx] = found.negativeResults !== undefined ?;
+				this.queryManagerNegativeResultsLookup[idx] = found.negativeResults !== undefined ?
 															  new Set( found.negativeResults.AllValues() ) :
 															  undefined;
 			}
