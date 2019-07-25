@@ -432,29 +432,8 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		table.appendChild(occurrences);
 		parentField.appendChild(table);
 	};
-	output.init = function(searcher, name, classes, pageNumber, resultsPerPage) {
-		var searchFields = document.getElementById("SearchFields");
-		var searchResults = document.getElementById("SearchResults");
-		var resultsControlTable = document.createElement("table");
-		var resultsDisplay = document.createElement("div");
-		var resultsPerPageContainer = document.createElement("tr");
-		var resultsPerPageTitle = document.createElement("td");
-		var resultsPerPageTargetContainer = document.createElement("td");
-		var pageNumberContainer = document.createElement("tr");
-		var pageNumberTitle = document.createElement("td");
-		var pageNumberTargetContainer = document.createElement("td");
-
-		resultsDisplay.className = "ScrollField";
-
-		this._resultsDisplayTarget = resultsDisplay;
-		this._storyDisplayTarget = document.getElementById("StoryArea");
-
+	output._InitManagers = function(searcher) {
 		this.searcher = searcher;
-		this.name = name; // TODO: Where to put this?
-
-		ClearChildren(searchFields);
-		ClearChildren(searchResults);
-		ClearChildren(this._storyDisplayTarget);
 
 		// checksumSearcher
 		this.sha256Manager = newChecksumSearcher("Sha256Query", this.searcher.sha256Lookup, this);
@@ -488,9 +467,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this.originManager = newAutocompleteSearcher("OriginQuery", defaultListHeight, classes, this.searcher.originLookup, this);
 		this.siteManager = newAutocompleteSearcher("SiteQuery", defaultListHeight, classes, this.searcher.siteLookup, this);
 		this.titleManager = newAutocompleteSearcher("TitleQuery", defaultListHeight, classes, this.searcher.titleLookup, this);
-
-		this._allStoryIndexes = range(0, this.titleManager.lookup.GetAll().AllValues().length);
-
+	};
+	output._InitAllQueryTables = function() {
+		var searchFields = document.getElementById("SearchFields");
+		ClearChildren(searchFields);
 		this._InitQueryTable(searchFields, ["Story Checksum"], [this.sha256Manager]);
 		this._InitQueryTable(searchFields,
 							 ["Title",
@@ -523,15 +503,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 							 ["Story Origin", "Story Tags", "Body Keywords"],
 							 [this.originManager, this.tagManager, this.bodyManager]
 							);
-
-		resultsPerPageTitle.innerHTML = "Results per page: "
-
-		this._resultsPerPage = resultsPerPage;
-		this._resultsPerPageTarget = document.createElement("input"),
-		this._resultsPerPageTarget.setAttribute("type", "text");
-		this._resultsPerPageTarget.setAttribute("placeholder", "Results per page");
-		this._resultsPerPageTarget.addEventListener("keyup", this, false);
-		this._resultsPerPageTarget.value = this._resultsPerPage.toString();
+	};
+	output._InitPageNumber = function(pageNumber) {
+		var pageNumberContainer = document.createElement("tr");
+		var pageNumberTitle = document.createElement("td");
+		var pageNumberTargetContainer = document.createElement("td");
 
 		pageNumberTitle.innerHTML = "Page number: "
 
@@ -553,8 +529,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._pageNumberRightTarget.innerHTML = ">";
 		this._pageNumberRightTarget.setAttribute("onclick", this.name + ".PageNumberRight()");
 
-		resultsPerPageTargetContainer.appendChild(this._resultsPerPageTarget);
-
 		pageNumberTargetContainer.appendChild(this._pageNumberLeftTarget);
 		pageNumberTargetContainer.appendChild( document.createTextNode(" ") );
 		pageNumberTargetContainer.appendChild(this._pageNumberTarget);
@@ -563,19 +537,56 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		pageNumberTargetContainer.appendChild( document.createTextNode(" ") );
 		pageNumberTargetContainer.appendChild(this._pageNumberRightTarget);
 
-		resultsPerPageContainer.appendChild(resultsPerPageTitle);
-		resultsPerPageContainer.appendChild(resultsPerPageTargetContainer);
-
 		pageNumberContainer.appendChild(pageNumberTitle);
 		pageNumberContainer.appendChild(pageNumberTargetContainer);
 
+		return pageNumberContainer;
+	};
+	output._InitSearchResults = function(pageNumber, resultsPerPage) {
+		var searchResults = document.getElementById("SearchResults");
+		var resultsDisplay = document.createElement("div");
+		var resultsControlTable = document.createElement("table");
+		var resultsPerPageContainer = document.createElement("tr");
+		var resultsPerPageTitle = document.createElement("td");
+		var resultsPerPageTargetContainer = document.createElement("td");
+
+		ClearChildren(searchResults);
+
+		resultsDisplay.className = "ScrollField";
+		this._resultsDisplayTarget = resultsDisplay;
+
+		resultsPerPageTitle.innerHTML = "Results per page: "
+
+		this._resultsPerPage = resultsPerPage;
+		this._resultsPerPageTarget = document.createElement("input"),
+		this._resultsPerPageTarget.setAttribute("type", "text");
+		this._resultsPerPageTarget.setAttribute("placeholder", "Results per page");
+		this._resultsPerPageTarget.addEventListener("keyup", this, false);
+		this._resultsPerPageTarget.value = this._resultsPerPage.toString();
+
+		resultsPerPageTargetContainer.appendChild(this._resultsPerPageTarget);
+
+		resultsPerPageContainer.appendChild(resultsPerPageTitle);
+		resultsPerPageContainer.appendChild(resultsPerPageTargetContainer);
+
 		resultsControlTable.appendChild(resultsPerPageContainer);
-		resultsControlTable.appendChild(pageNumberContainer);
+		resultsControlTable.appendChild( this._InitPageNumber(pageNumber) );
 
 		searchResults.appendChild(resultsControlTable);
 		searchResults.appendChild( document.createElement("hr") );
 		searchResults.appendChild(resultsDisplay);
+	};
+	output.init = function(searcher, name, classes, pageNumber, resultsPerPage) {
+		this._storyDisplayTarget = document.getElementById("StoryArea");
+		ClearChildren(this._storyDisplayTarget);
 
+		this.name = name;
+
+		this._InitManagers(searcher);
+		this._InitAllQueryTables();
+		this._InitSearchResults(pageNumber, resultsPerPage);
+
+		this._allStoryIndexes = range(0, this.titleManager.lookup.GetAll().AllValues().length);
 		this._UpdateSearch();
 	};
 	output.init(searcher, name, classes, pageNumber, resultsPerPage);
