@@ -8,7 +8,7 @@ function newLogRecord(timestamp, level, message) {
 	output.level = level;
 	output.message = message;
 	output.toString = function() {
-		return this.timestamp.toISOString() + " " + this.level + ": " + this.message;
+		return this.timestamp.toUTCString() + " " + this.level + ": " + this.message;
 	}
 	return output;
 }

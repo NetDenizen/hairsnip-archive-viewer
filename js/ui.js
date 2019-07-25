@@ -20,6 +20,11 @@ var defaultListClasses = {
 	listUnhoveredClass: defaultListUnhoveredClass
 }
 
+var dateFormatOptions = {
+	timeZone: "UTC",
+};
+var dateFormat = new Intl.DateTimeFormat(undefined, dateFormatOptions);
+
 function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	var output = {};
 	// keywordSearcher
@@ -213,7 +218,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		item.className = defaultSearchResultClass;
 		SetHTMLToText(titleItem, title +  " - " + author + " (" + sha256 + ")");
 		if(date !== "") {
-			SetHTMLToText(infoItem, new Date( parseInt(date) * 1000 ).toISOString() + domain + language + format);
+			SetHTMLToText(infoItem, new Date( parseInt(date) * 1000 ).toUTCString() + domain + language + format);
 		} else {
 			SetHTMLToText(infoItem, "Date not found " + domain + language + format);
 		}
@@ -387,11 +392,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var allValues = lookup.GetAll();
 		var output = prefix;
 		if(allValues.keys.length > 0) {
-			var minDate = new Date( parseInt(allValues.keys[0]) * 1000 ).toISOString().slice(0, 10);
+			var minDate = dateFormat.format( new Date( parseInt(allValues.keys[0]) * 1000 ) ).slice(0, 10);
 			output += (" (" + minDate);
 			if(allValues.keys.length > 1) {
 				output += (" - " +
-						   new Date( parseInt(allValues.keys[allValues.keys.length - 1]) * 1000 ).toISOString().slice(0, 10) +
+						   dateFormat.format( new Date( parseInt(allValues.keys[allValues.keys.length - 1]) * 1000 ) ).slice(0, 10) +
 						   ")"
 						  );
 			} else {
