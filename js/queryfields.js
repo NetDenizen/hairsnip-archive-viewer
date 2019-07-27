@@ -291,6 +291,50 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		return lastSpace > lastComma ? lastSpace : lastComma;
 	};
+	output._MatchGlob = function(value) {
+		var output = [];
+		var sliceEnd = value.indexOf('*');
+		if(sliceEnd === -1) {
+			output.push(value);
+		} else {
+			var slices = [];
+			var idx = 0;
+			var datalistLength = this._datalistKeys.length;
+			while(sliceEnd !== -1) {
+				slices.push( value.slice(idx, sliceEnd) );
+				idx = sliceEnd + 1;
+				sliceEnd = value.indexOf('*', idx);
+			}
+			if(idx < value.length) {
+				slices.push( value.slice(idx, value.length) );
+			}
+			if(value[value.length - 1] === "*") {
+				slices.push("");
+			}
+			for(idx = 0; idx < datalistLength; ++idx) {
+				var kRaw = this._datalistKeys[idx];
+				var k = kRaw.toLowerCase();
+				var kIdx = 0;
+				var include = true;
+				var slicesLength = slices.length;
+				var currentSlice = undefined;
+				for(currentSlice = 0; currentSlice < slicesLength; ++currentSlice) {
+					kIdx = k.indexOf(slices[currentSlice], kIdx);
+					if(kIdx === -1 ||
+					   ( currentSlice === 0 && !k.startsWith(slices[currentSlice]) ) ||
+					   ( currentSlice === slicesLength - 1 && !k.endsWith(slices[currentSlice]) )
+					  ) {
+						include = false;
+						break;
+					}
+				}
+				if(include) {
+					output.push(kRaw);
+				}
+			}
+		}
+		return output;
+	};
 	output._SplitValues = function(value) {
 		var output = undefined;
 		if( value.indexOf('\\,') !== -1 ) {
@@ -381,10 +425,10 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 					negativeValues.push("");
 				} else if( currentValue.startsWith("-") ) {
 					var cleanCurrentValue = currentValue.slice(1, currentValue.length).replace(/\\,/g, ',');
-					negativeValues.push(cleanCurrentValue);
+					negativeValues = negativeValues.concat( this._MatchGlob( cleanCurrentValue.toLowerCase() ) );
 					searchValue = cleanCurrentValue;
 				} else if(currentValue !== "") {
-					cleanValues.push( currentValue.replace(/\\,/g, ',') );
+					cleanValues = cleanValues.concat( this._MatchGlob( currentValue.toLowerCase().replace(/\\,/g, ',') ) );
 				}
 				searchValues.push(searchValue);
 			}
