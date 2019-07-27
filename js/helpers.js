@@ -12,11 +12,10 @@ function AppendChildren(e, children) {
 function ClearChildren(e) {
 	while(true) {
 		var child = e.firstChild;
-		if(child !== null) {
-			e.removeChild(child);
-		} else {
+		if(child === null) {
 			break;
 		}
+		e.removeChild(child);
 	}
 }
 
