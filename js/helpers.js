@@ -65,6 +65,7 @@ function LongestCommonPrefix(values) {
 	return output;
 }
 
+//// Wildcard Matching
 function ProcessGlob(value) {
 	var output = [];
 	var sliceEnd = value.indexOf('*');
@@ -85,7 +86,25 @@ function ProcessGlob(value) {
 		}
 	}
 	return output;
-};
+}
+
+function TestGlob(value, slices) {
+	var output = true;
+	var valueIdx = 0;
+	var slicesLength = slices.length;
+	var currentSlice = undefined;
+	for(currentSlice = 0; currentSlice < slicesLength; ++currentSlice) {
+		valueIdx = value.indexOf(slices[currentSlice], valueIdx);
+		if(valueIdx === -1 ||
+		   ( currentSlice === 0 && !value.startsWith(slices[currentSlice]) ) ||
+		   ( currentSlice === slicesLength - 1 && !value.endsWith(slices[currentSlice]) )
+		  ) {
+			output = false;
+			break;
+		}
+	}
+	return output;
+}
 
 // Miscellaneous
 function range(start, end) {
