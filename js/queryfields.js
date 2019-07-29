@@ -297,20 +297,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		if(sliceEnd === -1) {
 			output.push(value);
 		} else {
-			var slices = [];
+			var slices = ProcessGlob(value);
 			var idx = 0;
 			var datalistLength = this._datalistKeys.length;
-			while(sliceEnd !== -1) {
-				slices.push( value.slice(idx, sliceEnd) );
-				idx = sliceEnd + 1;
-				sliceEnd = value.indexOf('*', idx);
-			}
-			if(idx < value.length) {
-				slices.push( value.slice(idx, value.length) );
-			}
-			if(value[value.length - 1] === "*") {
-				slices.push("");
-			}
 			for(idx = 0; idx < datalistLength; ++idx) {
 				var kRaw = this._datalistKeys[idx];
 				var k = kRaw.toLowerCase();
