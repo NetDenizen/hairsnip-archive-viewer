@@ -361,26 +361,30 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var prefixedValues = [];
 		var datalistLength = this._datalistKeys.length;
 		var idx = undefined;
-		var negator = currentValue !== "-" && currentValue.startsWith("-") ? "-" : "";
+		var rawCurrentValue = currentValue;
+		var negator = "";
+		if( currentValue.startsWith("-") ) {
+			rawCurrentValue = currentValue.slice(1, currentValue.length);
+			negator = "-";
+		}
 		this._currentKeys = [];
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
 			var rawK = this._datalistKeys[idx];
 			var k =  negator + rawK;
-			var kLower = k.toLowerCase();
-			if( kLower.indexOf(currentValue) !== -1 &&
+			if( rawK.toLowerCase().indexOf(rawCurrentValue) !== -1 &&
 			    !excludedValues.includes(rawK) ) {
-				var v = negator + this._datalistValues[idx];
-				var strongStart = v.toLowerCase().indexOf(currentValue);
-				var strongEnd = strongStart + currentValue.length;
+				var v = this._datalistValues[idx];
+				var strongStart = v.toLowerCase().indexOf(rawCurrentValue);
+				var strongEnd = strongStart + rawCurrentValue.length;
 				if(strongEnd > strongStart) {
-					var strongStartSlice = document.createTextNode( v.slice(0, strongStart) );
+					var strongStartSlice = document.createTextNode( negator + v.slice(0, strongStart) );
 					var strong = document.createElement('strong');
 					var strongEndSlice = document.createTextNode( v.slice(strongEnd, v.length) );
 					strong.appendChild( document.createTextNode( v.slice(strongStart, strongEnd) ) )
 					prefixedValues.push([strongStartSlice, strong, strongEndSlice]);
 				} else {
-					prefixedValues.push([document.createTextNode(v)]);
+					prefixedValues.push([document.createTextNode(negator + v)]);
 				}
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
