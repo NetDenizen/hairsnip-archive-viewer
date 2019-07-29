@@ -28,16 +28,7 @@ function SetHTMLToText(e, text) {
 	e.appendChild( document.createTextNode(text) );
 }
 
-// Miscellaneous
-function range(start, end) {
-	var idx = undefined;
-	var output = [];
-	for(idx = start; idx < end; ++idx) {
-		output.push(idx);
-	}
-	return output;
-}
-
+// String Matching
 function LongestCommonPrefix(values) {
 	var output = undefined;
 	var valuesLength = values.length;
@@ -70,6 +61,38 @@ function LongestCommonPrefix(values) {
 				break;
 			}
 		}
+	}
+	return output;
+}
+
+function ProcessGlob(value) {
+	var output = [];
+	var sliceEnd = value.indexOf('*');
+	if(sliceEnd === -1) {
+		output.push(value);
+	} else {
+		var idx = 0;
+		while(sliceEnd !== -1) {
+			output.push( value.slice(idx, sliceEnd) );
+			idx = sliceEnd + 1;
+			sliceEnd = value.indexOf('*', idx);
+		}
+		if(idx < value.length) {
+			output.push( value.slice(idx, value.length) );
+		}
+		if(value[value.length - 1] === "*") {
+			output.push("");
+		}
+	}
+	return output;
+};
+
+// Miscellaneous
+function range(start, end) {
+	var idx = undefined;
+	var output = [];
+	for(idx = start; idx < end; ++idx) {
+		output.push(idx);
 	}
 	return output;
 }
