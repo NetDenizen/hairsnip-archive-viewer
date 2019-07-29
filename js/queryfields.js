@@ -406,18 +406,17 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			var valuesLength = values.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
-				currentValue = values[idx].trim();
-				var searchValue = currentValue;
-				if(currentValue === "-") {
+				var searchValue = values[idx].trim();
+				currentValue = searchValue;
+				if(searchValue === "-") {
 					cleanValues.push("");
-				} else if(currentValue === "--") {
+				} else if(searchValue === "--") {
 					negativeValues.push("");
-				} else if( currentValue.startsWith("-") ) {
-					var cleanCurrentValue = currentValue.slice(1, currentValue.length).replace(/\\,/g, ',');
-					negativeValues = negativeValues.concat( this._MatchGlob( cleanCurrentValue.toLowerCase() ) );
-					searchValue = cleanCurrentValue;
-				} else if(currentValue !== "") {
-					cleanValues = cleanValues.concat( this._MatchGlob( currentValue.toLowerCase().replace(/\\,/g, ',') ) );
+				} else if( searchValue.startsWith("-") ) {
+					searchValue = searchValue.slice(1, searchValue.length);
+					negativeValues = negativeValues.concat( this._MatchGlob( searchValue.replace(/\\,/g, ',') ) );
+				} else if(searchValue !== "") {
+					cleanValues = cleanValues.concat( this._MatchGlob( searchValue.replace(/\\,/g, ',') ) );
 				}
 				searchValues.push(searchValue);
 			}
