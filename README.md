@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2019-07-19.1)
+# Hairsnip Archive Viewer (2019-07-29.1)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
@@ -23,13 +23,17 @@ Then, you may follow these steps.
 
 An example interface of the webapp is as follows; features are annotated with blue numbers.
 
-![screenshot](https://i.imgur.com/a1TM2W6.png)
+![screenshot](https://i.imgur.com/7DUNow2.png)
 
 Fields 7, 8, 10, 11-13, and 17-26 may have multiple options, each separated by a comma. A `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank. Commas themselves may be represented by `\,`.
+
+Wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option, while options may be preceeded by `-` to negate them, including the blank string, which would be negated with `--`.
 
 These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected.
 
 Fields 14-16 may also have multiple options, each separated by a comma. Here, an option is a single number, or a range. A range is two numbers separated by a `-`, their order being irrelevant. If either of these numbers is left out, the maximum or minimum is available is assumed.
+
+Fields 9, and 14-16 include their respective minimum and maximum values in their titles.
 
 1. Field to select the SQLite database to open. Note that when one is selected, the interface will completely freeze until it is loaded. Only fields 1-5 are visible before that point.
 
@@ -59,7 +63,7 @@ Fields 14-16 may also have multiple options, each separated by a comma. Here, an
 
   * 1.\* and 2.\* formatted stories only ever existed in haircuttingstories.com (Item 11) circa 2003, and 2004-2008, respectively. They were frequently represented by \*.htm files.
 
-  * 3.\* formatted stories existed circa 2008, and were frequently represented by story.aspx?id=\* in the URL.
+  * 3.\* formatted stories existed circa 2008, and were frequently represented by `story.aspx?id=\*` in the URL.
 
   * 4.\* is the newest format, and represents stories up to the end of the sites in 2016. They were frequently represented by \*.aspx files, with distinct, individual names.
 
