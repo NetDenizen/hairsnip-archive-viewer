@@ -363,7 +363,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var idx = undefined;
 		var rawCurrentValue = currentValue;
 		var negator = "";
-		if( currentValue.startsWith("-") ) {
+		if( currentValue !== "-" && currentValue.startsWith("-") ) {
 			rawCurrentValue = currentValue.slice(1, currentValue.length);
 			negator = "-";
 		}
