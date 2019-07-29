@@ -303,21 +303,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			for(idx = 0; idx < datalistLength; ++idx) {
 				var kRaw = this._datalistKeys[idx];
 				var k = kRaw.toLowerCase();
-				var kIdx = 0;
-				var include = true;
-				var slicesLength = slices.length;
-				var currentSlice = undefined;
-				for(currentSlice = 0; currentSlice < slicesLength; ++currentSlice) {
-					kIdx = k.indexOf(slices[currentSlice], kIdx);
-					if(kIdx === -1 ||
-					   ( currentSlice === 0 && !k.startsWith(slices[currentSlice]) ) ||
-					   ( currentSlice === slicesLength - 1 && !k.endsWith(slices[currentSlice]) )
-					  ) {
-						include = false;
-						break;
-					}
-				}
-				if(include) {
+				if( TestGlob(k, slices) ) {
 					output.push(kRaw);
 				}
 			}
@@ -356,38 +342,61 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		return output;
 	}
+	output._MarkupData = function(referenceValueSlices, negator, matchValue) {
+		var output = [];
+		var referenceValueSlicesLength = referenceValueSlices.length;
+		var idx = undefined;
+		if(negator.length !== 0) {
+			output.push( document.createTextNode(negator) );
+		}
+		var strongStart = 0;
+		var strongEnd = 0;
+		for(idx = 0; idx < referenceValueSlicesLength; ++idx) {
+			var weakStart = strongEnd;
+			var slice = referenceValueSlices[idx];
+			if(slice !== "") {
+				strongStart = matchValue.toLowerCase().indexOf(slice);
+				strongEnd = strongStart + slice.length;
+				if(strongStart > weakStart) {
+					output.push( document.createTextNode( matchValue.slice(weakStart, strongStart) ) );
+				}
+				if(strongEnd > strongStart) {
+					var strong = document.createElement('strong');
+					strong.appendChild( document.createTextNode( matchValue.slice(strongStart, strongEnd) ) );
+					output.push(strong);
+				}
+			}
+		}
+		if(strongEnd < matchValue.length) {
+			output.push( document.createTextNode( matchValue.slice(strongEnd, matchValue.length) ) );
+		}
+		return output;
+	}
 	output._SetDataList = function(prefix, currentValue, excludedValues) {
 		var prefixedKeys = [];
 		var prefixedValues = [];
 		var datalistLength = this._datalistKeys.length;
 		var idx = undefined;
 		var rawCurrentValue = currentValue;
+		var rawCurrentValueSlices = undefined;
 		var negator = "";
 		if( currentValue !== "-" && currentValue.startsWith("-") ) {
 			rawCurrentValue = currentValue.slice(1, currentValue.length);
 			negator = "-";
 		}
+		rawCurrentValueSlices = ProcessGlob(rawCurrentValue);
 		this._currentKeys = [];
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
 			var rawK = this._datalistKeys[idx];
 			var k =  negator + rawK;
-			if( rawK.toLowerCase().indexOf(rawCurrentValue) !== -1 &&
+			if( ( rawK.toLowerCase().indexOf(rawCurrentValue) !== -1 ||
+				  TestGlob(rawK.toLowerCase(), rawCurrentValueSlices) ) &&
 			    !excludedValues.includes(rawK) ) {
 				var v = this._datalistValues[idx];
-				var strongStart = v.toLowerCase().indexOf(rawCurrentValue);
-				var strongEnd = strongStart + rawCurrentValue.length;
-				if(strongEnd > strongStart) {
-					var strongStartSlice = document.createTextNode( negator + v.slice(0, strongStart) );
-					var strong = document.createElement('strong');
-					var strongEndSlice = document.createTextNode( v.slice(strongEnd, v.length) );
-					strong.appendChild( document.createTextNode( v.slice(strongStart, strongEnd) ) )
-					prefixedValues.push([strongStartSlice, strong, strongEndSlice]);
-				} else {
-					prefixedValues.push([document.createTextNode(negator + v)]);
-				}
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
+				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, v) );
 				prefixedKeys.push(prefix + k);
 			}
 		}
