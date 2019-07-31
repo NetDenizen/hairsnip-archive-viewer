@@ -56,14 +56,17 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this.targetElementOutput.dispatchEvent( new Event('input', {'bubbles': true, 'cancelable': true}) );
 	}
 	output._ClickListener = function(e) {
-		var value = this._GetOptionElementValue(e.target);
 		if(e.target === this.targetElement || e.target === this.targetElementOutput) {
 			this.activate();
-		} else if(value === -1) {
+		} else if(e.currentTarget !== document) {
+			var value = this._GetOptionElementValue(e.currentTarget);
+			if(this._optionElements[value] === e.currentTarget) {
+				this._AdjustOptionSelected(value);
+				this._OutputOptionKey(value);
+			}
+			e.stopPropagation();
+		} else {
 			this.deactivate();
-		} else if(this._optionElements[value] === e.target) {
-			this._AdjustOptionSelected(value);
-			this._OutputOptionKey(value);
 		}
 	};
 	output._SelectNewOption = function(newOptionSelected) {
