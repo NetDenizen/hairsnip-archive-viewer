@@ -129,7 +129,7 @@ function newStorySearcher(logger, _db) {
 
 		var sha256 = this._db.exec("SELECT id, sha256 FROM stories ORDER BY sha256")[0]['values'];
 		var comments = this._db.exec("SELECT id, comments FROM stories ORDER BY comments")[0]['values'];
-		var domain_id = this._db.exec("SELECT id, domain_id FROM stories ORDER BY domain_id")[0]['values'];
+		var domain_array_id = this._db.exec("SELECT id, domain_array_id FROM stories ORDER BY domain_array_id")[0]['values'];
 		var language_id = this._db.exec("SELECT id, language_id FROM stories ORDER BY language_id")[0]['values'];
 		var content_id = this._db.exec("SELECT id, content_id FROM stories ORDER BY content_id")[0]['values'];
 		var type_id = this._db.exec("SELECT id, type_id FROM stories ORDER BY type_id")[0]['values'];
@@ -138,7 +138,7 @@ function newStorySearcher(logger, _db) {
 		var rating = this._db.exec("SELECT id, rating FROM stories ORDER BY rating")[0]['values'];
 		var raters = this._db.exec("SELECT id, raters FROM stories ORDER BY raters")[0]['values'];
 		var viewcount = this._db.exec("SELECT id, viewcount FROM stories ORDER BY viewcount")[0]['values'];
-		var format_id = this._db.exec("SELECT id, format_id FROM stories ORDER BY format_id")[0]['values'];
+		var format_array_id = this._db.exec("SELECT id, format_array_id FROM stories ORDER BY format_array_id")[0]['values'];
 		var posixdate = this._db.exec("SELECT id, posixdate FROM stories ORDER BY posixdate")[0]['values'];
 		var author_id = this._db.exec("SELECT id, author_id FROM stories ORDER BY author_id")[0]['values'];
 		var email_array_id = this._db.exec("SELECT id, email_array_id FROM stories ORDER BY email_array_id")[0]['values'];
@@ -166,6 +166,8 @@ function newStorySearcher(logger, _db) {
 		var sha256Length = sha256.length;
 		var idx = undefined;
 		for(idx = 0; idx < sha256Length; ++idx) {
+			var domainArray = this._LoadIntArray(intArrays, domain_array_id[idx][1]);
+			var formatArray = this._LoadIntArray(intArrays, format_array_id[idx][1]);
 			var emailArray = this._LoadIntArray(intArrays, email_array_id[idx][1]);
 			var tagArray = this._LoadIntArray(intArrays, tags_array_id[idx][1]);
 
@@ -178,18 +180,18 @@ function newStorySearcher(logger, _db) {
 			this.viewcountLookup.add(viewcount[idx][1], viewcount[idx][0]);
 			this.posixdateLookup.add(posixdate[idx][1], posixdate[idx][0]);
 
-			this.domainLookup.add(domainIds.get(domain_id[idx][1]).AllValues(), domain_id[idx][0]);
 			this.languageLookup.add(languageIds.get(language_id[idx][1]).AllValues(), language_id[idx][0]);
 			this.contentLookup.add(contentIds.get(content_id[idx][1]).AllValues(), content_id[idx][0]);
 			this.typeLookup.add(typeIds.get(type_id[idx][1]).AllValues(), type_id[idx][0]);
 			this.categoryLookup.add(categoryIds.get(category_id[idx][1]).AllValues(), category_id[idx][0]);
 			this.locationLookup.add(locationIds.get(location_id[idx][1]).AllValues(), location_id[idx][0]);
-			this.formatLookup.add(formatIds.get(format_id[idx][1]).AllValues(), format_id[idx][0]);
 			this.authorLookup.add(authorIds.get(author_id[idx][1]).AllValues(), author_id[idx][0]);
 			this.originLookup.add(originIds.get(origin_id[idx][1]).AllValues(), origin_id[idx][0]);
 			this.siteLookup.add(siteIds.get(site_id[idx][1]).AllValues(), site_id[idx][0]);
 			this.titleLookup.add(titleIds.get(title_id[idx][1]).AllValues(), title_id[idx][0]);
 
+			this.domainLookup.add(domainIds.get(domainArray).AllValues(), domain_array_id[idx][0]);
+			this.formatLookup.add(formatIds.get(formatArray).AllValues(), format_array_id[idx][0]);
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
 			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
 		}
