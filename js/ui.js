@@ -166,7 +166,16 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		}
 	};
 	output._LookupTerm = function(manager, id) {
-		return manager.lookup.GetReverse(id).join(", ");
+		var terms = manager.lookup.GetReverse(id);
+		var idx = 0;
+		while(true) {
+			idx = terms.indexOf('', idx);
+			if(idx === -1) {
+				break;
+			}
+			terms[idx] = '-';
+		}
+		return terms.join(", ");
 	};
 	output._BuildResultString = function(start, prefix, value) {
 		var output = start;
