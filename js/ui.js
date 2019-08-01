@@ -167,13 +167,15 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	};
 	output._LookupTerm = function(manager, id) {
 		var terms = manager.lookup.GetReverse(id);
-		var idx = 0;
-		while(true) {
-			idx = terms.indexOf('', idx);
-			if(idx === -1) {
-				break;
+		if( (terms.length > 1) || (terms.length > 0 && terms[0] !== "") ) {
+			var idx = 0;
+			while(true) {
+				idx = terms.indexOf('', idx);
+				if(idx === -1) {
+					break;
+				}
+				terms[idx] = '-';
 			}
-			terms[idx] = '-';
 		}
 		return terms.join(", ");
 	};
