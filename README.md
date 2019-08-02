@@ -25,7 +25,7 @@ An example interface of the webapp is as follows; features are annotated with bl
 
 ![screenshot](https://i.imgur.com/7DUNow2.png)
 
-Fields 7, 8, 10, 11-13, and 17-26 may have multiple options, each separated by a comma. A `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank.
+Fields 7, 8, 10, 11-13, and 17-26 may have multiple options, each separated by a comma. A `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank. Commas themselves may be represented by `\,`.
 
 Wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option, while options may be preceeded by `-` to negate them, including the blank string, which would be negated with `--`.
 
