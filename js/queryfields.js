@@ -274,22 +274,15 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._currentValues = undefined;
 
 	output._FindPrefix = function(value) {
-		var lastComma = 0;
-		var lastSpace = -1;
-		var nonSpaceEncountered = false;
+		var output = 0;
 		var valueLength = value.length;
 		var idx = undefined;
 		for(idx = 0; idx < valueLength; ++idx) {
-			if( value[idx] === ',' && (value[idx] === 0 || value[idx - 1] !== '\\') ) {
-				lastComma = idx + 1;
-				nonSpaceEncountered = false;
-			} else if( !nonSpaceEncountered && value[idx] !== value[idx].trim() ) {
-				lastSpace = idx + 1;
-			} else {
-				nonSpaceEncountered = true;
+			if( value[idx] === ',' || value[idx] !== value[idx].trim() ) {
+				output = idx + 1;
 			}
 		}
-		return lastSpace > lastComma ? lastSpace : lastComma;
+		return output;
 	};
 	output._MatchGlob = function(value) {
 		var output = [];
@@ -310,38 +303,6 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		return output;
 	};
-	output._SplitValues = function(value) {
-		var output = undefined;
-		if( value.indexOf('\\,') !== -1 ) {
-			output = [];
-			var currentString = "";
-			var slash = false;
-			var valueLength = value.length;
-			var idx = 0;
-			while(idx < valueLength) {
-				var v = value[idx];
-				if(slash) {
-					currentString += v;
-					slash = false;
-				} else if(v === '\\') {
-					currentString += v;
-					slash = true;
-				} else if(v === ',') {
-					output.push(currentString);
-					currentString = "";
-				} else {
-					currentString += v;
-				}
-				idx += 1;
-			}
-			if(currentString !== "") {
-				output.push(currentString);
-			}
-		} else {
-			output = value.split(',');
-		}
-		return output;
-	}
 	output._MarkupData = function(referenceValueSlices, negator, matchValue) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
@@ -415,7 +376,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			var negativeValues = [];
 			var searchValues = [];
 			var currentValue = undefined;
-			var values = this._SplitValues(fullValue);
+			var values = fullValue.split(',');
 			var valuesLength = values.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
@@ -427,9 +388,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 					negativeValues.push("");
 				} else if( searchValue.startsWith("-") ) {
 					searchValue = searchValue.slice(1, searchValue.length);
-					negativeValues = negativeValues.concat( this._MatchGlob( searchValue.replace(/\\,/g, ',') ) );
+					negativeValues = negativeValues.concat( this._MatchGlob(searchValue ) );
 				} else if(searchValue !== "") {
-					cleanValues = cleanValues.concat( this._MatchGlob( searchValue.replace(/\\,/g, ',') ) );
+					cleanValues = cleanValues.concat( this._MatchGlob(searchValue) );
 				}
 				searchValues.push(searchValue);
 			}
@@ -459,7 +420,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
 			var fullVal = this.targetElementInput.value;
-			var allValues = this._SplitValues(fullVal);
+			var allValues = fullVal.split(',');
 			var allValuesLength = allValues.length;
 			var prefixValues = allValues.slice(0, allValuesLength - 1).join(',');
 			var rawVal = allValues[allValuesLength - 1];
@@ -519,7 +480,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this._datalistKeys = [];
 		this._datalistValues = [];
 		for(idx = 0; idx < valuesLength; ++idx) {
-			var val = values.keys[idx].replace(/,/g, '\\,');
+			var val = values.keys[idx];
 			if(val === "") {
 				val = "-";
 			}
