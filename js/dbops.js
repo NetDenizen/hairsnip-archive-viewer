@@ -131,10 +131,10 @@ function newStorySearcher(logger, _db) {
 		var comments = this._db.exec("SELECT id, comments FROM stories ORDER BY comments")[0]['values'];
 		var domain_array_id = this._db.exec("SELECT id, domain_array_id FROM stories ORDER BY domain_array_id")[0]['values'];
 		var language_id = this._db.exec("SELECT id, language_id FROM stories ORDER BY language_id")[0]['values'];
-		var content_id = this._db.exec("SELECT id, content_id FROM stories ORDER BY content_id")[0]['values'];
-		var type_id = this._db.exec("SELECT id, type_id FROM stories ORDER BY type_id")[0]['values'];
-		var category_id = this._db.exec("SELECT id, category_id FROM stories ORDER BY category_id")[0]['values'];
-		var location_id = this._db.exec("SELECT id, location_id FROM stories ORDER BY location_id")[0]['values'];
+		var content_array_id = this._db.exec("SELECT id, content_array_id FROM stories ORDER BY content_array_id")[0]['values'];
+		var type_array_id = this._db.exec("SELECT id, type_array_id FROM stories ORDER BY type_array_id")[0]['values'];
+		var category_array_id = this._db.exec("SELECT id, category_array_id FROM stories ORDER BY category_array_id")[0]['values'];
+		var location_array_id = this._db.exec("SELECT id, location_array_id FROM stories ORDER BY location_array_id")[0]['values'];
 		var rating = this._db.exec("SELECT id, rating FROM stories ORDER BY rating")[0]['values'];
 		var raters = this._db.exec("SELECT id, raters FROM stories ORDER BY raters")[0]['values'];
 		var viewcount = this._db.exec("SELECT id, viewcount FROM stories ORDER BY viewcount")[0]['values'];
@@ -167,6 +167,10 @@ function newStorySearcher(logger, _db) {
 		var idx = undefined;
 		for(idx = 0; idx < sha256Length; ++idx) {
 			var domainArray = this._LoadIntArray(intArrays, domain_array_id[idx][1]);
+			var contentArray = this._LoadIntArray(intArrays, content_array_id[idx][1])
+			var typeArray = this._LoadIntArray(intArrays, type_array_id[idx][1])
+			var categoryArray = this._LoadIntArray(intArrays, category_array_id[idx][1])
+			var locationArray = this._LoadIntArray(intArrays, location_array_id[idx][1])
 			var formatArray = this._LoadIntArray(intArrays, format_array_id[idx][1]);
 			var emailArray = this._LoadIntArray(intArrays, email_array_id[idx][1]);
 			var tagArray = this._LoadIntArray(intArrays, tags_array_id[idx][1]);
@@ -181,16 +185,16 @@ function newStorySearcher(logger, _db) {
 			this.posixdateLookup.add(posixdate[idx][1], posixdate[idx][0]);
 
 			this.languageLookup.add(languageIds.get(language_id[idx][1]).AllValues(), language_id[idx][0]);
-			this.contentLookup.add(contentIds.get(content_id[idx][1]).AllValues(), content_id[idx][0]);
-			this.typeLookup.add(typeIds.get(type_id[idx][1]).AllValues(), type_id[idx][0]);
-			this.categoryLookup.add(categoryIds.get(category_id[idx][1]).AllValues(), category_id[idx][0]);
-			this.locationLookup.add(locationIds.get(location_id[idx][1]).AllValues(), location_id[idx][0]);
 			this.authorLookup.add(authorIds.get(author_id[idx][1]).AllValues(), author_id[idx][0]);
 			this.originLookup.add(originIds.get(origin_id[idx][1]).AllValues(), origin_id[idx][0]);
 			this.siteLookup.add(siteIds.get(site_id[idx][1]).AllValues(), site_id[idx][0]);
 			this.titleLookup.add(titleIds.get(title_id[idx][1]).AllValues(), title_id[idx][0]);
 
 			this.domainLookup.add(domainIds.get(domainArray).AllValues(), domain_array_id[idx][0]);
+			this.contentLookup.add(contentIds.get(contentArray).AllValues(), content_array_id[idx][0]);
+			this.typeLookup.add(typeIds.get(typeArray).AllValues(), type_array_id[idx][0]);
+			this.categoryLookup.add(categoryIds.get(categoryArray).AllValues(), category_array_id[idx][0]);
+			this.locationLookup.add(locationIds.get(locationArray).AllValues(), location_array_id[idx][0]);
 			this.formatLookup.add(formatIds.get(formatArray).AllValues(), format_array_id[idx][0]);
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
 			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
