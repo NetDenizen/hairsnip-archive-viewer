@@ -16,7 +16,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this._optionElements = [];
 	}
 	output.activate = function() {
-		if(this._optionElements.length > 0) {
+		if(this._optionElements.length > 0 && this.targetElement.style.display == "none") {
 			this.targetElement.style.display = "block";
 			this._SelectNewOption(this._optionSelected);
 			this._ScrollToItem();
