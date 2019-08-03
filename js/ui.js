@@ -357,7 +357,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		}
 	};
 	output.handleEvent = function(e) {
-		if(e.type === "keyup") {
+		if(e.type === "input") {
 			if(e.target == this._pageNumberTarget) {
 				this._UpdatePageNumber(e);
 			} else if(e.target == this._resultsPerPageTarget) {
@@ -538,7 +538,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._pageNumberTarget = document.createElement("input");
 		this._pageNumberTarget.setAttribute("type", "text");
 		this._pageNumberTarget.setAttribute("placeholder", "Page Number");
-		this._pageNumberTarget.addEventListener("keyup", this, false);
+		this._pageNumberTarget.addEventListener("input", this, false);
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 
 		this._maxPageNumberTarget = document.createElement("span");
@@ -580,7 +580,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._resultsPerPageTarget = document.createElement("input"),
 		this._resultsPerPageTarget.setAttribute("type", "text");
 		this._resultsPerPageTarget.setAttribute("placeholder", "Results per page");
-		this._resultsPerPageTarget.addEventListener("keyup", this, false);
+		this._resultsPerPageTarget.addEventListener("input", this, false);
 		this._resultsPerPageTarget.value = this._resultsPerPage.toString();
 
 		resultsPerPageTargetContainer.appendChild(this._resultsPerPageTarget);
