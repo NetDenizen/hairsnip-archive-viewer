@@ -375,7 +375,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._UpdateResults();
 	};
 	output.PageNumberLeft = function() {
-		if(this._maxPageNumber > 0) {
+		if(this._maxPageNumber >= 0) {
 			if( (this._pageNumber > this._maxPageNumber || this._pageNumber <= 0) ) {
 				this._pageNumber = this._maxPageNumber;
 			} else {
