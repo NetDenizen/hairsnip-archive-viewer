@@ -226,8 +226,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		if(format !== "") {
 			format = " | Format: " + format;
 		}
+		if(author !== "") {
+			author = " - " + author;
+		}
 		item.className = defaultSearchResultClass;
-		SetHTMLToText(titleItem, title +  " - " + author + " (" + sha256 + ")");
+		SetHTMLToText(titleItem, title + author + " (" + sha256 + ")");
 		if(date !== "") {
 			SetHTMLToText(infoItem, new Date( parseInt(date) * 1000 ).toUTCString() + domain + language + format);
 		} else {
