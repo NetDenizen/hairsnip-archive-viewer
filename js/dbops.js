@@ -244,13 +244,16 @@ function newStorySearcher(logger, _db) {
 		var arrayKeywordsLength = arrayKeywords.length;
 		var idxKeywordsArray = undefined;
 		for(idxKeywordsArray = 0; idxKeywordsArray < arrayKeywordsLength; ++idxKeywordsArray) {
-			var bodyIds = this._db.exec('SELECT id FROM stories_body WHERE body MATCH "' + arrayKeywords[idxKeywordsArray].replace(/"/g, '""') + '" ORDER BY id')[0]['values'];
-			var bodyIdsLength = bodyIds.length;
-			var idxBodyIds = undefined;
-			for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
-				var values = this._bodyLookupReverse[ bodyIds[idxBodyIds] ]
-				outputKeywords.push(arrayKeywords[idxKeywordsArray]);
-				outputIds.push( [].concat.apply([], values) );
+			var found = this._db.exec('SELECT id FROM stories_body WHERE body MATCH "' + arrayKeywords[idxKeywordsArray].replace(/"/g, '""') + '" ORDER BY id')
+			if(found.length > 0) {
+				var bodyIds = found[0]['values'];
+				var bodyIdsLength = bodyIds.length;
+				var idxBodyIds = undefined;
+				for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
+					var values = this._bodyLookupReverse[ bodyIds[idxBodyIds] ]
+					outputKeywords.push(arrayKeywords[idxKeywordsArray]);
+					outputIds.push( [].concat.apply([], values) );
+				}
 			}
 		}
 		return newIdRecord(outputKeywords, outputIds);
