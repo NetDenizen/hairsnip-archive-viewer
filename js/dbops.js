@@ -6,7 +6,6 @@
 function newStorySearcher(logger, _db) {
 	var output = {};
 	output._db = undefined;
-	output._panic = false;
 	output._logger = undefined;
 
 	output.sha256Lookup = undefined;
@@ -54,43 +53,36 @@ function newStorySearcher(logger, _db) {
 	};
 	output._LoadIds = function(table) {
 		var output = newIdLookup();
-		if(!this._panic) {
-			var values = this._db.exec("SELECT id, name FROM " + table)[0]['values'];
-			var valuesLength = values.length;
-			var idx = undefined;
-			for (idx = 0; idx < valuesLength; ++idx) {
-				if ( !output.get(values[idx][0]).empty() ) {
-					this._logger.LogWarning("Value " + values[idx][0].toString() + " should not be repeated in '" + table + "'.");
-				}
-				output.add(values[idx][0], values[idx][1]);
+		var values = this._db.exec("SELECT id, name FROM " + table)[0]['values'];
+		var valuesLength = values.length;
+		var idx = undefined;
+		for (idx = 0; idx < valuesLength; ++idx) {
+			if ( !output.get(values[idx][0]).empty() ) {
+				this._logger.LogWarning("Value " + values[idx][0].toString() + " should not be repeated in '" + table + "'.");
 			}
-			this._logger.LogInfo("Loaded table: '" + table + "'");
+			output.add(values[idx][0], values[idx][1]);
 		}
+		this._logger.LogInfo("Loaded table: '" + table + "'");
 		output.sort();
 		return output;
 	};
 	output._BuildIntArrayLookup = function() {
 		var output = [];
-		if(!this._panic) {
-			var intArrays = this._db.exec("SELECT array_id, val FROM int_arrays")[0]['values'];
-			var currentArrayId = undefined;
-			var currentArray = undefined;
-			var intArraysLength = intArrays.length;
-			var idx = undefined;
-			for(idx = 0; idx < intArraysLength; ++idx) {
-				var array = intArrays[idx];
-				if(array[0] !== currentArrayId){
-					currentArrayId = array[0];
-					currentArray = [];
-					output.push(currentArray);
-				}
-				currentArray.push(array[1]);
+		var intArrays = this._db.exec("SELECT array_id, val FROM int_arrays")[0]['values'];
+		var currentArrayId = undefined;
+		var currentArray = undefined;
+		var intArraysLength = intArrays.length;
+		var idx = undefined;
+		for(idx = 0; idx < intArraysLength; ++idx) {
+			var array = intArrays[idx];
+			if(array[0] !== currentArrayId){
+				currentArrayId = array[0];
+				currentArray = [];
+				output.push(currentArray);
 			}
+			currentArray.push(array[1]);
 		}
 		return output;
-	};
-	output._ResetPanic = function() {
-		this._panic = false;
 	};
 	output._NewLookups = function() {
 		this.sha256Lookup = newIdLookup();
@@ -223,7 +215,6 @@ function newStorySearcher(logger, _db) {
 		this._logger = logger;
 		this._db = _db;
 		this._logger.LogInfo("Initializing story searcher.");
-		this._ResetPanic();
 		this._NewLookups();
 		this._PopulateContainers();
 		this._SortLookups();
