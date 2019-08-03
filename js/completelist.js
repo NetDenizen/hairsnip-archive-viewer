@@ -141,6 +141,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this._optionKeys = optionKeys;
 		this._optionValues = optionValues;
 		this._SetDataList();
+		this._SelectNewOption(this._optionSelected);
 	};
 	output.init = function(listHeight, classes, targetElementOutput) {
 		this._listHoveredClass = classes.listHoveredClass;
