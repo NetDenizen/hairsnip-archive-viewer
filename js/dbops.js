@@ -69,30 +69,22 @@ function newStorySearcher(logger, _db) {
 		output.sort();
 		return output;
 	};
-	output._LoadIntArray = function(intArrays, arrayId) {
+	output._BuildIntArrayLookup = function() {
 		var output = [];
-		if(!this._panic && arrayId !== null) {
-			var values = [];
-			var idx = undefined;
+		if(!this._panic) {
+			var intArrays = this._db.exec("SELECT array_id, val FROM int_arrays")[0]['values'];
+			var currentArrayId = undefined;
+			var currentArray = undefined;
 			var intArraysLength = intArrays.length;
+			var idx = undefined;
 			for(idx = 0; idx < intArraysLength; ++idx) {
 				var array = intArrays[idx];
-				if(array[1] === arrayId){
-					values.push([ array[2], array[3] ]);
+				if(array[0] !== currentArrayId){
+					currentArrayId = array[0];
+					currentArray = [];
+					output.push(currentArray);
 				}
-			}
-			var valuesLength = values.length;
-			output = Array.apply( undefined, Array(valuesLength) ).map(function () {});
-			for (idx = 0; idx < valuesLength; ++idx) {
-				var currentValues = values[idx];
-				var outputIdx = currentValues[0];
-				if (output[outputIdx] !== undefined) {
-					this._logger.LogWarning("Value at index " + outputIdx.toString() + " should not be repeated for " + arrayId.toString() + ".");
-				}
-				output[outputIdx] = currentValues[1];
-			}
-			if ( output.includes(undefined) ) {
-				this._logger.LogWarning("All of " + valuesLength.toString() + " indexes not filled.");
+				currentArray.push(array[1]);
 			}
 		}
 		return output;
@@ -125,7 +117,7 @@ function newStorySearcher(logger, _db) {
 		this.titleLookup = newIdLookup();
 	};
 	output._PopulateContainers = function() {
-		var intArrays = this._db.exec("SELECT id, array_id, idx, val FROM int_arrays")[0]['values'];
+		var intArrays = this._BuildIntArrayLookup();
 
 		var sha256 = this._db.exec("SELECT id, sha256 FROM stories ORDER BY sha256")[0]['values'];
 		var comments = this._db.exec("SELECT id, comments FROM stories ORDER BY comments")[0]['values'];
@@ -166,14 +158,14 @@ function newStorySearcher(logger, _db) {
 		var sha256Length = sha256.length;
 		var idx = undefined;
 		for(idx = 0; idx < sha256Length; ++idx) {
-			var domainArray = this._LoadIntArray(intArrays, domain_array_id[idx][1]);
-			var contentArray = this._LoadIntArray(intArrays, content_array_id[idx][1])
-			var typeArray = this._LoadIntArray(intArrays, type_array_id[idx][1])
-			var categoryArray = this._LoadIntArray(intArrays, category_array_id[idx][1])
-			var locationArray = this._LoadIntArray(intArrays, location_array_id[idx][1])
-			var formatArray = this._LoadIntArray(intArrays, format_array_id[idx][1]);
-			var emailArray = this._LoadIntArray(intArrays, email_array_id[idx][1]);
-			var tagArray = this._LoadIntArray(intArrays, tags_array_id[idx][1]);
+			var domainArray = domain_array_id[idx][1] !== null ? intArrays[ domain_array_id[idx][1] ] : [];
+			var contentArray = content_array_id[idx][1] !== null ? intArrays[ content_array_id[idx][1] ] : [];
+			var typeArray = type_array_id[idx][1] !== null ? intArrays[ type_array_id[idx][1] ] : [];
+			var categoryArray = category_array_id[idx][1] !== null ? intArrays[ category_array_id[idx][1] ] : [];
+			var locationArray = location_array_id[idx][1] !== null ? intArrays[ location_array_id[idx][1] ] : [];
+			var formatArray = format_array_id[idx][1] !== null ? intArrays[ format_array_id[idx][1] ] : [];
+			var emailArray = email_array_id[idx][1] !== null ? intArrays[ email_array_id[idx][1] ] : [];
+			var tagArray = tags_array_id[idx][1] !== null ? intArrays[ tags_array_id[idx][1] ] : [];
 
 			this.sha256Lookup.add(sha256[idx][1], sha256[idx][0]);
 			this.commentsLookup.add(comments[idx][1], comments[idx][0]);
