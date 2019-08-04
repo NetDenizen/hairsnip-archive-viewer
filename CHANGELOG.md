@@ -1,5 +1,19 @@
 # Changelog
 
+## 2019-08-03.1
+
+* New SQLite format support, breaking compatibility with the old. Make sure to grab a new version of the SQLite file.
+
+* Massive optimization to SQLite database loading; possibly around an order of magnitude faster.
+
+* Allow query fields to be switched between using tab, without leaving menus open.
+
+* Add SQLite file loading indicator.
+
+* Remove 'Error Field' and related components, completely.
+
+* UX tweaks and bugfixes.
+
 ## 2019-07-29.1
 
 * Error Messages and Search Result boxes are now actually expandable.
