@@ -622,10 +622,6 @@ function ToggleSection(button, buttonOnText, buttonOffText, section) {
 	}
 }
 
-function ToggleErrorField(button, section) {
-	ToggleSection( button, "Error Messages v", "Error Messages ^", document.getElementById("ErrorField") );
-}
-
 function ToggleSearchFields(button, section) {
 	ToggleSection( button, "Search Fields v", "Search Fields ^", document.getElementById("SearchFields") );
 }

@@ -3,10 +3,9 @@
 // TODO: constructors capitalize 'new'
 "use strict";
 
-function newStorySearcher(logger, _db) {
+function newStorySearcher(_db) {
 	var output = {};
 	output._db = undefined;
-	output._logger = undefined;
 
 	output.sha256Lookup = undefined;
 	output.commentsLookup = undefined;
@@ -49,7 +48,6 @@ function newStorySearcher(logger, _db) {
 		}
 		this._bodyLookup = bodyLookup;
 		this._bodyLookupReverse = bodyLookupReverse;
-		this._logger.LogInfo("Loaded body_id lookups.");
 	};
 	output._LoadIds = function(table) {
 		var output = newIdLookup();
@@ -57,12 +55,8 @@ function newStorySearcher(logger, _db) {
 		var valuesLength = values.length;
 		var idx = undefined;
 		for (idx = 0; idx < valuesLength; ++idx) {
-			if ( !output.get(values[idx][0]).empty() ) {
-				this._logger.LogWarning("Value " + values[idx][0].toString() + " should not be repeated in '" + table + "'.");
-			}
 			output.add(values[idx][0], values[idx][1]);
 		}
-		this._logger.LogInfo("Loaded table: '" + table + "'");
 		output.sort();
 		return output;
 	};
@@ -131,7 +125,6 @@ function newStorySearcher(logger, _db) {
 		var site_id = this._db.exec("SELECT id, site_id FROM stories ORDER BY site_id")[0]['values'];
 		var description = this._db.exec("SELECT id, description FROM stories ORDER BY description")[0]['values'];
 		var title_id = this._db.exec("SELECT id, title_id FROM stories ORDER BY title_id")[0]['values'];
-		this._logger.LogInfo("Loaded story info ids.");
 
 		var domainIds = this._LoadIds("domain_ids");
 		var languageIds = this._LoadIds("language_ids");
@@ -183,7 +176,6 @@ function newStorySearcher(logger, _db) {
 			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
 			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
 		}
-		this._logger.LogInfo("Compiled story lookups.");
 
 		this._LoadBodyIds();
 	};
@@ -211,14 +203,11 @@ function newStorySearcher(logger, _db) {
 		this.siteLookup.sort();
 		this.titleLookup.sort();
 	};
-	output.init = function(logger, _db) {
-		this._logger = logger;
+	output.init = function(_db) {
 		this._db = _db;
-		this._logger.LogInfo("Initializing story searcher.");
 		this._NewLookups();
 		this._PopulateContainers();
 		this._SortLookups();
-		this._logger.LogInfo("Story searcher initialized.");
 	};
 	output.LookupBody = function(keywords) {
 		var outputKeywords = [];
@@ -242,17 +231,9 @@ function newStorySearcher(logger, _db) {
 		return newIdRecord(outputKeywords, outputIds);
 	};
 	output.GetBody = function(id) {
-		var output = "";
 		var idNum = parseInt(id, 10);
-		if( isNaN(idNum) ) {
-			this._logger.LogWarning("ID given for body retrieval is not a number.");
-		} else if(idNum >= this._bodyLookup.length) {
-			this._logger.LogWarning("ID '" + idNum.toString() + "' given for body retrieval exceeds maximum of '" + this._bodyLookup.length + "'.");
-		} else {
-			output = this._db.exec("SELECT body FROM stories_body WHERE id=" + this._bodyLookup[id])[0]['values'][0];
-		}
-		return output;
+		return this._db.exec("SELECT body FROM stories_body WHERE id=" + this._bodyLookup[id])[0]['values'][0];
 	};
-	output.init(logger, _db);
+	output.init(_db);
 	return output;
 }

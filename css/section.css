@@ -17,11 +17,6 @@ section#PageControls > button {
 	font-size: large;
 }
 
-section#ErrorField {
-	font-family: monospace, courier;
-	white-space: pre;
-}
-
 section#SearchField {
 }
 
