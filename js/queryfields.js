@@ -443,9 +443,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 							 );
 		}
 	};
-	output._update = function() {
+	output._update = function(selected) {
 		this._ParseKeywords();
-		if(this._currentKeys.length > 0) {
+		if(selected && this._currentKeys.length > 0) {
 			this.targetList.activate();
 		} else {
 			this.targetList.deactivate();
@@ -454,7 +454,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output._InputListener = function(e) {
-		this._update();
+		this._update(true);
 	};
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
@@ -498,9 +498,11 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 					this.targetElementInput.value = prefixValues + valSpace + lcp;
 				}
 			}
-			this._update();
 			if(fullVal.length > 0) {
 				e.preventDefault();
+				this._update(true);
+			} else {
+				this._update(false);
 			}
 		}
 	};
