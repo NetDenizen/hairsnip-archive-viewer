@@ -14,10 +14,8 @@ function LoadSearcher() {
 	var startTime = new Date();
 	SetHTMLToText( document.getElementById("DbLoadStatus"), "Opening SQLite file" );
 	searcher = newStorySearcher(db);
-	logger.LogInfo("Building UI.");
 	documentUi = newUiManager(searcher, 'documentUi', defaultListClasses, defaultPageNumber, defaultResultsPerPage);
 	OnBodyResize();
-	logger.LogInfo("Init completed.");
 	SetHTMLToText( document.getElementById("DbLoadStatus"),
 				   "SQLite file loaded in " + ( ( new Date() - startTime ) / 1000.0 ).toString()  + " seconds."
 				 );
