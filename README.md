@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2019-07-29.1)
+# Hairsnip Archive Viewer (2019-08-03.1)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
