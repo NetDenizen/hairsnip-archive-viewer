@@ -1,5 +1,15 @@
 # Changelog
 
+## 2019-08-08.1
+
+* Render HTML in author description.
+
+* Do not choose undefined values when enter is pressed and no autocomplete list item is selected.
+
+* Make wildcard matching completely case-insensitive.
+
+* Use the selected option when pressing enter in an autocomplete list.
+
 ## 2019-08-03.1
 
 * New SQLite format support, breaking compatibility with the old. Make sure to grab a new version of the SQLite file.

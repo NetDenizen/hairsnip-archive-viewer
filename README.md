@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2019-08-03.1)
+# Hairsnip Archive Viewer (2019-08-08.1)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
@@ -23,7 +23,7 @@ Then, you may follow these steps.
 
 An example interface of the webapp is as follows; features are annotated with blue numbers.
 
-![screenshot](https://i.imgur.com/XBe6Owd.png)
+![screenshot](https://i.imgur.com/RKYVK1d.png)
 
 Fields 6, 7, 9, 10-12, and 16-25 may have multiple options, each separated by a comma. A `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank. Commas themselves may be represented by `\,`.
 
