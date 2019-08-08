@@ -245,9 +245,13 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			SetHTMLToText(commentsItem, "Archiver Comments: " + comments);
 			item.appendChild(commentsItem);
 		}
+		// TODO: Should we check for block element descriptions?
 		if(description !== "") {
 			var descriptionItem = document.createElement("p"); // Description
-			SetHTMLToText(descriptionItem, "Author Description: " + description);
+			var descriptionItemContainer = document.createElement("span");
+			descriptionItemContainer.innerHTML = description;
+			descriptionItem.appendChild( document.createTextNode("Author Description: ") );
+			descriptionItem.appendChild(descriptionItemContainer);
 			item.appendChild(descriptionItem);
 		}
 		if(viewcount !== "" || rating !== "" || raters !== "") {
