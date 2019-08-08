@@ -297,7 +297,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		if(sliceEnd === -1) {
 			output.push(value);
 		} else {
-			var slices = ProcessGlob(value);
+			var slices = ProcessGlob( value.toLowerCase() );
 			var idx = 0;
 			var datalistLength = this._datalistKeys.length;
 			for(idx = 0; idx < datalistLength; ++idx) {
