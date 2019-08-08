@@ -52,8 +52,10 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this._optionSelected = optionSelected > 0 ? optionSelected - 1 : optionSelected;
 	}
 	output._OutputOptionKey = function(optionSelected) {
-		this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
-		this.targetElementOutput.dispatchEvent( new Event('input', {'bubbles': true, 'cancelable': true}) );
+		if(optionSelected >= 0 && optionSelected < this._optionKeys.length) {
+			this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
+			this.targetElementOutput.dispatchEvent( new Event('input', {'bubbles': true, 'cancelable': true}) );
+		}
 	}
 	output._ClickListener = function(e) {
 		if(e.target === this.targetElement || e.target === this.targetElementOutput) {
@@ -89,10 +91,9 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this._SelectNewOption( this._GetOptionElementValue(e.target) );
 	};
 	output._OnEnter = function() {
-		if(this._optionSelected !== -1) {
-			var optionSelected = this._optionSelected;
-			this._AdjustOptionSelected(optionSelected);
-			this._OutputOptionKey(optionSelected);
+		if(this._optionKeys.length > 0) {
+			this._AdjustOptionSelected(this._optionSelected);
+			this._OutputOptionKey(this._optionSelected);
 		}
 	};
 	output._ScrollToItem = function() {
