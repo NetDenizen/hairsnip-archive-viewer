@@ -55,6 +55,9 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		if(optionSelected >= 0 && optionSelected < this._optionKeys.length) {
 			this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
 			this.targetElementOutput.dispatchEvent( new Event('input', {'bubbles': true, 'cancelable': true}) );
+			if(optionSelected >= this._optionKeys.length - 1) {
+				this._ScrollToItem();
+			}
 		}
 	}
 	output._ClickListener = function(e) {
@@ -92,7 +95,6 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	};
 	output._OnEnter = function() {
 		if(this._optionKeys.length > 0) {
-			this._AdjustOptionSelected(this._optionSelected);
 			this._OutputOptionKey(this._optionSelected);
 		}
 	};
