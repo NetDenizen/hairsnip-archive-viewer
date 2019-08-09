@@ -293,15 +293,16 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	};
 	output._MatchGlob = function(value) {
 		var output = [];
-		var sliceEnd = value.indexOf('*');
+		var cleanValue = value.replace(/\\,/g, ',');
+		var sliceEnd = cleanValue.indexOf('*');
 		if(sliceEnd === -1) {
-			output.push(value);
+			output.push(cleanValue);
 		} else {
-			var slices = ProcessGlob( value.toLowerCase() );
+			var slices = ProcessGlob( cleanValue.toLowerCase() );
 			var idx = 0;
 			var datalistLength = this._datalistKeys.length;
 			for(idx = 0; idx < datalistLength; ++idx) {
-				var kRaw = this._datalistKeys[idx];
+				var kRaw = this._datalistKeys[idx].replace(/\\,/g, ',');
 				var k = kRaw.toLowerCase();
 				if( TestGlob(k, slices) ) {
 					output.push(kRaw);
@@ -427,9 +428,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 					negativeValues.push("");
 				} else if( searchValue.startsWith("-") ) {
 					searchValue = searchValue.slice(1, searchValue.length);
-					negativeValues = negativeValues.concat( this._MatchGlob( searchValue.replace(/\\,/g, ',') ) );
+					negativeValues = negativeValues.concat( this._MatchGlob(searchValue) );
 				} else if(searchValue !== "") {
-					cleanValues = cleanValues.concat( this._MatchGlob( searchValue.replace(/\\,/g, ',') ) );
+					cleanValues = cleanValues.concat( this._MatchGlob(searchValue) );
 				}
 				searchValues.push(searchValue);
 			}

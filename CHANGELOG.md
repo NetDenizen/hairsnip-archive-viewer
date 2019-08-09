@@ -1,5 +1,9 @@
 # Changelog
 
+## TBD
+
+* Wildcard queries will now include options that contain commas.
+
 ## 2019-08-08.1
 
 * Render HTML in author description.
