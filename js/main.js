@@ -12,7 +12,7 @@ var documentUi = undefined;
 
 function LoadSearcher() {
 	var startTime = new Date();
-	SetHTMLToText( document.getElementById("DbLoadStatus"), " Opening SQLite file" );
+	SetHTMLToText( document.getElementById("DbLoadStatus"), " Failed to open SQLite file" );
 	searcher = newStorySearcher(db);
 	documentUi = newUiManager(searcher, 'documentUi', defaultListClasses, defaultPageNumber, defaultResultsPerPage);
 	OnBodyResize();
