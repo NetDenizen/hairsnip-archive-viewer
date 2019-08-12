@@ -4,6 +4,10 @@
 
 * Wildcard queries will now include options that contain commas.
 
+* Little extra whitespace by the SQLite file loading indicator.
+
+* SQLite file loading indicator should default to a failure message, which is technically set before an error occurs, but should only be appear because the file actually failed to load, before the page updated.
+
 ## 2019-08-08.1
 
 * Render HTML in author description.
