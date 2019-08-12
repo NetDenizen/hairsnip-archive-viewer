@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 2019-08-12.1
 
 * Wildcard queries will now include options that contain commas.
 
