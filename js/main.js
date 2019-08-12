@@ -12,12 +12,12 @@ var documentUi = undefined;
 
 function LoadSearcher() {
 	var startTime = new Date();
-	SetHTMLToText( document.getElementById("DbLoadStatus"), "Opening SQLite file" );
+	SetHTMLToText( document.getElementById("DbLoadStatus"), " Opening SQLite file" );
 	searcher = newStorySearcher(db);
 	documentUi = newUiManager(searcher, 'documentUi', defaultListClasses, defaultPageNumber, defaultResultsPerPage);
 	OnBodyResize();
 	SetHTMLToText( document.getElementById("DbLoadStatus"),
-				   "SQLite file loaded in " + ( ( new Date() - startTime ) / 1000.0 ).toString()  + " seconds."
+				   " SQLite file loaded in " + ( ( new Date() - startTime ) / 1000.0 ).toString()  + " seconds."
 				 );
 }
 
@@ -39,7 +39,7 @@ function OnSQLSelect() {
 function OnPageLoad() {
 	initSqlJs(config);
 	OnBodyResize();
-	SetHTMLToText( document.getElementById("DbLoadStatus"), "Waiting for SQLite file" );
+	SetHTMLToText( document.getElementById("DbLoadStatus"), " Waiting for SQLite file" );
 }
 
 document.addEventListener("DOMContentLoaded", OnPageLoad);
