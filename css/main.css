@@ -1,21 +1,28 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f8f8f8;
+    color: #030303;
+}
+
 input {
-	color: black;
-	background-color: white;
+    background-color: #f8f8f8;
+    color: #030303;
 }
 
 button {
-	color: black;
-	border: black solid thin;
-	background-color: white;
+	border: #030303 solid thin;
+    background-color: #f8f8f8;
+    color: #030303;
 }
 
 button:hover {
 	cursor: pointer;
 	background-color: LightGrey;
+    color: #030303;
 }
 
 .border {
-	border: black solid thin;
+	border: #030303 solid thin;
 }
 
 .HorizontalCenter {
@@ -28,4 +35,8 @@ button:hover {
 	height: 20em;
 	overflow: scroll;
 	resize: vertical;
+}
+
+p#DbLoadStatus {
+	display: inline-block;
 }
