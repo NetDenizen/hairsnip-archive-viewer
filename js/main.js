@@ -1,7 +1,7 @@
 "use strict";
 
 var config = {
-	locateFile: filename => `/js/${filename}`
+	locateFile: function(filename) { return '/js/' + filename; }
 }
 
 var dbId = "DbFile";
