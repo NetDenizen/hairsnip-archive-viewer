@@ -47,10 +47,10 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	output._GetOptionElementValue = function(e) {
 		var raw = e.getAttribute("data-value");
 		return raw !== null && raw !== "" ? parseInt(raw, 10) : -1;
-	}
+	};
 	output._AdjustOptionSelected = function(optionSelected) {
 		this._optionSelected = optionSelected > 0 ? optionSelected - 1 : optionSelected;
-	}
+	};
 	output._OutputOptionKey = function(optionSelected) {
 		if(optionSelected >= 0 && optionSelected < this._optionKeys.length) {
 			this.targetElementOutput.value = this._optionKeys[optionSelected] + ", ";
@@ -59,7 +59,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 				this._ScrollToItem();
 			}
 		}
-	}
+	};
 	output._ClickListener = function(e) {
 		if(e.target === this.targetElement || e.target === this.targetElementOutput) {
 			this.activate();

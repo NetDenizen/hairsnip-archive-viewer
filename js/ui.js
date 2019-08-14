@@ -7,7 +7,7 @@ var defaultSearchResultClass = "SearchResult";
 var defaultSearchResultSelectedClass = "SearchResult selected";
 var defaultListHeight = "10em";
 
-var defaultListContainerClass = "border AutocompleteArea container"
+var defaultListContainerClass = "border AutocompleteArea container";
 var defaultListHoveredClass = "AutocompleteArea option hovered";
 var defaultListUnhoveredClass = "AutocompleteArea option unhovered";
 
@@ -18,7 +18,7 @@ var defaultListClasses = {
 	listContainerClass: defaultListContainerClass,
 	listHoveredClass: defaultListHoveredClass,
 	listUnhoveredClass: defaultListUnhoveredClass
-}
+};
 
 var dateFormatOptions = {
 	timeZone: "UTC",
@@ -94,7 +94,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText( this._storyAmountTarget, " (" + this._storyIndexes.length.toString() + ")" );
 	};
 	output._UpdateSingleQueryData = function(idx) {
-		var found = this.queryManagerLookup[idx]
+		var found = this.queryManagerLookup[idx];
 		if(found.edited) {
 			this.queryManagerResultsLookup[idx] = found.results !== undefined ?
 												  new Set( found.results.AllValues() ) :
@@ -107,14 +107,14 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			found.edited = false;
 		}
 	};
-	output._UpdateSingleQuery = function(idx) {
-		if(this.queryManagerResultsLookup[idx] !== undefined) {
+	output._UpdateSingleQuery = function(QueryIdx) {
+		if(this.queryManagerResultsLookup[QueryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
 			var allValues = this.queryManagerResultsLookup[idx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
-				var storyIdx = this._storyIndexes[idx]
+				var storyIdx = this._storyIndexes[idx];
 				if( allValues.has(storyIdx) ) {
 					filteredStoryIndexes.push(storyIdx);
 				}
@@ -122,14 +122,14 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this._storyIndexes = filteredStoryIndexes;
 		}
 	};
-	output._UpdateNegativeSingleQuery = function(idx) {
-		if(this.queryManagerNegativeResultsLookup[idx] !== undefined) {
+	output._UpdateNegativeSingleQuery = function(QueryIdx) {
+		if(this.queryManagerNegativeResultsLookup[QueryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
 			var allNegativeValues = this.queryManagerNegativeResultsLookup[idx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
-				var storyIdx = this._storyIndexes[idx]
+				var storyIdx = this._storyIndexes[idx];
 				if( !allNegativeValues.has(storyIdx) ) {
 					filteredStoryIndexes.push(storyIdx);
 				}
@@ -188,7 +188,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			output = output + prefix + value;
 		}
 		return output;
-	}
+	};
 	output._UpdateSingleResult = function(id) {
 		// Main items
 		var sha256 = this._LookupTerm(this.sha256Manager, id);
@@ -292,7 +292,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		item.setAttribute( "data-value", id.toString() );
 		item.addEventListener("click", this, false);
 		this._resultsDisplayTarget.appendChild(item);
-		return item
+		return item;
 	};
 	output._UpdateResults = function() {
 		var resultsStart = this._pageNumber * this._resultsPerPage;
@@ -422,7 +422,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			}
 		}
 		return output;
-	}
+	};
 	output._InitQueryTable = function(parentField, names, managers) {
 		var table = document.createElement("table");
 		var headings = document.createElement("tr");
@@ -532,7 +532,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var pageNumberTitle = document.createElement("td");
 		var pageNumberTargetContainer = document.createElement("td");
 
-		pageNumberTitle.innerHTML = "Page number: "
+		pageNumberTitle.innerHTML = "Page number: ";
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		this._pageNumberLeftTarget.innerHTML = "<";
@@ -578,10 +578,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		resultsDisplay.className = "ScrollField";
 		this._resultsDisplayTarget = resultsDisplay;
 
-		resultsPerPageTitle.innerHTML = "Results per page: "
+		resultsPerPageTitle.innerHTML = "Results per page: ";
 
 		this._resultsPerPage = resultsPerPage;
-		this._resultsPerPageTarget = document.createElement("input"),
+		this._resultsPerPageTarget = document.createElement("input");
 		this._resultsPerPageTarget.setAttribute("type", "text");
 		this._resultsPerPageTarget.setAttribute("placeholder", "Results per page");
 		this._resultsPerPageTarget.addEventListener("input", this, false);

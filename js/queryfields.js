@@ -197,12 +197,11 @@ function newRangeSearcher(name, lookup, manager) {
 
 	output._ExtractValues = function(valueString) {
 		var output = [];
-		var values = valueString.split(",")
+		var values = valueString.split(",");
 		var valuesLength = values.length;
 		var idx = undefined;
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var pair = values[idx].split("-", 2);
-			var cleanPair = pair;
 			if(pair.length === 2) {
 				var pair0 = pair[0].trim();
 				var pair1 = pair[1].trim();
@@ -228,7 +227,7 @@ function newRangeSearcher(name, lookup, manager) {
 		var idx = undefined;
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
-			this.results.extend( this.lookup.GetNumericalRange(values[idx][0], values[idx][1]) )
+			this.results.extend( this.lookup.GetNumericalRange(values[idx][0], values[idx][1]) );
 		}
 	};
 	output._InputListener = function(e) {
@@ -342,7 +341,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			output = value.split(',');
 		}
 		return output;
-	}
+	};
 	output._MarkupData = function(referenceValueSlices, negator, matchValue) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
@@ -372,7 +371,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			output.push( document.createTextNode( matchValue.slice(strongEnd, matchValue.length) ) );
 		}
 		return output;
-	}
+	};
 	output._SetDataList = function(prefix, currentValue, excludedValues) {
 		var prefixedKeys = [];
 		var prefixedValues = [];

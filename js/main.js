@@ -2,7 +2,7 @@
 
 var config = {
 	locateFile: function(filename) { return '/js/' + filename; }
-}
+};
 
 var dbId = "DbFile";
 

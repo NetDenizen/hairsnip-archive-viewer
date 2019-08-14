@@ -120,11 +120,11 @@ function newIdLookup() {
 		var arrayItemLength = arrayItem.length;
 		var arrayKeyIdx = undefined;
 		for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
-			var key = arrayKey[arrayKeyIdx];
-			if(key !== null) {
+			var k = arrayKey[arrayKeyIdx];
+			if(k !== null) {
 				var arrayItemIdx = undefined;
 				for(arrayItemIdx = 0; arrayItemIdx < arrayItemLength; ++arrayItemIdx) {
-					this._AddSingle(key, arrayItem[arrayItemIdx])
+					this._AddSingle(k, arrayItem[arrayItemIdx]);
 				}
 			}
 		}
@@ -186,7 +186,6 @@ function newIdLookup() {
 			}
 		}
 		if(end === undefined) {
-			var keysLength = this._keys.length;
 			if(keysLength > 0) {
 				endIdx = keysLength - 1;
 			}
@@ -229,7 +228,7 @@ function newIdLookup() {
 	};
 	output.GetFuzzy = function(key) {
 		var arrayKey = !Array.isArray(key) ? [key] : key;
-		var matches = []
+		var matches = [];
 		var arrayKeyLength = arrayKey.length;
 		var arrayKeyIdx = undefined;
 		var lookupLength = this._keys.length;
@@ -260,7 +259,7 @@ function newIdLookup() {
 		for(idx = 0; idx < arrayItemLength; ++idx) {
 			output = output.concat( this._GetReverseSingle(arrayItem[idx]) );
 		}
-		return output
+		return output;
 	};
 	return output;
 }
