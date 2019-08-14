@@ -23,7 +23,6 @@ var defaultListClasses = {
 var dateFormatOptions = {
 	timeZone: "UTC",
 };
-var dateFormat = new Intl.DateTimeFormat(undefined, dateFormatOptions);
 
 function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	var output = {};
@@ -410,11 +409,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var allValues = lookup.GetAll();
 		var output = prefix;
 		if(allValues.keys.length > 0) {
-			var minDate = dateFormat.format( new Date( parseInt(allValues.keys[0]) * 1000 ) ).slice(0, 10);
+			var minDate = new Date( parseInt(allValues.keys[0]) * 1000 ).toLocaleDateString(undefined, dateFormatOptions).slice(0, 10);
 			output += (" (" + minDate);
 			if(allValues.keys.length > 1) {
 				output += (" - " +
-						   dateFormat.format( new Date( parseInt(allValues.keys[allValues.keys.length - 1]) * 1000 ) ).slice(0, 10) +
+						   new Date( parseInt(allValues.keys[allValues.keys.length - 1]) * 1000 ).toLocaleDateString(undefined, dateFormatOptions).slice(0, 10) +
 						   ")"
 						  );
 			} else {
