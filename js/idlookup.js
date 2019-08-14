@@ -23,7 +23,7 @@ function newIdRecord(keys, values) {
 		return Array.from(output);
 	};
 	output.empty = function() {
-		return this.keys.length > 0 ? false : true;
+		return this.keys.length === 0;
 	};
 	output.ExtendRaw = function(keys, values) {
 		var thisLookup = this.lookup;
