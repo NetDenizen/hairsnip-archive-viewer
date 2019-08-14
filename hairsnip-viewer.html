@@ -17,7 +17,7 @@
 		<link rel="stylesheet" type="text/css" href="css/section.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>
-	<body onresize="OnBodyResize()">
+	<body>
 	<h1 style="text-align: center;">HairSnip Archive Viewer (2019-08-12.1)</h1>
 	<div class="HorizontalCenter" id="DbFileContainer">Select SQLite File: <input type="file" id="DbFile" class="border" accept="application/x-sqlite3" onchange="OnSQLSelect()"/> <p id="DbLoadStatus"> Page Unloaded</p></div>
 	<section class="HorizontalCenter" id="PageControls">
@@ -25,8 +25,8 @@
 		<button onclick="ToggleSearchResults(this, 'SearchResults')">Search Result ^</button>
 		<button onclick="ToggleStoryArea(this, 'StoryArea')">Story Body ^</button>
 	</section>
-	<section class="border VerticalSection" id="SearchFields"></section>
-	<section class="border VerticalSection" id="SearchResults"></section>
+	<section class="border VerticalSection" id="SearchFields"><div id="SearchFieldsContainer" class="SectionContainer"></div></section>
+	<section class="border VerticalSection" id="SearchResults"><div id="SearchResultsContainer" class="SectionContainer"></div></section>
 	<section class="border" id="StoryArea"></section>
 	</body>
 </html>
