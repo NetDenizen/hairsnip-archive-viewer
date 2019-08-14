@@ -109,7 +109,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQuery = function(QueryIdx) {
 		if(this.queryManagerResultsLookup[QueryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
-			var allValues = this.queryManagerResultsLookup[idx];
+			var allValues = this.queryManagerResultsLookup[QueryIdx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
@@ -124,7 +124,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateNegativeSingleQuery = function(QueryIdx) {
 		if(this.queryManagerNegativeResultsLookup[QueryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
-			var allNegativeValues = this.queryManagerNegativeResultsLookup[idx];
+			var allNegativeValues = this.queryManagerNegativeResultsLookup[QueryIdx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
