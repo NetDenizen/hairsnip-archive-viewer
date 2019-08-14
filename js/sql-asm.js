@@ -11,64 +11,67 @@
 // Instead, we want to return the previously loaded module
 
 // TODO: Make this not declare a global if used in the browser
-var initSqlJsPromise = undefined;
+var initSqlModule = undefined;
+var initSqlError = undefined;
 
-var initSqlJs = function (moduleConfig) {
+function OnModule(module) {
+	initSqlModule = module;
+}
 
-    if (initSqlJsPromise){
-      return initSqlJsPromise;
-    }
+function OnError(error) {
+	initSqlError = error;
+}
+
+function GetSqlJsModule(resolveModule, reject) {
     // If we're here, we've never called this function before
-    initSqlJsPromise = new Promise((resolveModule, reject) => {
+    // We are modularizing this manually because the current modularize setting in Emscripten has some issues:
+    // https://github.com/kripken/emscripten/issues/5820
 
-        // We are modularizing this manually because the current modularize setting in Emscripten has some issues:
-        // https://github.com/kripken/emscripten/issues/5820
+    // The way to affect the loading of emcc compiled modules is to create a variable called `Module` and add
+    // properties to it, like `preRun`, `postRun`, etc
+    // We are using that to get notified when the WASM has finished loading.
+    // Only then will we return our promise
 
-        // The way to affect the loading of emcc compiled modules is to create a variable called `Module` and add
-        // properties to it, like `preRun`, `postRun`, etc
-        // We are using that to get notified when the WASM has finished loading.
-        // Only then will we return our promise
+    // If they passed in a moduleConfig object, use that
+    // Otherwise, initialize Module to the empty object
+    var Module = typeof moduleConfig !== 'undefined' ? moduleConfig : {};
 
-        // If they passed in a moduleConfig object, use that
-        // Otherwise, initialize Module to the empty object
-        var Module = typeof moduleConfig !== 'undefined' ? moduleConfig : {};
+    // EMCC only allows for a single onAbort function (not an array of functions)
+    // So if the user defined their own onAbort function, we remember it and call it
+    var originalOnAbortFunction = Module['onAbort'];
+    Module['onAbort'] = function (errorThatCausedAbort) {
+        reject(new Error(errorThatCausedAbort));
+        if (originalOnAbortFunction){
+          originalOnAbortFunction(errorThatCausedAbort);
+        }
+    };
 
-        // EMCC only allows for a single onAbort function (not an array of functions)
-        // So if the user defined their own onAbort function, we remember it and call it
-        var originalOnAbortFunction = Module['onAbort'];
-        Module['onAbort'] = function (errorThatCausedAbort) {
-            reject(new Error(errorThatCausedAbort));
-            if (originalOnAbortFunction){
-              originalOnAbortFunction(errorThatCausedAbort);
-            }
-        };
+    Module['postRun'] = Module['postRun'] || [];
+    Module['postRun'].push(function () {
+        // When Emscripted calls postRun, this promise resolves with the built Module
+        resolveModule(Module);
+    });
 
-        Module['postRun'] = Module['postRun'] || [];
-        Module['postRun'].push(function () {
-            // When Emscripted calls postRun, this promise resolves with the built Module
-            resolveModule(Module);
-        });
+    // There is a section of code in the emcc-generated code below that looks like this:
+    // (Note that this is lowercase `module`)
+    // if (typeof module !== 'undefined') {
+    //     module['exports'] = Module;
+    // }
+    // When that runs, it's going to overwrite our own modularization export efforts in shell-post.js!
+    // The only way to tell emcc not to emit it is to pass the MODULARIZE=1 or MODULARIZE_INSTANCE=1 flags,
+    // but that carries with it additional unnecessary baggage/bugs we don't want either.
+    // So, we have three options:
+    // 1) We undefine `module`
+    // 2) We remember what `module['exports']` was at the beginning of this function and we restore it later
+    // 3) We write a script to remove those lines of code as part of the Make process.
+    //
+    // Since those are the only lines of code that care about module, we will undefine it. It's the most straightforward
+    // of the options, and has the side effect of reducing emcc's efforts to modify the module if its output were to change in the future.
+    // That's a nice side effect since we're handling the modularization efforts ourselves
+    module = undefined;
 
-        // There is a section of code in the emcc-generated code below that looks like this:
-        // (Note that this is lowercase `module`)
-        // if (typeof module !== 'undefined') {
-        //     module['exports'] = Module;
-        // }
-        // When that runs, it's going to overwrite our own modularization export efforts in shell-post.js!
-        // The only way to tell emcc not to emit it is to pass the MODULARIZE=1 or MODULARIZE_INSTANCE=1 flags,
-        // but that carries with it additional unnecessary baggage/bugs we don't want either.
-        // So, we have three options:
-        // 1) We undefine `module`
-        // 2) We remember what `module['exports']` was at the beginning of this function and we restore it later
-        // 3) We write a script to remove those lines of code as part of the Make process.
-        //
-        // Since those are the only lines of code that care about module, we will undefine it. It's the most straightforward
-        // of the options, and has the side effect of reducing emcc's efforts to modify the module if its output were to change in the future.
-        // That's a nice side effect since we're handling the modularization efforts ourselves
-        module = undefined;
-        
-        // The emcc-generated code and shell-post.js code goes below,
-        // meaning that all of it runs inside of this promise. If anything throws an exception, our promise will abort
+    // The emcc-generated code and shell-post.js code goes below,
+    // meaning that all of it runs inside of this promise. If anything throws an exception, our promise will abort
 var f,h;var l;l||(l=typeof Module !== 'undefined' ? Module : {});
 var ua=function(){function a(a){this.filename="dbfile_"+(4294967295*Math.random()>>>0);if(null!=a){var b=this.filename,c=b?m("/",b):"/";b=aa(!0,!0);c=ba(c,(void 0!==b?b:438)&4095|32768,0);if(a){if("string"===typeof a){for(var e=Array(a.length),ra=0,k=a.length;ra<k;++ra)e[ra]=a.charCodeAt(ra);a=e}ca(c,b|146);e=p(c,"w");da(e,a,0,a.length,0,void 0);fa(e);ca(c,b)}}this.handleError(g(this.filename,d));this.ea=q(d,"i32");ec(this.ea);this.Ca={}}function b(a,b){this.ea=a;this.ua=b;this.na=1;this.Fa=[]}var c;
 var d=r(4);var e={};b.prototype.bind=function(a){if(!this.ea)throw"Statement closed";this.reset();return Array.isArray(a)?this.eb(a):this.fb(a)};b.prototype.step=function(){var a;if(!this.ea)throw"Statement closed";this.na=1;switch(a=fc(this.ea)){case e.Wa:return!0;case e.DONE:return!1;default:return this.ua.handleError(a)}};b.prototype.mb=function(a){a=void 0===a?this.na++:a;return hc(this.ea,a)};b.prototype.nb=function(a){a=void 0===a?this.na++:a;return ic(this.ea,a)};b.prototype.bb=function(a){a=
@@ -217,12 +220,16 @@ function A(a){if(l.onAbort)l.onAbort(a);void 0!==a?(Ca(a),Da(a),a='"'+a+'"'):a="
 
 
 
-        // The shell-pre.js and emcc-generated code goes above
-        return Module;
-    }); // The end of the promise being returned
+    // The shell-pre.js and emcc-generated code goes above
+    return Module;
+}
 
-  return initSqlJsPromise;
-} // The end of our initSqlJs function
+function initSqlJs(moduleConfig) {
+    if (initSqlModule !== undefined || initSqlError !== undefined){
+      return;
+    }
+	GetSqlJsModule(OnModule, OnError);
+}
 
 // This bit below is copied almost exactly from what you get when you use the MODULARIZE=1 flag with emcc
 // However, we don't want to use the emcc modularization. See shell-pre.js
@@ -237,4 +244,3 @@ else if (typeof define === 'function' && define['amd']) {
 else if (typeof exports === 'object'){
     exports["Module"] = initSqlJs;
 }
-    
