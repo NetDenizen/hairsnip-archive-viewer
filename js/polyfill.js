@@ -94,5 +94,3 @@ if(typeof isNaN === 'undefined') {
 	    return n !== n;
 	};
 }
-
-// Set
