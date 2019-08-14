@@ -88,7 +88,11 @@ if (!String.prototype.includes) {
 }
 
 // isNaN
-var isNaN = function(value) {
-    var n = Number(value);
-    return n !== n;
-};
+if(typeof isNaN === 'undefined') {
+	isNaN = function(value) {
+	    var n = Number(value);
+	    return n !== n;
+	};
+}
+
+// Set
