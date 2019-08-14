@@ -2,10 +2,6 @@ div.AutocompleteArea {
     background-color: #f8f8f8;
 }
 
-div.SectionContainer {
-	display: inline;
-}
-
 div.AutocompleteArea.container {
 	position: absolute;
 	z-index: 1;

@@ -491,10 +491,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this.titleManager = newAutocompleteSearcher("TitleQuery", defaultListHeight, classes, this.searcher.titleLookup, this);
 	};
 	output._InitAllQueryTables = function() {
-		var searchFieldsContainer = document.getElementById("SearchFieldsContainer");
-		ClearChildren(searchFieldsContainer);
-		this._InitQueryTable(searchFieldsContainer, ["Story Checksum"], [this.sha256Manager]);
-		this._InitQueryTable(searchFieldsContainer,
+		var searchFields = document.getElementById("SearchFields");
+		ClearChildren(searchFields);
+		this._InitQueryTable(searchFields, ["Story Checksum"], [this.sha256Manager]);
+		this._InitQueryTable(searchFields,
 							 ["Title",
 							  "Author",
 							  this._BuildDateRangeTitleString("Date Range", this.searcher.posixdateLookup),
@@ -502,26 +502,26 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 							 ],
 							 [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]
 							);
-		this._InitQueryTable(searchFieldsContainer,
+		this._InitQueryTable(searchFields,
 							 ["Site Domain", "Archive Format", "Archive Comment"],
 							 [this.domainManager, this.formatManager, this.commentsManager]
 							);
-		this._InitQueryTable(searchFieldsContainer,
+		this._InitQueryTable(searchFields,
 							 [this._BuildRangeTitleString("Views", this.searcher.viewcountLookup),
 							  this._BuildRangeTitleString("Rating", this.searcher.ratingLookup),
 							  this._BuildRangeTitleString("Raters", this.searcher.ratersLookup)
 							 ],
 							 [this.viewcountManager, this.ratingManager, this.ratersManager]
 							);
-		this._InitQueryTable(searchFieldsContainer,
+		this._InitQueryTable(searchFields,
 							 ["Content Rating", "Story Type", "Category", "Story Location"],
 							 [this.contentManager, this.typeManager, this.categoryManager, this.locationManager]
 							);
-		this._InitQueryTable(searchFieldsContainer,
+		this._InitQueryTable(searchFields,
 							 ["Author Website", "Author Email", "Author Description"],
 							 [this.siteManager, this.emailManager, this.descriptionManager]
 							);
-		this._InitQueryTable(searchFieldsContainer,
+		this._InitQueryTable(searchFields,
 							 ["Story Origin", "Story Tags", "Body Keywords"],
 							 [this.originManager, this.tagManager, this.bodyManager]
 							);
@@ -565,14 +565,14 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		return pageNumberContainer;
 	};
 	output._InitSearchResults = function(pageNumber, resultsPerPage) {
-		var searchResultsContainer = document.getElementById("SearchResultsContainer");
+		var searchResults = document.getElementById("SearchResults");
 		var resultsDisplay = document.createElement("div");
 		var resultsControlTable = document.createElement("table");
 		var resultsPerPageContainer = document.createElement("tr");
 		var resultsPerPageTitle = document.createElement("td");
 		var resultsPerPageTargetContainer = document.createElement("td");
 
-		ClearChildren(searchResultsContainer);
+		ClearChildren(searchResults);
 
 		resultsDisplay.className = "ScrollField";
 		this._resultsDisplayTarget = resultsDisplay;
@@ -594,9 +594,9 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		resultsControlTable.appendChild(resultsPerPageContainer);
 		resultsControlTable.appendChild( this._InitPageNumber(pageNumber) );
 
-		searchResultsContainer.appendChild(resultsControlTable);
-		searchResultsContainer.appendChild( document.createElement("hr") );
-		searchResultsContainer.appendChild(resultsDisplay);
+		searchResults.appendChild(resultsControlTable);
+		searchResults.appendChild( document.createElement("hr") );
+		searchResults.appendChild(resultsDisplay);
 	};
 	output.init = function(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._storyDisplayTarget = document.getElementById("StoryArea");
@@ -640,9 +640,7 @@ function ToggleStoryArea(button, section) {
 function OnBodyResize() {
 	var searchFields = document.getElementById("SearchFields");
 	var searchResults = document.getElementById("SearchResults");
-	var searchFieldsContainer = document.getElementById("SearchFieldsContainer");
-	var searchResultsContainer = document.getElementById("SearchResultsContainer");
-	if(searchFieldsContainer.offsetWidth + searchResultsContainer.offsetWidth <= document.body.clientWidth) {
+	if(searchFields.offsetWidth + searchResults.offsetWidth <= document.body.clientWidth) {
 		searchFields.className = defaultHorizontalSectionClass;
 		searchResults.className = defaultHorizontalSectionClass;
 	} else {

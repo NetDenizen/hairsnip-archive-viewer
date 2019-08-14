@@ -15,7 +15,6 @@ function LoadSearcher() {
 	SetHTMLToText( document.getElementById("DbLoadStatus"), "Failed to open SQLite file" );
 	searcher = newStorySearcher(db);
 	documentUi = newUiManager(searcher, 'documentUi', defaultListClasses, defaultPageNumber, defaultResultsPerPage);
-	document.body.onresize = OnBodyResize;
 	OnBodyResize();
 	SetHTMLToText( document.getElementById("DbLoadStatus"),
 				   "SQLite file loaded in " + ( ( new Date() - startTime ) / 1000.0 ).toString()  + " seconds."
@@ -39,6 +38,7 @@ function OnSQLSelect() {
 
 function OnPageLoad() {
 	initSqlJs(config);
+	OnBodyResize();
 	SetHTMLToText( document.getElementById("DbLoadStatus"), "Waiting for SQLite file" );
 }
 
