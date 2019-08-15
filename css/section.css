@@ -21,6 +21,7 @@ section#SearchFields {
 }
 
 section#SearchResults {
+	white-space: initial;
 }
 
 section#StoryArea {
