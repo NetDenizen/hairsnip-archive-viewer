@@ -105,7 +105,7 @@ function newKeywordSearcher(name, lookup, manager) {
 		var idx = undefined;
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
-			var kw = keywords[idx].trim();
+			var kw = keywords[idx].trim().toLowerCase();
 			if(kw === "-") {
 				kw = "";
 			}

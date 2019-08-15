@@ -235,7 +235,7 @@ function newIdLookup() {
 		var lookupIdx = undefined;
 		for(lookupIdx = 0; lookupIdx < lookupLength; ++lookupIdx) {
 			for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
-				if(this._keys[lookupIdx].indexOf(arrayKey[arrayKeyIdx]) !== -1) {
+				if( this._keys[lookupIdx].toLowerCase().indexOf(arrayKey[arrayKeyIdx].toLowerCase() ) !== -1) {
 					matches.push(this._keys[lookupIdx]);
 					break;
 				}
