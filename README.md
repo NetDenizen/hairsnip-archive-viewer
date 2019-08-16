@@ -25,15 +25,19 @@ An example interface of the webapp is as follows; features are annotated with bl
 
 ![screenshot](https://i.imgur.com/1tpfpae.png)
 
-Fields 6, 7, 9, 10-12, and 16-25 may have multiple options, each separated by a comma. A `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank. Commas themselves may be represented by `\,`.
+Fields 6, 7, 9-12, and 16-25 may have multiple options, each separated by a comma. Commas themselves may be represented by `\,`.
 
-Wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option, while options may be preceeded by `-` to negate them, including the blank string, which would be negated with `--`. Underneath each field, the number of selected options is displayed, and if there are negating options, the number of those will be shown in parentheses.
+In fields 6, 7, 9-12, and 16-24 `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank. Options may be preceeded by `-` to negate them, including the blank string, which would be negated with `--`.
+
+In fields 6, 7, 9-11, 16-21, 23, and 24, wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option.
 
 These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected.
 
 Fields 13-15 may also have multiple options, each separated by a comma. Here, an option is a single number, or a range. A range is two numbers separated by a `-`, their order being irrelevant. If either of these numbers is left out, the maximum or minimum is available is assumed.
 
 Fields 8, and 13-15 include their respective minimum and maximum values in their titles.
+
+Underneath every field, the number of selected options is displayed, and if there are negating options, the number of those will be shown in parentheses.
 
 1. Field to select the SQLite database to open. It also includes a status indicator, which will display the time taken to load the selected SQLite file. Note that when one is selected, the interface will completely freeze until it is loaded, which should take a few seconds. Only fields 1-4 are visible before that point.
 
