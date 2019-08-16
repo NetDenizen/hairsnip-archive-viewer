@@ -53,12 +53,12 @@ function newFulltextSearcher(name, searcher, manager) {
 	output.results = undefined;
 
 	output._ParseKeywords = function() {
-		var keywords = this.targetElement.value.split(",");
+		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
 		var idx = undefined;
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
-			var kw = keywords[idx].trim();
+			var kw = keywords[idx].trim().replace(/\\,/g, ',');
 			if( !this.index.hasOwnProperty(kw) ) {
 				this.index[kw] = this.searcher.LookupBody(kw);
 			}
@@ -97,27 +97,43 @@ function newKeywordSearcher(name, lookup, manager) {
 	output._manager = undefined;
 	output.edited = false;
 	output.index = {};
+	output.NegativeIndex = {};
 	output.results = undefined;
+	output.negativeResults = undefined;
 
 	output._ParseKeywords = function() {
-		var keywords = this.targetElement.value.split(",");
+		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
 		var idx = undefined;
-		this.results = newIdRecord([], []);
+		var results = newIdRecord([], []);
+		var negativeResults = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
-			var kw = keywords[idx].trim().toLowerCase();
-			if(kw === "-") {
-				kw = "";
+			var kw = keywords[idx].trim().replace(/\\,/g, ',').toLowerCase();
+			if(kw !== '') {
+				var index = this.index;
+				var usedResults = results;
+				if( kw !== '-' && kw.startsWith('-') ) {
+					kw = kw.slice(1, kw.length);
+					index = this.NegativeIndex;
+					usedResults = negativeResults;
+				}
+				if( !index.hasOwnProperty(kw) ) {
+					if(kw === '-') {
+						index[kw] = this.lookup.get('');
+					} else {
+						index[kw] = this.lookup.GetFuzzy(kw);
+					}
+				}
+				usedResults.extend(index[kw]);
 			}
-			if( !this.index.hasOwnProperty(kw) ) {
-				this.index[kw] = this.lookup.GetFuzzy(kw);
-			}
-			this.results.extend(this.index[kw]);
 		}
+		this.results = results.keys.length > 0 ? results : undefined;
+		this.negativeResults = negativeResults.keys.length > 0 ? negativeResults : undefined;
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.negativeResults = undefined;
 		} else {
 			this._ParseKeywords();
 		}
@@ -310,38 +326,6 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		return output;
 	};
-	output._SplitValues = function(value) {
-		var output = undefined;
-		if( value.indexOf('\\,') !== -1 ) {
-			output = [];
-			var currentString = "";
-			var slash = false;
-			var valueLength = value.length;
-			var idx = 0;
-			while(idx < valueLength) {
-				var v = value[idx];
-				if(slash) {
-					currentString += v;
-					slash = false;
-				} else if(v === '\\') {
-					currentString += v;
-					slash = true;
-				} else if(v === ',') {
-					output.push(currentString);
-					currentString = "";
-				} else {
-					currentString += v;
-				}
-				idx += 1;
-			}
-			if(currentString !== "") {
-				output.push(currentString);
-			}
-		} else {
-			output = value.split(',');
-		}
-		return output;
-	};
 	output._MarkupData = function(referenceValueSlices, negator, matchValue) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
@@ -415,7 +399,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			var negativeValues = [];
 			var searchValues = [];
 			var currentValue = undefined;
-			var values = this._SplitValues(fullValue);
+			var values = SplitUnescapedCommas(fullValue);
 			var valuesLength = values.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
@@ -459,7 +443,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
 			var fullVal = this.targetElementInput.value;
-			var allValues = this._SplitValues(fullVal);
+			var allValues = SplitUnescapedCommas(fullVal);
 			var allValuesLength = allValues.length;
 			var prefixValues = allValues.slice(0, allValuesLength - 1).join(',');
 			var rawVal = allValues[allValuesLength - 1];
