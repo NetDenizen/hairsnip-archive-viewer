@@ -5,9 +5,11 @@ This webapp is meant to browse and display archives of the body of stories once 
 
 ## Installation and Dependencies
 
-To use the webapp, you will need a modern web browser with support for HTML5, asm.js, and the set of features included by ECMAScript 6 (Which was released in 2015, as the most recent of these three hard dependencies.). Otherwise, the webapp should be entirely self-contained, and include any necessary code.
+To use the webapp, you will need a modern web browser with support for HTML5, asm.js, and the set of features included by ECMAScript 6 (Which was released in 2015, as the most recent of these three hard dependencies.).
 
-The only third-party dependency, which is already included with the webapp, is https://github.com/kripken/sql.js/ custom-compiled to support FTS5. Please refer to the documentation of that project for building instructions.
+Compatibility code to replace some of the functionality has been included, which might help with browsers that have not fully implemented them, but it doesn't cover every feature, and viewing the browser console seems the only reliable way related errors are reported.
+
+Otherwise, the webapp should be entirely self-contained, and include any necessary code. The only third-party dependency, which is already included with the webapp, is https://github.com/kripken/sql.js/ custom-compiled to support FTS5. Please refer to the documentation of that project for building instructions.
 
 Then, you may follow these steps.
 
