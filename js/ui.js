@@ -11,9 +11,6 @@ var defaultListContainerClass = "border AutocompleteArea container";
 var defaultListHoveredClass = "AutocompleteArea option hovered";
 var defaultListUnhoveredClass = "AutocompleteArea option unhovered";
 
-var defaultVerticalSectionClass = "border VerticalSection";
-var defaultHorizontalSectionClass = "border HorizontalSection";
-
 var defaultListClasses = {
 	listContainerClass: defaultListContainerClass,
 	listHoveredClass: defaultListHoveredClass,
@@ -635,16 +632,4 @@ function ToggleSearchResults(button, section) {
 
 function ToggleStoryArea(button, section) {
 	ToggleSection( button, "Story Area v", "Story Area ^", document.getElementById("StoryArea") );
-}
-
-function OnBodyResize() {
-	var searchFields = document.getElementById("SearchFields");
-	var searchResults = document.getElementById("SearchResults");
-	if(searchFields.offsetWidth + searchResults.offsetWidth <= document.body.clientWidth) {
-		searchFields.className = defaultHorizontalSectionClass;
-		searchResults.className = defaultHorizontalSectionClass;
-	} else {
-		searchFields.className = defaultVerticalSectionClass;
-		searchResults.className = defaultVerticalSectionClass;
-	}
 }

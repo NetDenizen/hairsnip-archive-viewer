@@ -5,12 +5,24 @@ section {
 	padding: 0.25em;
 }
 
-section.HorizontalSection {
-	display: inline-block;
+section.ResponsiveSection {
+	display: block;
 }
 
-section.VerticalSection {
-	display: block;
+section.ResponsiveSection.left {
+}
+
+section.ResponsiveSection.right {
+}
+
+@media only screen and (min-width: 1921px) {
+	section.ResponsiveSection.left {
+		float: left;
+	}
+
+	section.ResponsiveSection.right {
+		float: right;
+	}
 }
 
 section#PageControls > button {
@@ -26,4 +38,5 @@ section#SearchResults {
 
 section#StoryArea {
 	white-space: normal;
+	clear: both;
 }
