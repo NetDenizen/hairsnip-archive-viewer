@@ -1,5 +1,9 @@
 # Changelog
 
+## 2019-08-15.2
+
+* I knew I forgot something (The updated screenshot). *Blush*
+
 ## 2019-08-15.1
 
 * Tweak color palette to be easier on the eyes.

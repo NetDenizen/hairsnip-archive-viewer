@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2019-08-15.1)
+# Hairsnip Archive Viewer (2019-08-15.2)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
@@ -25,7 +25,7 @@ Then, you may follow these steps.
 
 An example interface of the webapp is as follows; features are annotated with blue numbers.
 
-![screenshot](https://i.imgur.com/1tpfpae.png)
+![screenshot](https://i.imgur.com/0YfXKoJ.png)
 
 Fields 6, 7, 9-12, and 16-25 may have multiple options, each separated by a comma. Commas themselves may be represented by `\,`.
 
