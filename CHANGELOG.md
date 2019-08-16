@@ -1,5 +1,19 @@
 # Changelog
 
+## 2019-08-15.1
+
+* Tweak color palette to be easier on the eyes.
+
+* Minor tweaking to page layout, mostly to better render in narrow displays.
+
+* Fix horizontal arrangement of search fields and search results; it will now happen on displays greater than 1920 pixels in width.
+
+* Lint and refactor code.
+
+* Remove certain ECMAScript 6 specific features or replace them with polyfills. Certain ones are still necessary, however.
+
+* Keyword searches are now case insensitive, and have option negation.
+
 ## 2019-08-12.1
 
 * Wildcard queries will now include options that contain commas.
