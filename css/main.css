@@ -1,24 +1,24 @@
 body {
-    font-family: 'Open Sans', sans-serif;
-    background-color: #f8f8f8;
-    color: #030303;
+	font-family: 'Open Sans', sans-serif;
+	background-color: #f8f8f8;
+	color: #030303;
 }
 
 input {
-    background-color: #f8f8f8;
-    color: #030303;
+	background-color: #f8f8f8;
+	color: #030303;
 }
 
 button {
 	border: #030303 solid thin;
-    background-color: #f8f8f8;
-    color: #030303;
+	background-color: #f8f8f8;
+	color: #030303;
 }
 
 button:hover {
 	cursor: pointer;
 	background-color: LightGrey;
-    color: #030303;
+	color: #030303;
 }
 
 .border {
