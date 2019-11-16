@@ -275,6 +275,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementInput = undefined;
+	output._targetElementInputContainer = undefined;
+	output._targetListElementSort = undefined;
+	output._targetListElementSortMode = 'alphabetical';
 	output.targetList = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
@@ -496,10 +499,15 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this._InputListener(e);
 		} else if(eType === "keydown") {
 			this._KeyDownListener(e);
+		} else if(eType === "click") {
+			this._ToggleSort(e);
 		}
 	};
-	output._BuildDatalistValues = function() {
+	output._BuildDatalistValues = function(update) {
 		var values = this.lookup.GetAll();
+		if(this._targetListElementSortMode === 'numerical') {
+			values.SortNumerical();
+		}
 		var valuesLength = values.keys.length;
 		var idx = undefined;
 		this._datalistKeys = [];
@@ -512,7 +520,21 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this._datalistKeys.push(val);
 			this._datalistValues.push( val + " [" + values.values[idx].size.toString() + "]" );
 		}
-		this._SetDataList("", "", []);
+		if(update) {
+			this._update(true);
+		} else {
+			this._SetDataList("", "", []);
+		}
+	};
+	output._ToggleSort = function() {
+		if(this._targetListElementSortMode === 'alphabetical') {
+			this._targetListElementSortMode = 'numerical';
+			SetHTMLToText(this._targetListElementSort, "ABC");
+		} else {
+			this._targetListElementSortMode = 'alphabetical';
+			SetHTMLToText(this._targetListElementSort, "123");
+		}
+		this._BuildDatalistValues(true);
 	};
 	output.init = function(name, listHeight, classes, lookup, manager) {
 		this.targetElementInput = document.createElement('input');
@@ -522,13 +544,21 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this.targetElementInput.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
+		this._targetListElementSort = document.createElement('button');
+		SetHTMLToText(this._targetListElementSort, "123");
+		this._targetListElementSort.addEventListener("click", this, false);
+		this._targetElementInputContainer = document.createElement('div');
+		this._targetElementInputContainer.appendChild(this._targetListElementSort);
+		this._targetElementInputContainer.appendChild( document.createTextNode(" ") );
+		this._targetElementInputContainer.appendChild(this.targetElementInput);
 		this.targetList = newAutocompleteList(listHeight, classes, this.targetElementInput);
+		this.targetList.relevantTargets.push(this._targetListElementSort);
 		this.targetElement = document.createElement('div');
-		this.targetElement.appendChild(this.targetElementInput);
+		this.targetElement.appendChild(this._targetElementInputContainer);
 		this.targetElement.appendChild(this.targetList.targetElement);
 		this.lookup = lookup;
 		this._manager = manager;
-		this._BuildDatalistValues();
+		this._BuildDatalistValues(false);
 	};
 	output.init(name, listHeight, classes, lookup, manager);
 	return output;
