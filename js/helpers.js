@@ -68,11 +68,11 @@ function LongestCommonPrefix(values) {
 function SplitUnescapedCommas(value) {
 	var output = undefined;
 	if( value.indexOf('\\,') !== -1 ) {
-		output = [];
 		var currentString = "";
 		var slash = false;
 		var valueLength = value.length;
 		var idx = 0;
+		output = [];
 		while(idx < valueLength) {
 			var v = value[idx];
 			if(slash) {

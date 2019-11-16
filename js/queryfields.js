@@ -330,11 +330,11 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
 		var idx = undefined;
+		var strongStart = 0;
+		var strongEnd = 0;
 		if(negator.length !== 0) {
 			output.push( document.createTextNode(negator) );
 		}
-		var strongStart = 0;
-		var strongEnd = 0;
 		for(idx = 0; idx < referenceValueSlicesLength; ++idx) {
 			var weakStart = strongEnd;
 			var slice = referenceValueSlices[idx];
