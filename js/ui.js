@@ -528,10 +528,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var pageNumberTitle = document.createElement("td");
 		var pageNumberTargetContainer = document.createElement("td");
 
-		pageNumberTitle.innerHTML = "Page number: ";
+		SetHTMLToText(pageNumberTitle, "Page number: ");
 
 		this._pageNumberLeftTarget = document.createElement("button");
-		this._pageNumberLeftTarget.innerHTML = "<";
+		SetHTMLToText(this._pageNumberLeftTarget, "<");
 		this._pageNumberLeftTarget.setAttribute("onclick", this.name + ".PageNumberLeft()");
 
 		this._pageNumber = pageNumber;
@@ -545,7 +545,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._storyAmountTarget = document.createElement("span");
 
 		this._pageNumberRightTarget = document.createElement("button");
-		this._pageNumberRightTarget.innerHTML = ">";
+		SetHTMLToText(this._pageNumberRightTarget, ">");
 		this._pageNumberRightTarget.setAttribute("onclick", this.name + ".PageNumberRight()");
 
 		pageNumberTargetContainer.appendChild(this._pageNumberLeftTarget);
@@ -574,7 +574,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		resultsDisplay.className = "ScrollField";
 		this._resultsDisplayTarget = resultsDisplay;
 
-		resultsPerPageTitle.innerHTML = "Results per page: ";
+		SetHTMLToText(resultsPerPageTitle, "Results per page: ");
 
 		this._resultsPerPage = resultsPerPage;
 		this._resultsPerPageTarget = document.createElement("input");
