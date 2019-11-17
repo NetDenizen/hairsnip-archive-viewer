@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2019-08-15.2)
+# Hairsnip Archive Viewer (2019-11-17.1)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
@@ -25,7 +25,7 @@ Then, you may follow these steps.
 
 An example interface of the webapp is as follows; features are annotated with blue numbers.
 
-![screenshot](https://i.imgur.com/0YfXKoJ.png)
+![screenshot](https://i.imgur.com/U3b0iun.png)
 
 Fields 6, 7, 9-12, and 16-25 may have multiple options, each separated by a comma. Commas themselves may be represented by `\,`.
 
@@ -33,7 +33,7 @@ In fields 6, 7, 9-12, and 16-24 `-` represents a search for an empty (blank) str
 
 In fields 6, 7, 9-11, 16-21, 23, and 24, wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option.
 
-These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected.
+These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected. The order of the list may be toggled between alphabetical and number of occurrences, by the respective 'ABC' and '123'settings of the relevant button.
 
 Fields 13-15 may also have multiple options, each separated by a comma. Here, an option is a single number, or a range. A range is two numbers separated by a `-`, their order being irrelevant. If either of these numbers is left out, the maximum or minimum is available is assumed.
 

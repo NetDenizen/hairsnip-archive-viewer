@@ -5,6 +5,31 @@ function newIdRecord(keys, values) {
 	output.keys = [];
 	output.values = [];
 	output.lookup = {};
+	output.SortNumerical = function() {
+		var idx = undefined;
+		var valuesLength = this.values.length;
+		var keyValues = [];
+		for(idx = 0; idx < valuesLength; ++idx) {
+			keyValues.push([ this.keys[idx], this.values[idx] ]);
+		}
+		keyValues.sort(function(a, b) {
+			var output = 0;
+			var sizeA = a[1].size;
+			var sizeB = b[1].size;
+			if(sizeA < sizeB) {
+				output = -1;
+			} else if(sizeA > sizeB) {
+				output = 1;
+			}
+			return output;
+		});
+		this.keys = [];
+		this.values = [];
+		for(idx = 0; idx < valuesLength; ++idx) {
+			this.keys.push(keyValues[idx][0]);
+			this.values.push(keyValues[idx][1]);
+		}
+	}
 	output.AllValues = function() {
 		var output = new Set();
 		var values = this.values;

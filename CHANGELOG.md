@@ -1,5 +1,9 @@
 # Changelog
 
+## 2019-11-17.1
+
+* Allow autocomplete list items to be sorted alphabetically *or* by the number of times that entry occurs.
+
 ## 2019-08-15.2
 
 * I knew I forgot something (The updated screenshot). *Blush*

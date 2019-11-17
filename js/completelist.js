@@ -4,6 +4,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementOutput = undefined;
+	output.relevantTargets = [];
 	output._optionKeys = [];
 	output._optionValues = [];
 	output._optionElements = [];
@@ -70,7 +71,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 				this._OutputOptionKey(value);
 			}
 			e.stopPropagation();
-		} else {
+		} else if(this.relevantTargets.indexOf(e.currentTarget) === -1 && this.relevantTargets.indexOf(e.target) === -1) {
 			this.deactivate();
 		}
 	};
