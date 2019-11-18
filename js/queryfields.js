@@ -288,7 +288,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output.lookup = undefined;
 	output._manager = undefined;
 	output.edited = false;
-	output.necessaryValues = [];
+	output.necessaryResults = undefined;
 	output.results = undefined;
 	output.negativeResults = undefined;
 
@@ -336,7 +336,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		return output;
 	};
-	output._MarkupData = function(referenceValueSlices, negator, matchValue) {
+	output._MarkupData = function(referenceValueSlices, negator, necessitator, matchValue) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
 		var idx = undefined;
@@ -344,6 +344,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var strongEnd = 0;
 		if(negator.length !== 0) {
 			output.push( document.createTextNode(negator) );
+		}
+		if(necessitator.length !== 0) {
+			output.push( document.createTextNode(necessitator) );
 		}
 		for(idx = 0; idx < referenceValueSlicesLength; ++idx) {
 			var weakStart = strongEnd;
@@ -374,23 +377,27 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var rawCurrentValue = currentValue;
 		var rawCurrentValueSlices = undefined;
 		var negator = "";
+		var necessitator = "";
 		if( currentValue !== "-" && currentValue.startsWith("-") ) {
 			rawCurrentValue = currentValue.slice(1, currentValue.length);
 			negator = "-";
+		} else if( currentValue.startsWith("+") ) {
+			rawCurrentValue = currentValue.slice(1, currentValue.length);
+			necessitator = "+";
 		}
 		rawCurrentValueSlices = ProcessGlob(rawCurrentValue);
 		this._currentKeys = [];
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
 			var rawK = this._datalistKeys[idx];
-			var k =  negator + rawK;
+			var k =  negator + necessitator + rawK;
 			if( ( rawK.toLowerCase().indexOf(rawCurrentValue) !== -1 ||
 				  TestGlob(rawK.toLowerCase(), rawCurrentValueSlices) ) &&
 			    !excludedValues.includes(rawK) ) {
 				var v = this._datalistValues[idx];
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
-				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, v) );
+				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, necessitator, v) );
 				prefixedKeys.push(prefix + k);
 			}
 		}
@@ -403,16 +410,17 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this.negativeResults = undefined;
 			this._SetDataList("", "", []);
 		} else {
-			var negativeResults = undefined;
 			var results = undefined;
+			var negativeResults = undefined;
+			var necessaryResults = undefined;
 			var cleanValues = [];
 			var negativeValues = [];
+			var necessaryValues = [];
 			var searchValues = [];
 			var currentValue = undefined;
 			var values = SplitUnescapedCommas(fullValue);
 			var valuesLength = values.length;
 			var idx = undefined;
-			this.necessaryValues = [];
 			for(idx = 0; idx < valuesLength; ++idx) {
 				var searchValue = values[idx].trim();
 				currentValue = searchValue;
@@ -423,11 +431,11 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				} else if( searchValue.startsWith("-") ) {
 					searchValue = searchValue.slice(1, searchValue.length);
 					negativeValues = negativeValues.concat( this._MatchGlob(searchValue) );
-				} else if( searchValue.startswith("+") ) {
+				} else if( searchValue.startsWith("+") ) {
 					var glob;
 					searchValue = searchValue.slice(1, searchValue.length);
 					glob = this._MatchGlob(searchValue);
-					this.necessaryValues = necessaryValues.concat(glob);
+					necessaryValues = necessaryValues.concat(glob);
 					cleanValues = cleanValues.concat(glob);
 				} else if(searchValue !== "") {
 					cleanValues = cleanValues.concat( this._MatchGlob(searchValue) );
@@ -438,6 +446,8 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this.results = cleanValues.length > 0 ? results : undefined;
 			negativeResults = this.lookup.get(negativeValues);
 			this.negativeResults = negativeValues.length > 0 ? negativeResults : undefined;
+			necessaryResults = this.lookup.get(necessaryValues);
+			this.necessaryResults = necessaryValues.length > 0 ? necessaryResults : undefined;
 			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)
