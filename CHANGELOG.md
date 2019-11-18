@@ -1,5 +1,19 @@
 # Changelog
 
+## 2019-11-18.1
+
+* Move autocomplete list sorting controls to the end of the title of the field.
+
+* Exclude all tags by default, if a match is not found for a keyword.
+
+* Add an autocomplete list sorting control to reverse the order of elements.
+
+* Field 25 now behaves like a normal comma-separated keyword search.
+
+* Add '+' options, which *must* be included, rather than simply can be, like a normal option.
+
+* Add '-' options to fields 5 and 25.
+
 ## 2019-11-17.1
 
 * Allow autocomplete list items to be sorted alphabetically *or* by the number of times that entry occurs.
