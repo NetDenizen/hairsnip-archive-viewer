@@ -57,6 +57,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output.queryManagerLookup = [];
 	output.queryManagerResultsLookup = [];
 	output.queryManagerNegativeResultsLookup = [];
+	output.queryManagerNecessaryValuesLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
 	output.searcher = undefined;
 
@@ -100,8 +101,25 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 															  new Set( found.negativeResults.AllValues() ) :
 															  undefined;
 			}
+			if( found.hasOwnProperty("necessaryValues") ) {
+				this.queryManagerNegativeResultsLookup[idx] = found.necessaryValues;
+			}
 			found.edited = false;
 		}
+	};
+	output._StoryIdxHasNecessaryValues = function(queryIdx, storyIdx) {
+		var output = true;
+		var necessaryValues = this.queryManagerNecessaryValuesLookup[queryIdx];
+		var necessaryValuesLength = necessaryValues.length;
+		var results = this.queryManagerLookup[storyIdx].results;
+		var idx = undefined;
+		for(idx = 0; idx < necessaryValuesLength; ++idx) {
+			if( !results.lookup.hasOwnProperty(necessaryValues[idx]) ) {
+				output = false;
+				break;
+			}
+		}
+		return output;
 	};
 	output._UpdateSingleQuery = function(QueryIdx) {
 		if(this.queryManagerResultsLookup[QueryIdx] !== undefined) {
@@ -111,7 +129,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
 				var storyIdx = this._storyIndexes[idx];
-				if( allValues.has(storyIdx) ) {
+				if( allValues.has(storyIdx) && this._StoryIdxHasNecessaryValues(queryIdx, storyIdx) ) {
 					filteredStoryIndexes.push(storyIdx);
 				}
 			}
@@ -452,6 +470,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this.queryManagerLookup.push(managers[idx]);
 			this.queryManagerResultsLookup.push(undefined);
 			this.queryManagerNegativeResultsLookup.push(undefined);
+			this.queryManagerNecessaryValuesLookup.push(undefined);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
 		table.appendChild(headings);

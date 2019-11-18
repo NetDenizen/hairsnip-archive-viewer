@@ -288,6 +288,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output.lookup = undefined;
 	output._manager = undefined;
 	output.edited = false;
+	output.necessaryValues = [];
 	output.results = undefined;
 	output.negativeResults = undefined;
 
@@ -411,6 +412,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			var values = SplitUnescapedCommas(fullValue);
 			var valuesLength = values.length;
 			var idx = undefined;
+			this.necessaryValues = [];
 			for(idx = 0; idx < valuesLength; ++idx) {
 				var searchValue = values[idx].trim();
 				currentValue = searchValue;
@@ -421,6 +423,12 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				} else if( searchValue.startsWith("-") ) {
 					searchValue = searchValue.slice(1, searchValue.length);
 					negativeValues = negativeValues.concat( this._MatchGlob(searchValue) );
+				} else if( searchValue.startswith("+") ) {
+					var glob;
+					searchValue = searchValue.slice(1, searchValue.length);
+					glob = this._MatchGlob(searchValue);
+					this.necessaryValues = necessaryValues.concat(glob);
+					cleanValues = cleanValues.concat(glob);
 				} else if(searchValue !== "") {
 					cleanValues = cleanValues.concat( this._MatchGlob(searchValue) );
 				}
