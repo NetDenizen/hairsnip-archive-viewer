@@ -121,10 +121,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		}
 		return output;
 	};
-	output._UpdateSingleQuery = function(QueryIdx) {
-		if(this.queryManagerResultsLookup[QueryIdx] !== undefined) {
+	output._UpdateSingleQuery = function(queryIdx) {
+		if(this.queryManagerResultsLookup[queryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
-			var allValues = this.queryManagerResultsLookup[QueryIdx];
+			var allValues = this.queryManagerResultsLookup[queryIdx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
@@ -136,10 +136,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this._storyIndexes = filteredStoryIndexes;
 		}
 	};
-	output._UpdateNegativeSingleQuery = function(QueryIdx) {
-		if(this.queryManagerNegativeResultsLookup[QueryIdx] !== undefined) {
+	output._UpdateNegativeSingleQuery = function(queryIdx) {
+		if(this.queryManagerNegativeResultsLookup[queryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
-			var allNegativeValues = this.queryManagerNegativeResultsLookup[QueryIdx];
+			var allNegativeValues = this.queryManagerNegativeResultsLookup[queryIdx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
