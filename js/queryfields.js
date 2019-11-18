@@ -88,6 +88,12 @@ function newFulltextSearcher(name, searcher, manager) {
 			}
 			usedResults.extend(this.index[kw]);
 		}
+		if(this.results.AllValues().length === 0) {
+			this.results = undefined;
+		}
+		if(this.negativeResults.AllValues().length === 0) {
+			this.negativeResults = undefined;
+		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
