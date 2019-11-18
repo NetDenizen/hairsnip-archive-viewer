@@ -7,20 +7,37 @@ function newChecksumSearcher(name, lookup, manager) {
 	output._manager = undefined;
 	output.edited = false;
 	output.results = undefined;
+	output.negativeResults = undefined;
 
 	output._ParseKeywords = function() {
 		var cleanChecksums = [];
+		var negativeChecksums = [];
 		var checksums = this.targetElement.value.split(",");
 		var checksumsLength = checksums.length;
 		var idx = undefined;
 		for(idx = 0; idx < checksumsLength; ++idx) {
-			cleanChecksums.push( checksums[idx].trim() );
+			var cs = checksums[idx].trim();
+			if( cs.startsWith("-") ) {
+				negativeChecksums.push( cs.slice(1, cs.length).trim() );
+			} else {
+				cleanChecksums.push(cs);
+			}
 		}
-		this.results = lookup.get(cleanChecksums);
+		if(cleanChecksums.length > 0) {
+			this.results = lookup.get(cleanChecksums);
+		} else {
+			this.results = undefined;
+		}
+		if(negativeChecksums.length > 0) {
+			this.negativeResults = lookup.get(negativeChecksums);
+		} else {
+			this.negativeResults = undefined;
+		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.negativeResults = undefined;
 		} else {
 			this._ParseKeywords();
 		}
