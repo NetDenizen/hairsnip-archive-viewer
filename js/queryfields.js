@@ -127,8 +127,13 @@ function newKeywordSearcher(name, lookup, manager) {
 				usedResults.extend(index[kw]);
 			}
 		}
-		this.results = results.keys.length > 0 ? results : undefined;
-		this.negativeResults = negativeResults.keys.length > 0 ? negativeResults : undefined;
+		if(keywordsLength > 0) {
+			this.results = results;
+			this.negativeResults = negativeResults;
+		} else {
+			this.results = undefined;
+			this.negativeResults = undefined;
+		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
@@ -422,9 +427,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				searchValues.push(searchValue);
 			}
 			results = this.lookup.get(cleanValues);
-			this.results = results.keys.length > 0 ? results : undefined;
+			this.results = cleanValues.length > 0 ? results : undefined;
 			negativeResults = this.lookup.get(negativeValues);
-			this.negativeResults = negativeResults.keys.length > 0 ? negativeResults : undefined;
+			this.negativeResults = negativeValues.length > 0 ? negativeResults : undefined;
 			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)
