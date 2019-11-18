@@ -57,6 +57,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output.queryManagerLookup = [];
 	output.queryManagerResultsLookup = [];
 	output.queryManagerNegativeResultsLookup = [];
+	output.queryManagerNecessaryResultsLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
 	output.searcher = undefined;
 
@@ -100,28 +101,49 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 															  new Set( found.negativeResults.AllValues() ) :
 															  undefined;
 			}
+			if( found.hasOwnProperty("necessaryResults") ) {
+				this.queryManagerNecessaryResultsLookup[idx] = found.necessaryResults !== undefined ?
+															   found.necessaryResults :
+															   undefined;
+			}
 			found.edited = false;
 		}
 	};
-	output._UpdateSingleQuery = function(QueryIdx) {
-		if(this.queryManagerResultsLookup[QueryIdx] !== undefined) {
+	output._StoryIdxHasNecessaryValues = function(queryIdx, storyIdx) {
+		var output = true;
+		if(this.queryManagerNecessaryResultsLookup[queryIdx] !== undefined) {
+			var necessaryValues = this.queryManagerNecessaryResultsLookup[queryIdx].keys;
+			var necessaryValuesLength = necessaryValues.length;
+			var results = new Set( this.queryManagerLookup[queryIdx].lookup.GetReverse(storyIdx) );
+			var idx = undefined;
+			for(idx = 0; idx < necessaryValuesLength; ++idx) {
+				if( !results.has(necessaryValues[idx]) ) {
+					output = false;
+					break;
+				}
+			}
+		}
+		return output;
+	};
+	output._UpdateSingleQuery = function(queryIdx) {
+		if(this.queryManagerResultsLookup[queryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
-			var allValues = this.queryManagerResultsLookup[QueryIdx];
+			var allValues = this.queryManagerResultsLookup[queryIdx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
 				var storyIdx = this._storyIndexes[idx];
-				if( allValues.has(storyIdx) ) {
+				if( allValues.has(storyIdx) && this._StoryIdxHasNecessaryValues(queryIdx, storyIdx) ) {
 					filteredStoryIndexes.push(storyIdx);
 				}
 			}
 			this._storyIndexes = filteredStoryIndexes;
 		}
 	};
-	output._UpdateNegativeSingleQuery = function(QueryIdx) {
-		if(this.queryManagerNegativeResultsLookup[QueryIdx] !== undefined) {
+	output._UpdateNegativeSingleQuery = function(queryIdx) {
+		if(this.queryManagerNegativeResultsLookup[queryIdx] !== undefined) {
 			var filteredStoryIndexes = [];
-			var allNegativeValues = this.queryManagerNegativeResultsLookup[QueryIdx];
+			var allNegativeValues = this.queryManagerNegativeResultsLookup[queryIdx];
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
@@ -136,6 +158,9 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQueryTarget = function(idx) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
 		var targetString = "";
+		if(this.queryManagerNecessaryResultsLookup[idx] !== undefined) {
+			targetString += ("(+" + this.queryManagerNecessaryResultsLookup[idx].AllValues().length.toString() + ") ");
+		}
 		if(this.queryManagerResultsLookup[idx] !== undefined) {
 			targetString += this.queryManagerResultsLookup[idx].size.toString();
 		}
@@ -431,6 +456,14 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			var query = document.createElement("td");
 			var occurrence = document.createElement("td");
 			heading.innerHTML = names[idx];
+			if( managers[idx].hasOwnProperty('targetListElementSort') ) {
+				heading.appendChild( document.createTextNode(" ") );
+				heading.appendChild(managers[idx].targetListElementSort);
+			}
+			if( managers[idx].hasOwnProperty('targetListElementSortOrder') ) {
+				heading.appendChild( document.createTextNode(" ") );
+				heading.appendChild(managers[idx].targetListElementSortOrder);
+			}
 			headings.appendChild(heading);
 			if( managers[idx].hasOwnProperty("targetMinElement") ) {
 				query.appendChild(managers[idx].targetMinElement);
@@ -444,6 +477,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this.queryManagerLookup.push(managers[idx]);
 			this.queryManagerResultsLookup.push(undefined);
 			this.queryManagerNegativeResultsLookup.push(undefined);
+			this.queryManagerNecessaryResultsLookup.push(undefined);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
 		table.appendChild(headings);

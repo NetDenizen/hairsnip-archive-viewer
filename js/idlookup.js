@@ -5,14 +5,23 @@ function newIdRecord(keys, values) {
 	output.keys = [];
 	output.values = [];
 	output.lookup = {};
-	output.SortNumerical = function() {
+	output.SortKeyValues = function(compareFunction) {
 		var idx = undefined;
 		var valuesLength = this.values.length;
 		var keyValues = [];
 		for(idx = 0; idx < valuesLength; ++idx) {
 			keyValues.push([ this.keys[idx], this.values[idx] ]);
 		}
-		keyValues.sort(function(a, b) {
+		keyValues.sort(compareFunction);
+		this.keys = [];
+		this.values = [];
+		for(idx = 0; idx < valuesLength; ++idx) {
+			this.keys.push(keyValues[idx][0]);
+			this.values.push(keyValues[idx][1]);
+		}
+	};
+	output.SortNumerical = function() {
+		this.SortKeyValues(function(a, b) {
 			var output = 0;
 			var sizeA = a[1].size;
 			var sizeB = b[1].size;
@@ -23,13 +32,24 @@ function newIdRecord(keys, values) {
 			}
 			return output;
 		});
-		this.keys = [];
-		this.values = [];
-		for(idx = 0; idx < valuesLength; ++idx) {
-			this.keys.push(keyValues[idx][0]);
-			this.values.push(keyValues[idx][1]);
-		}
-	}
+	};
+	output.SortNumericalReverse = function() {
+		this.SortKeyValues(function(a, b) {
+			var output = 0;
+			var sizeA = a[1].size;
+			var sizeB = b[1].size;
+			if(sizeA < sizeB) {
+				output = 1;
+			} else if(sizeA > sizeB) {
+				output = -1;
+			}
+			return output;
+		});
+	};
+	output.reverse = function() {
+		this.keys = this.keys.reverse();
+		this.values = this.values.reverse();
+	};
 	output.AllValues = function() {
 		var output = new Set();
 		var values = this.values;

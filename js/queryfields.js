@@ -7,20 +7,37 @@ function newChecksumSearcher(name, lookup, manager) {
 	output._manager = undefined;
 	output.edited = false;
 	output.results = undefined;
+	output.negativeResults = undefined;
 
 	output._ParseKeywords = function() {
 		var cleanChecksums = [];
+		var negativeChecksums = [];
 		var checksums = this.targetElement.value.split(",");
 		var checksumsLength = checksums.length;
 		var idx = undefined;
 		for(idx = 0; idx < checksumsLength; ++idx) {
-			cleanChecksums.push( checksums[idx].trim() );
+			var cs = checksums[idx].trim();
+			if( cs.startsWith("-") ) {
+				negativeChecksums.push( cs.slice(1, cs.length).trim() );
+			} else {
+				cleanChecksums.push(cs);
+			}
 		}
-		this.results = lookup.get(cleanChecksums);
+		if(cleanChecksums.length > 0) {
+			this.results = lookup.get(cleanChecksums);
+		} else {
+			this.results = undefined;
+		}
+		if(negativeChecksums.length > 0) {
+			this.negativeResults = lookup.get(negativeChecksums);
+		} else {
+			this.negativeResults = undefined;
+		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.negativeResults = undefined;
 		} else {
 			this._ParseKeywords();
 		}
@@ -51,23 +68,37 @@ function newFulltextSearcher(name, searcher, manager) {
 	output.edited = false;
 	output.index = {};
 	output.results = undefined;
+	output.negativeResults = undefined;
 
 	output._ParseKeywords = function() {
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
 		var idx = undefined;
 		this.results = newIdRecord([], []);
+		this.negativeResults = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
-			var kw = keywords[idx].trim().replace(/\\,/g, ',');
-			if( !this.index.hasOwnProperty(kw) ) {
-				this.index[kw] = this.searcher.LookupBody(kw);
+			var usedResults = this.results;
+			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
+			if( kw.startsWith("-") ) {
+				usedResults = this.negativeResults;
+				kw = kw.slice(1, kw.length);
 			}
-			this.results.extend(this.index[kw]);
+			if( !this.index.hasOwnProperty(kw) ) {
+				this.index[kw] = this.searcher.LookupBody('"' + kw + '"');
+			}
+			usedResults.extend(this.index[kw]);
+		}
+		if(this.results.AllValues().length === 0) {
+			this.results = undefined;
+		}
+		if(this.negativeResults.AllValues().length === 0) {
+			this.negativeResults = undefined;
 		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.negativeResults = undefined;
 		} else {
 			this._ParseKeywords();
 		}
@@ -127,8 +158,13 @@ function newKeywordSearcher(name, lookup, manager) {
 				usedResults.extend(index[kw]);
 			}
 		}
-		this.results = results.keys.length > 0 ? results : undefined;
-		this.negativeResults = negativeResults.keys.length > 0 ? negativeResults : undefined;
+		if(keywordsLength > 0) {
+			this.results = results;
+			this.negativeResults = negativeResults;
+		} else {
+			this.results = undefined;
+			this.negativeResults = undefined;
+		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
@@ -275,13 +311,15 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementInput = undefined;
-	output._targetElementInputContainer = undefined;
-	output._targetListElementSort = undefined;
+	output.targetListElementSort = undefined;
 	output._targetListElementSortMode = 'alphabetical';
+	output.targetListElementSortOrder = undefined;
+	output._targetListElementSortOrderMode = 'normal';
 	output.targetList = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
 	output.edited = false;
+	output.necessaryResults = undefined;
 	output.results = undefined;
 	output.negativeResults = undefined;
 
@@ -329,7 +367,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		return output;
 	};
-	output._MarkupData = function(referenceValueSlices, negator, matchValue) {
+	output._MarkupData = function(referenceValueSlices, negator, necessitator, matchValue) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
 		var idx = undefined;
@@ -337,6 +375,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var strongEnd = 0;
 		if(negator.length !== 0) {
 			output.push( document.createTextNode(negator) );
+		}
+		if(necessitator.length !== 0) {
+			output.push( document.createTextNode(necessitator) );
 		}
 		for(idx = 0; idx < referenceValueSlicesLength; ++idx) {
 			var weakStart = strongEnd;
@@ -367,23 +408,27 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var rawCurrentValue = currentValue;
 		var rawCurrentValueSlices = undefined;
 		var negator = "";
+		var necessitator = "";
 		if( currentValue !== "-" && currentValue.startsWith("-") ) {
 			rawCurrentValue = currentValue.slice(1, currentValue.length);
 			negator = "-";
+		} else if( currentValue.startsWith("+") ) {
+			rawCurrentValue = currentValue.slice(1, currentValue.length);
+			necessitator = "+";
 		}
 		rawCurrentValueSlices = ProcessGlob(rawCurrentValue);
 		this._currentKeys = [];
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
 			var rawK = this._datalistKeys[idx];
-			var k =  negator + rawK;
+			var k =  negator + necessitator + rawK;
 			if( ( rawK.toLowerCase().indexOf(rawCurrentValue) !== -1 ||
 				  TestGlob(rawK.toLowerCase(), rawCurrentValueSlices) ) &&
 			    !excludedValues.includes(rawK) ) {
 				var v = this._datalistValues[idx];
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
-				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, v) );
+				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, necessitator, v) );
 				prefixedKeys.push(prefix + k);
 			}
 		}
@@ -396,10 +441,12 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this.negativeResults = undefined;
 			this._SetDataList("", "", []);
 		} else {
-			var negativeResults = undefined;
 			var results = undefined;
+			var negativeResults = undefined;
+			var necessaryResults = undefined;
 			var cleanValues = [];
 			var negativeValues = [];
+			var necessaryValues = [];
 			var searchValues = [];
 			var currentValue = undefined;
 			var values = SplitUnescapedCommas(fullValue);
@@ -415,15 +462,23 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				} else if( searchValue.startsWith("-") ) {
 					searchValue = searchValue.slice(1, searchValue.length);
 					negativeValues = negativeValues.concat( this._MatchGlob(searchValue) );
+				} else if( searchValue.startsWith("+") ) {
+					var glob;
+					searchValue = searchValue.slice(1, searchValue.length);
+					glob = this._MatchGlob(searchValue);
+					necessaryValues = necessaryValues.concat(glob);
+					cleanValues = cleanValues.concat(glob);
 				} else if(searchValue !== "") {
 					cleanValues = cleanValues.concat( this._MatchGlob(searchValue) );
 				}
 				searchValues.push(searchValue);
 			}
 			results = this.lookup.get(cleanValues);
-			this.results = results.keys.length > 0 ? results : undefined;
+			this.results = cleanValues.length > 0 ? results : undefined;
 			negativeResults = this.lookup.get(negativeValues);
-			this.negativeResults = negativeResults.keys.length > 0 ? negativeResults : undefined;
+			this.negativeResults = negativeValues.length > 0 ? negativeResults : undefined;
+			necessaryResults = this.lookup.get(necessaryValues);
+			this.necessaryResults = necessaryValues.length > 0 ? necessaryResults : undefined;
 			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)
@@ -442,6 +497,59 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	};
 	output._InputListener = function(e) {
 		this._update(true);
+	};
+	output._GetSortedLookup = function() {
+		var values = this.lookup.GetAll();
+		if(this._targetListElementSortMode === 'numerical') {
+			if(this._targetListElementSortOrderMode === 'normal') {
+				values.SortNumerical();
+			} else {
+				values.SortNumericalReverse();
+			}
+		} else if(this._targetListElementSortOrderMode === 'reverse') {
+			values.reverse();
+		}
+		return values;
+	};
+	output._BuildDatalistValues = function(update) {
+		var values = this._GetSortedLookup();
+		var valuesLength = values.keys.length;
+		var idx = undefined;
+		this._datalistKeys = [];
+		this._datalistValues = [];
+		for(idx = 0; idx < valuesLength; ++idx) {
+			var val = values.keys[idx].replace(/,/g, '\\,');
+			if(val === "") {
+				val = "-";
+			}
+			this._datalistKeys.push(val);
+			this._datalistValues.push( val + " [" + values.values[idx].size.toString() + "]" );
+		}
+		if(update) {
+			this._update(true);
+		} else {
+			this._SetDataList("", "", []);
+		}
+	};
+	output._ToggleSort = function() {
+		if(this._targetListElementSortMode === 'alphabetical') {
+			this._targetListElementSortMode = 'numerical';
+			SetHTMLToText(this.targetListElementSort, "ABC");
+		} else {
+			this._targetListElementSortMode = 'alphabetical';
+			SetHTMLToText(this.targetListElementSort, "123");
+		}
+		this._BuildDatalistValues(true);
+	};
+	output._ToggleOrder = function() {
+		if(this._targetListElementSortOrderMode === 'normal') {
+			this._targetListElementSortOrderMode = 'reverse';
+			SetHTMLToText(this.targetListElementSortOrder, "v");
+		} else {
+			this._targetListElementSortOrderMode = 'normal';
+			SetHTMLToText(this.targetListElementSortOrder, "^");
+		}
+		this._BuildDatalistValues(true);
 	};
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
@@ -493,6 +601,13 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			}
 		}
 	};
+	output._ClickListener = function(e) {
+		if(e.currentTarget === this.targetListElementSort) {
+			this._ToggleSort();
+		} else {
+			this._ToggleOrder();
+		}
+	};
 	output.handleEvent = function(e) {
 		var eType = e.type;
 		if(eType === "input") {
@@ -500,41 +615,8 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		} else if(eType === "keydown") {
 			this._KeyDownListener(e);
 		} else if(eType === "click") {
-			this._ToggleSort(e);
+			this._ClickListener(e);
 		}
-	};
-	output._BuildDatalistValues = function(update) {
-		var values = this.lookup.GetAll();
-		if(this._targetListElementSortMode === 'numerical') {
-			values.SortNumerical();
-		}
-		var valuesLength = values.keys.length;
-		var idx = undefined;
-		this._datalistKeys = [];
-		this._datalistValues = [];
-		for(idx = 0; idx < valuesLength; ++idx) {
-			var val = values.keys[idx].replace(/,/g, '\\,');
-			if(val === "") {
-				val = "-";
-			}
-			this._datalistKeys.push(val);
-			this._datalistValues.push( val + " [" + values.values[idx].size.toString() + "]" );
-		}
-		if(update) {
-			this._update(true);
-		} else {
-			this._SetDataList("", "", []);
-		}
-	};
-	output._ToggleSort = function() {
-		if(this._targetListElementSortMode === 'alphabetical') {
-			this._targetListElementSortMode = 'numerical';
-			SetHTMLToText(this._targetListElementSort, "ABC");
-		} else {
-			this._targetListElementSortMode = 'alphabetical';
-			SetHTMLToText(this._targetListElementSort, "123");
-		}
-		this._BuildDatalistValues(true);
 	};
 	output.init = function(name, listHeight, classes, lookup, manager) {
 		this.targetElementInput = document.createElement('input');
@@ -544,17 +626,17 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this.targetElementInput.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
-		this._targetListElementSort = document.createElement('button');
-		SetHTMLToText(this._targetListElementSort, "123");
-		this._targetListElementSort.addEventListener("click", this, false);
-		this._targetElementInputContainer = document.createElement('div');
-		this._targetElementInputContainer.appendChild(this._targetListElementSort);
-		this._targetElementInputContainer.appendChild( document.createTextNode(" ") );
-		this._targetElementInputContainer.appendChild(this.targetElementInput);
+		this.targetListElementSort = document.createElement('button');
+		SetHTMLToText(this.targetListElementSort, "123");
+		this.targetListElementSort.addEventListener("click", this, false);
+		this.targetListElementSortOrder = document.createElement('button');
+		SetHTMLToText(this.targetListElementSortOrder, "^");
+		this.targetListElementSortOrder.addEventListener("click", this, false);
 		this.targetList = newAutocompleteList(listHeight, classes, this.targetElementInput);
-		this.targetList.relevantTargets.push(this._targetListElementSort);
+		this.targetList.relevantTargets.push(this.targetListElementSort);
+		this.targetList.relevantTargets.push(this.targetListElementSortOrder);
 		this.targetElement = document.createElement('div');
-		this.targetElement.appendChild(this._targetElementInputContainer);
+		this.targetElement.appendChild(this.targetElementInput);
 		this.targetElement.appendChild(this.targetList.targetElement);
 		this.lookup = lookup;
 		this._manager = manager;
