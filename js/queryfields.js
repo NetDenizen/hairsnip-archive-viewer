@@ -275,9 +275,10 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementInput = undefined;
-	output._targetElementInputContainer = undefined;
-	output._targetListElementSort = undefined;
+	output.targetListElementSort = undefined;
 	output._targetListElementSortMode = 'alphabetical';
+	output.targetListElementSortOrder = undefined;
+	output._targetListElementSortOrderMode = 'normal';
 	output.targetList = undefined;
 	output.lookup = undefined;
 	output._manager = undefined;
@@ -443,6 +444,59 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._InputListener = function(e) {
 		this._update(true);
 	};
+	output._GetSortedLookup = function() {
+		var values = this.lookup.GetAll();
+		if(this._targetListElementSortMode === 'numerical') {
+			if(this._targetListElementSortOrderMode === 'normal') {
+				values.SortNumerical();
+			} else {
+				values.SortNumericalReverse();
+			}
+		} else if(this._targetListElementSortOrderMode === 'reverse') {
+			values.reverse();
+		}
+		return values;
+	};
+	output._BuildDatalistValues = function(update) {
+		var values = this._GetSortedLookup();
+		var valuesLength = values.keys.length;
+		var idx = undefined;
+		this._datalistKeys = [];
+		this._datalistValues = [];
+		for(idx = 0; idx < valuesLength; ++idx) {
+			var val = values.keys[idx].replace(/,/g, '\\,');
+			if(val === "") {
+				val = "-";
+			}
+			this._datalistKeys.push(val);
+			this._datalistValues.push( val + " [" + values.values[idx].size.toString() + "]" );
+		}
+		if(update) {
+			this._update(true);
+		} else {
+			this._SetDataList("", "", []);
+		}
+	};
+	output._ToggleSort = function() {
+		if(this._targetListElementSortMode === 'alphabetical') {
+			this._targetListElementSortMode = 'numerical';
+			SetHTMLToText(this.targetListElementSort, "ABC");
+		} else {
+			this._targetListElementSortMode = 'alphabetical';
+			SetHTMLToText(this.targetListElementSort, "123");
+		}
+		this._BuildDatalistValues(true);
+	};
+	output._ToggleOrder = function() {
+		if(this._targetListElementSortOrderMode === 'normal') {
+			this._targetListElementSortOrderMode = 'reverse';
+			SetHTMLToText(this.targetListElementSortOrder, "v");
+		} else {
+			this._targetListElementSortOrderMode = 'normal';
+			SetHTMLToText(this.targetListElementSortOrder, "^");
+		}
+		this._BuildDatalistValues(true);
+	};
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
 			var fullVal = this.targetElementInput.value;
@@ -493,6 +547,13 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			}
 		}
 	};
+	output._ClickListener = function(e) {
+		if(e.currentTarget === this.targetListElementSort) {
+			this._ToggleSort();
+		} else {
+			this._ToggleOrder();
+		}
+	};
 	output.handleEvent = function(e) {
 		var eType = e.type;
 		if(eType === "input") {
@@ -500,41 +561,8 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		} else if(eType === "keydown") {
 			this._KeyDownListener(e);
 		} else if(eType === "click") {
-			this._ToggleSort(e);
+			this._ClickListener(e);
 		}
-	};
-	output._BuildDatalistValues = function(update) {
-		var values = this.lookup.GetAll();
-		if(this._targetListElementSortMode === 'numerical') {
-			values.SortNumerical();
-		}
-		var valuesLength = values.keys.length;
-		var idx = undefined;
-		this._datalistKeys = [];
-		this._datalistValues = [];
-		for(idx = 0; idx < valuesLength; ++idx) {
-			var val = values.keys[idx].replace(/,/g, '\\,');
-			if(val === "") {
-				val = "-";
-			}
-			this._datalistKeys.push(val);
-			this._datalistValues.push( val + " [" + values.values[idx].size.toString() + "]" );
-		}
-		if(update) {
-			this._update(true);
-		} else {
-			this._SetDataList("", "", []);
-		}
-	};
-	output._ToggleSort = function() {
-		if(this._targetListElementSortMode === 'alphabetical') {
-			this._targetListElementSortMode = 'numerical';
-			SetHTMLToText(this._targetListElementSort, "ABC");
-		} else {
-			this._targetListElementSortMode = 'alphabetical';
-			SetHTMLToText(this._targetListElementSort, "123");
-		}
-		this._BuildDatalistValues(true);
 	};
 	output.init = function(name, listHeight, classes, lookup, manager) {
 		this.targetElementInput = document.createElement('input');
@@ -544,17 +572,17 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this.targetElementInput.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
-		this._targetListElementSort = document.createElement('button');
-		SetHTMLToText(this._targetListElementSort, "123");
-		this._targetListElementSort.addEventListener("click", this, false);
-		this._targetElementInputContainer = document.createElement('div');
-		this._targetElementInputContainer.appendChild(this._targetListElementSort);
-		this._targetElementInputContainer.appendChild( document.createTextNode(" ") );
-		this._targetElementInputContainer.appendChild(this.targetElementInput);
+		this.targetListElementSort = document.createElement('button');
+		SetHTMLToText(this.targetListElementSort, "123");
+		this.targetListElementSort.addEventListener("click", this, false);
+		this.targetListElementSortOrder = document.createElement('button');
+		SetHTMLToText(this.targetListElementSortOrder, "^");
+		this.targetListElementSortOrder.addEventListener("click", this, false);
 		this.targetList = newAutocompleteList(listHeight, classes, this.targetElementInput);
-		this.targetList.relevantTargets.push(this._targetListElementSort);
+		this.targetList.relevantTargets.push(this.targetListElementSort);
+		this.targetList.relevantTargets.push(this.targetListElementSortOrder);
 		this.targetElement = document.createElement('div');
-		this.targetElement.appendChild(this._targetElementInputContainer);
+		this.targetElement.appendChild(this.targetElementInput);
 		this.targetElement.appendChild(this.targetList.targetElement);
 		this.lookup = lookup;
 		this._manager = manager;

@@ -431,6 +431,14 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			var query = document.createElement("td");
 			var occurrence = document.createElement("td");
 			heading.innerHTML = names[idx];
+			if( managers[idx].hasOwnProperty('targetListElementSort') ) {
+				heading.appendChild( document.createTextNode(" ") );
+				heading.appendChild(managers[idx].targetListElementSort);
+			}
+			if( managers[idx].hasOwnProperty('targetListElementSortOrder') ) {
+				heading.appendChild( document.createTextNode(" ") );
+				heading.appendChild(managers[idx].targetListElementSortOrder);
+			}
 			headings.appendChild(heading);
 			if( managers[idx].hasOwnProperty("targetMinElement") ) {
 				query.appendChild(managers[idx].targetMinElement);
