@@ -33,7 +33,7 @@ In fields 6, 7, 9-12, and 16-24 `-` represents a search for an empty (blank) str
 
 In fields 6, 7, 9-11, 16-21, 23, and 24, wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option.
 
-These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected. The order of the list may be toggled between alphabetical and number of occurrences, by the respective 'ABC' and '123'settings of the relevant button.
+These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected. The order of the list may be toggled between alphabetical and number of occurrences, by the respective 'ABC' and '123' settings of the relevant button.
 
 Fields 13-15 may also have multiple options, each separated by a comma. Here, an option is a single number, or a range. A range is two numbers separated by a `-`, their order being irrelevant. If either of these numbers is left out, the maximum or minimum is available is assumed.
 
@@ -71,7 +71,7 @@ Underneath every field, the number of selected options is displayed, and if ther
 
   * 4.\* is the newest format, and represents stories up to the end of the sites in 2016. They were frequently represented by \*.aspx files, with distinct, individual names.
 
-12. Select stories by keywords contained in the author-added archive comments. Will likely only be for format 0.\* stories.
+12. Select stories by case-insensitive keywords contained in the author-added archive comments. Will likely only be for format 0.\* stories.
 
 13. Select stories by the number of views. Only applies to format 3\*-4.\* stories.
 
@@ -91,13 +91,13 @@ Underneath every field, the number of selected options is displayed, and if ther
 
 21. Select stories by email addresses associated with an author, whether on their profile, or in the story info itself. Certain email addresses included in the body of the story, may not be retrieved.
 
-22. Select stories by keywords in the description in the author's profile. Only existed in limited use for format 2.\*-3.\* stories.
+22. Select stories by case-insensitive keywords in the description in the author's profile. Only existed in limited use for format 2.\*-3.\* stories.
 
 23. Select stories by their listed origin site. Only 'Haircut Story Archive' should be available, and only for format 4.\*.
 
 24. Select stories by their related tags. Note that tags were separated by comma, but commas were not consistently used in the original website, which might produce some odd options. Only applies to format 4.\* stories.
 
-25. Select stories by keywords in the body, or actual contents of the story itself.
+25. Select stories by case-insensitive keywords in the body, or actual contents of the story itself.
 
 26. Set the number of results available in each page. Must be a natural number greater than 0. Invalid entries will be replaced by 1.
 
