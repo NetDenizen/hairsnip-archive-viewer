@@ -111,14 +111,16 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	};
 	output._StoryIdxHasNecessaryValues = function(queryIdx, storyIdx) {
 		var output = true;
-		var necessaryValues = this.queryManagerNecessaryResultsLookup[queryIdx].keys;
-		var necessaryValuesLength = necessaryValues.length;
-		var results = new Set( this.queryManagerLookup[queryIdx].lookup.GetReverse(storyIdx) );
-		var idx = undefined;
-		for(idx = 0; idx < necessaryValuesLength; ++idx) {
-			if( !results.has(necessaryValues[idx]) ) {
-				output = false;
-				break;
+		if(this.queryManagerNecessaryResultsLookup[queryIdx] !== undefined) {
+			var necessaryValues = this.queryManagerNecessaryResultsLookup[queryIdx].keys;
+			var necessaryValuesLength = necessaryValues.length;
+			var results = new Set( this.queryManagerLookup[queryIdx].lookup.GetReverse(storyIdx) );
+			var idx = undefined;
+			for(idx = 0; idx < necessaryValuesLength; ++idx) {
+				if( !results.has(necessaryValues[idx]) ) {
+					output = false;
+					break;
+				}
 			}
 		}
 		return output;

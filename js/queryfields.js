@@ -51,23 +51,31 @@ function newFulltextSearcher(name, searcher, manager) {
 	output.edited = false;
 	output.index = {};
 	output.results = undefined;
+	output.negativeResults = undefined;
 
 	output._ParseKeywords = function() {
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
 		var idx = undefined;
 		this.results = newIdRecord([], []);
+		this.negativeResults = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
+			var usedResults = this.results;
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
+			if( kw.startsWith("-") ) {
+				usedResults = this.negativeResults;
+				kw = kw.slice(1, kw.length);
+			}
 			if( !this.index.hasOwnProperty(kw) ) {
 				this.index[kw] = this.searcher.LookupBody('"' + kw + '"');
 			}
-			this.results.extend(this.index[kw]);
+			usedResults.extend(this.index[kw]);
 		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.negativeResults = undefined;
 		} else {
 			this._ParseKeywords();
 		}
