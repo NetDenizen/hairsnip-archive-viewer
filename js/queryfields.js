@@ -58,9 +58,9 @@ function newFulltextSearcher(name, searcher, manager) {
 		var idx = undefined;
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
-			var kw = keywords[idx].trim().replace(/\\,/g, ',');
+			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
 			if( !this.index.hasOwnProperty(kw) ) {
-				this.index[kw] = this.searcher.LookupBody(kw);
+				this.index[kw] = this.searcher.LookupBody('"' + kw + '"');
 			}
 			this.results.extend(this.index[kw]);
 		}
