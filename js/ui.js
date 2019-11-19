@@ -499,7 +499,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this.bodyManager = newFulltextSearcher("BodyQuery", this.searcher, this);
 
 		// dateSearcher
-		this.posixdateManager = newDateSearcher("MinDateQuery", "MaxDateQuery", this.searcher.posixdateLookup, this);
+		this.posixdateManager = newDateSearcher("DateQuery", this.searcher.posixdateLookup, this);
 
 		// rangeSearcher
 		this.ratingManager = newRangeSearcher("RatingQuery", this.searcher.ratingLookup, this);

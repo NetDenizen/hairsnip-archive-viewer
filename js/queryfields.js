@@ -192,53 +192,6 @@ function newKeywordSearcher(name, lookup, manager) {
 	return output;
 }
 
-function newDateSearcher(minName, maxName, lookup, manager) {
-	var output = {};
-	output.targetMinElement = undefined;
-	output.targetMaxElement = undefined;
-	output.lookup = undefined;
-	output._manager = undefined;
-	output.edited = false;
-	output.results = undefined;
-
-	output._ParseDate = function() {
-		var minDateTime = ( this.targetMinElement.valueAsDate === null ? new Date(1970, 0, 1, 0, 0, 0).getTime() : this.targetMinElement.valueAsDate.getTime() ) / 1000;
-		var maxDateTime = ( this.targetMaxElement.valueAsDate === null ? new Date(2038, 0, 19, 3, 14, 7).getTime() : this.targetMaxElement.valueAsDate.getTime() ) / 1000;
-		if(minDateTime <= maxDateTime) {
-			this.results = this.lookup.GetNumericalRange(minDateTime, maxDateTime);
-		} else {
-			this.results = this.lookup.GetNumericalRange(maxDateTime, minDateTime);
-		}
-	};
-	output._InputListener = function(e) {
-		if(this.targetMinElement.valueAsDate === null && this.targetMaxElement.valueAsDate === null) {
-			this.results = undefined;
-		} else {
-			this._ParseDate();
-		}
-		this.edited = true;
-		this._manager.UpdateSearchCallback(this._manager);
-	};
-	output.handleEvent = function(e) {
-		this._InputListener(e);
-	};
-	output._MakeInputElement = function(name) {
-		var inputElement = document.createElement('input');
-		inputElement.setAttribute("type", "date");
-		inputElement.setAttribute("id", name);
-		inputElement.addEventListener("input", this, false);
-		return inputElement;
-	};
-	output.init = function(minName, maxName, lookup, manager) {
-		this.targetMinElement = this._MakeInputElement(minName);
-		this.targetMaxElement = this._MakeInputElement(maxName);
-		this.lookup = lookup;
-		this._manager = manager;
-	};
-	output.init(minName, maxName, lookup, manager);
-	return output;
-}
-
 function newRangeSearcher(name, lookup, manager) {
 	var output = {};
 	output.targetElement = undefined;
@@ -304,6 +257,62 @@ function newRangeSearcher(name, lookup, manager) {
 		this._manager = manager;
 	};
 	output.init(name, lookup, manager);
+	return output;
+}
+
+function newDateSearcher(name, lookup, manager) {
+	var output = newRangeSearcher(name, lookup, manager);
+	output.negativeResults = undefined;
+	output._ExtractValues = function(dateString) {
+		var output = newIdRecord([], []);
+		var parsed = chrono.parse(dateString);
+		var parsedLength = parsed.length;
+		var idx = undefined;
+		for(idx = 0; idx < parsedLength; ++idx) {
+			var pair = [( parsed[idx].start === null || parsed[idx].start === undefined ? new Date(1970, 0, 1, 0, 0, 0).getTime() : parsed[idx].start.date().getTime() ) / 1000,
+					    ( parsed[idx].end === null || parsed[idx].end === undefined ? new Date(2038, 0, 19, 3, 14, 7).getTime() : parsed[idx].end.date().getTime() ) / 1000];
+			if(pair[1] < pair[0]) {
+				var tmp = pair[0];
+				pair[0] = pair[1];
+				pair[1] = pair[0];
+			}
+			output.extend( this.lookup.GetNumericalRange(pair[0], pair[1]) );
+		}
+		return output;
+	};
+	output._ParseRanges = function() {
+		var values = this.targetElement.value.split(",");
+		var valuesLength = values.length;
+		var idx = undefined;
+		this.results = newIdRecord([], []);
+		this.negativeResults = newIdRecord([], []);
+		for(idx = 0; idx < valuesLength; ++idx) {
+			var vTrimmed = values[idx].trim();
+			if( vTrimmed.startsWith('-') ) {
+				vTrimmed = vTrimmed.slice(1, vTrimmed.length);
+				this.negativeResults.extend( this._ExtractValues(vTrimmed) );
+			} else {
+				this.results.extend( this._ExtractValues(vTrimmed) );
+			}
+		}
+		if(this.results.AllValues().length === 0) {
+			this.results = undefined;
+		}
+		if(this.negativeResults.AllValues().length === 0) {
+			this.negativeResults = undefined;
+		}
+	};
+	output._InputListener = function(e) {
+		if(this.targetElement.value === "") {
+			this.results = undefined;
+			this.negativeResults = undefined;
+		} else {
+			this._ParseRanges();
+		}
+		this.edited = true;
+		this._manager.UpdateSearchCallback(this._manager);
+	};
+	output.targetElement.setAttribute("placeholder", "<date range>[,...]");
 	return output;
 }
 
