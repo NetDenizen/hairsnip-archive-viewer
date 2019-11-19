@@ -21,6 +21,11 @@ button:hover {
 	color: #030303;
 }
 
+table.SearchWidgets {
+	white-space: normal;
+	text-align: center;
+}
+
 .border {
 	border: #030303 solid thin;
 }

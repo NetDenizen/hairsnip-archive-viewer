@@ -480,6 +480,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this.queryManagerNecessaryResultsLookup.push(undefined);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
+		table.className = 'SearchWidgets';
 		table.appendChild(headings);
 		table.appendChild(queries);
 		table.appendChild(occurrences);
