@@ -62,10 +62,8 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 
 	output._allStoryIndexes = undefined;
 	output._storyIndexes = undefined;
-	//_currentStoryIndex = undefined;
 
 	output._resultsPerPageTarget = undefined;
-	//_defaultResultsPerPage = undefined;
 	output._resultsPerPage = undefined;
 
 	output._pageNumberTarget = undefined;
@@ -137,13 +135,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQueryTarget = function(idx) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
 		var targetString = "";
-		//if(this.queryManagerNecessaryResultsLookup[idx] !== undefined) {
-		//	targetString += ("(+" + this.queryManagerNecessaryResultsLookup[idx].AllValues().length.toString() + ") ");
-		//}
-		//TODO: Make this work
-		//if(this.queryManagerNegativeResultsLookup[idx] !== undefined) {
-		//	targetString += (" (-" + this.queryManagerNegativeResultsLookup[idx].size.toString() + ")");
-		//}
 		if(this.queryManagerResultsLookup[idx] !== undefined) {
 			targetString += this.queryManagerResultsLookup[idx].size.toString();
 		}
@@ -237,7 +228,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		}
 		item.appendChild(titleItem);
 		item.appendChild(infoItem);
-		// TODO: Fugly code... make it less fugly... maybe.
+		// TODO: Fugly code... make it less fugly... maybe..... eventually....... ugh
 		// Hideable items
 		if(comments !== "") {
 			var commentsItem = document.createElement("p"); // Comments

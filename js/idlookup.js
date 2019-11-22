@@ -68,6 +68,15 @@ function newIdRecord(keys, values) {
 		}
 		return Array.from(output);
 	};
+	output._AddToReverseLookup = function(v, k) {
+		var vString = "v" + v.toString();
+		var thisReverseLookup = this.reverseLookup;
+		if( thisReverseLookup.hasOwnProperty(vString) ) {
+			thisReverseLookup[vString].push(k);
+		} else {
+			thisReverseLookup[vString] = [k];
+		}
+	}
 	output.ExtendRaw = function(keys, values) {
 		var thisLookup = this.lookup;
 		var thisReverseLookup = this.reverseLookup;
@@ -87,26 +96,14 @@ function newIdRecord(keys, values) {
 				thisLookup[k] = vSet;
 				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
 					var v = vArray[vIdx];
-					var vString = "v" + v.toString();
-					if( thisReverseLookup.hasOwnProperty(vString) ) {
-						thisReverseLookup[vString].push(k);
-					} else {
-						thisReverseLookup[vString] = [k];
-					}
+					this._AddToReverseLookup(v, k);
 				}
 			} else {
 				var found = thisLookup[k];
-				var vLength = v.length;
-				var vIdx = undefined;
 				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
 					var v = vArray[vIdx];
-					var vString = "v" + v.toString();
 					found.add(v);
-					if( thisReverseLookup.hasOwnProperty(vString) ) {
-						thisReverseLookup[vString].push(k);
-					} else {
-						thisReverseLookup[vString] = [k];
-					}
+					this._AddToReverseLookup(v, k);
 				}
 			}
 		}
@@ -136,7 +133,7 @@ function newIdRecord(keys, values) {
 					for(reverseKeysIdx = 0; reverseKeysIdx < reverseKeysLength; ++reverseKeysIdx) {
 						var k = reverseKeys[reverseKeysIdx];
 						var vSet = thisLookup[k];
-						vSet.delete(v); //TODO: Make sure this reference works.
+						vSet.delete(v);
 						if(vSet.size === 0) {
 							thisKeys = thisKeys.splice(thisKeys.indexOf(k), 1);
 							thisValues = thisValues.splice(thisKeys.indexOf(k), 1);
@@ -148,9 +145,6 @@ function newIdRecord(keys, values) {
 			}
 		}
 	};
-	//output.negate = function(record) {
-	//	this.NegateRaw(record.values);
-	//};
 	output.ExtendRaw(keys, values);
 	return output;
 }
@@ -169,17 +163,10 @@ function newIdLookup() {
 		return this._GetKey(this._keys[idx]);
 	};
 	output._GetIdxRange = function(startIdx, endIdx) {
-		var first = true;
-		var output = undefined;
+		var output = newIdRecord([], []);
 		var idx = undefined;
 		for(idx = startIdx; idx < endIdx; ++idx) {
-			if(first) {
-				output = this._GetIdx(idx);
-				first = false;
-			} else {
-				var tmp = this._GetIdx(idx);
-				output.ExtendRaw(tmp.keys, tmp.values);
-			}
+			output.extend( this._GetIdx(idx) );
 		}
 		return output;
 	};

@@ -18,18 +18,15 @@ function newChecksumSearcher(name, lookup, manager) {
 			var cs = checksums[idx].trim();
 			if( cs.startsWith("-") ) {
 				if(!encounteredValue) {
-					encounteredValue = true;
 					this.results = this.lookup.GetAll();
 				}
 				this.results.NegateValues(lookup.get( cs.slice(1, cs.length).trim() ).values);
 			} else {
-				if(!encounteredValue) {
-					encounteredValue = true;
-				}
 				this.results.extend( lookup.get(cs) );
 			}
+			encounteredValue = true;
 		}
-		if(!encounteredValue && this.results.AllValues.length === 0) {
+		if(this.results.AllValues().length === 0) {
 			this.results = undefined;
 		}
 	};
@@ -67,6 +64,16 @@ function newFulltextSearcher(name, searcher, manager) {
 	output.index = {};
 	output.results = undefined;
 
+	output._AddToIndex = function(kw) {
+		var found;
+		if( !this.index.hasOwnProperty(kw) ) {
+			found = this.searcher.LookupBody('"' + kw + '"');
+			this.index[kw] = found;
+		} else {
+			found = this.index[kw];
+		}
+		return found;
+	};
 	output._ParseKeywords = function() {
 		var encounteredValue = false;
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
@@ -78,22 +85,13 @@ function newFulltextSearcher(name, searcher, manager) {
 			if( kw.startsWith("-") ) {
 				kw = kw.slice(1, kw.length);
 				if(!encounteredValue) {
-					encounteredValue = true;
 					this.results = this.searcher.titleLookup.GetAll();
 				}
-				if( !this.index.hasOwnProperty(kw) ) {
-					this.index[kw] = this.searcher.LookupBody('"' + kw + '"');
-				}
-				this.results.NegateValues(this.index[kw].values);
+				this.results.NegateValues(this._AddToIndex(kw).values);
 			} else {
-				if(!encounteredValue) {
-					encounteredValue = true;
-				}
-				if( !this.index.hasOwnProperty(kw) ) {
-					this.index[kw] = this.searcher.LookupBody('"' + kw + '"');
-				}
-				this.results.extend(this.index[kw]);
+				this.results.extend( this._AddToIndex(kw) );
 			}
+			encounteredValue = true;
 		}
 		if(this.results.AllValues().length === 0) {
 			this.results = undefined;
@@ -133,6 +131,20 @@ function newKeywordSearcher(name, lookup, manager) {
 	output.index = {};
 	output.results = undefined;
 
+	output._AddToIndex = function(kw) {
+		var found;
+		if( !this.index.hasOwnProperty(kw) ) {
+			if(kw === '-') {
+				found = this.lookup.get('');
+			} else {
+				found = this.lookup.GetFuzzy(kw);
+			}
+			this.index[kw] = found;
+		} else {
+			found = this.index[kw];
+		}
+		return found;
+	};
 	output._ParseKeywords = function() {
 		var encounteredValue = false;
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
@@ -144,30 +156,13 @@ function newKeywordSearcher(name, lookup, manager) {
 			if( kw.startsWith("-") ) {
 				kw = kw.slice(1, kw.length);
 				if(!encounteredValue) {
-					encounteredValue = true;
 					this.results = this.lookup.GetAll();
 				}
-				if( !this.index.hasOwnProperty(kw) ) {
-					if(kw === '-') {
-						this.index[kw] = this.lookup.get('');
-					} else {
-						this.index[kw] = this.lookup.GetFuzzy(kw);
-					}
-				}
-				this.results.NegateValues(this.index[kw].values);
+				this.results.NegateValues(this._AddToIndex(kw).values);
 			} else {
-				if(!encounteredValue) {
-					encounteredValue = true;
-				}
-				if( !this.index.hasOwnProperty(kw) ) {
-					if(kw === '-') {
-						this.index[kw] = this.lookup.get('');
-					} else {
-						this.index[kw] = this.lookup.GetFuzzy(kw);
-					}
-				}
-				this.results.extend(this.index[kw]);
+				this.results.extend( this._AddToIndex(kw) );
 			}
+			encounteredValue = true;
 		}
 		if(this.results.AllValues().length === 0) {
 			this.results = undefined;
@@ -296,16 +291,13 @@ function newDateSearcher(name, lookup, manager) {
 			if( vTrimmed.startsWith('-') ) {
 				vTrimmed = vTrimmed.slice(1, vTrimmed.length);
 				if(!encounteredValue) {
-					encounteredValue = true;
 					this.results = this.lookup.GetAll();
 				}
 				this.results.NegateValues(this._ExtractValues(vTrimmed).values);
 			} else {
-				if(!encounteredValue) {
-					encounteredValue = true;
-				}
 				this.results.extend( this._ExtractValues(vTrimmed) );
 			}
+			encounteredValue = true;
 		}
 		if(this.results.AllValues().length === 0) {
 			this.results = undefined;
@@ -478,68 +470,53 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	};
 	output._ParseKeywords = function() {
 		var fullValue = this.targetElementInput.value;
-		if(fullValue === "") {
-			this.results = undefined;
-			this._SetDataList("", "", []);
-		} else {
-			this.results = newIdRecord([], []);
-			var encounteredValue = false;
-			var necessaryResults = undefined;
-			var necessaryValues = [];
-			var searchValues = [];
-			var currentValue = undefined;
-			var values = SplitUnescapedCommas(fullValue);
-			var valuesLength = values.length;
-			var idx = undefined;
-			for(idx = 0; idx < valuesLength; ++idx) {
-				var searchValue = values[idx].trim();
-				currentValue = searchValue;
-				if(searchValue === "-") {
-					if(!encounteredValue) {
-						encounteredValue = true;
-					}
-					this.results.extend( this.lookup.get("") );
-				} else if(searchValue === "--") {
-					if(!encounteredValue) {
-						encounteredValue = true;
-						this.results = this.lookup.GetAll();
-					}
-					this.results.NegateValues(this.lookup.get("").values);
-				} else if( searchValue.startsWith("-") ) {
-					if(!encounteredValue) {
-						encounteredValue = true;
-						this.results = this.lookup.GetAll();
-					}
-					searchValue = searchValue.slice(1, searchValue.length);
-					this.results.NegateValues(this.lookup.get( this._MatchGlob(searchValue) ).values);
-				} else if( searchValue.startsWith("+") ) {
-					var glob;
-					searchValue = searchValue.slice(1, searchValue.length);
-					glob = this._MatchGlob(searchValue);
-					necessaryValues = necessaryValues.concat(glob);
-					if(!encounteredValue) {
-						encounteredValue = true;
-					}
-					searchValue = searchValue.slice(1, searchValue.length);
-					this.results.extend( this.lookup.get(glob) );
-				} else if(searchValue !== "") {
-					if(!encounteredValue) {
-						encounteredValue = true;
-					}
-					this.results.extend( this.lookup.get( this._MatchGlob(searchValue) ) );
+		var encounteredValue = false;
+		var necessaryResults = undefined;
+		var necessaryValues = [];
+		var searchValues = [];
+		var currentValue = undefined;
+		var values = SplitUnescapedCommas(fullValue);
+		var valuesLength = values.length;
+		var idx = undefined;
+		this.results = newIdRecord([], []);
+		for(idx = 0; idx < valuesLength; ++idx) {
+			var searchValue = values[idx].trim();
+			currentValue = searchValue;
+			if(searchValue === "-") {
+				this.results.extend( this.lookup.get("") );
+			} else if(searchValue === "--") {
+				if(!encounteredValue) {
+					this.results = this.lookup.GetAll();
 				}
-				searchValues.push(searchValue);
+				this.results.NegateValues(this.lookup.get("").values);
+			} else if( searchValue.startsWith("-") ) {
+				if(!encounteredValue) {
+					this.results = this.lookup.GetAll();
+				}
+				searchValue = searchValue.slice(1, searchValue.length);
+				this.results.NegateValues(this.lookup.get( this._MatchGlob(searchValue) ).values);
+			} else if( searchValue.startsWith("+") ) {
+				var glob;
+				searchValue = searchValue.slice(1, searchValue.length);
+				glob = this._MatchGlob(searchValue);
+				necessaryValues = necessaryValues.concat(glob);
+				searchValue = searchValue.slice(1, searchValue.length);
+				this.results.extend( this.lookup.get(glob) );
+			} else if(searchValue !== "") {
+				this.results.extend( this.lookup.get( this._MatchGlob(searchValue) ) );
 			}
-			necessaryResults = this.lookup.get(necessaryValues);
-			this.necessaryResults = necessaryValues.length > 0 ? necessaryResults : undefined;
-			if(this.results.AllValues().length === 0) {
-				this.results = undefined;
-			}
-			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
-							   currentValue.toLowerCase(),
-							   searchValues.slice(0, valuesLength - 1)
-							 );
+			encounteredValue = true;
+			searchValues.push(searchValue);
 		}
+		necessaryResults = this.lookup.get(necessaryValues);
+		this.necessaryResults = necessaryValues.length > 0 ? necessaryResults : undefined;
+		if(this.results.AllValues().length === 0) {
+			this.results = undefined;
+		}
+		this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
+						   currentValue.toLowerCase(),
+						   searchValues.slice(0, valuesLength - 1)
+						 );
 	};
 	output._update = function(selected) {
 		this._ParseKeywords();
