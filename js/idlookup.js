@@ -5,6 +5,7 @@ function newIdRecord(keys, values) {
 	output.keys = [];
 	output.values = [];
 	output.lookup = {};
+	output.reverseLookup = {};
 	output.SortKeyValues = function(compareFunction) {
 		var idx = undefined;
 		var valuesLength = this.values.length;
@@ -69,24 +70,43 @@ function newIdRecord(keys, values) {
 	};
 	output.ExtendRaw = function(keys, values) {
 		var thisLookup = this.lookup;
+		var thisReverseLookup = this.reverseLookup;
 		var thisKeys = this.keys;
 		var thisValues = this.values;
 		var keysLength = keys.length;
 		var idx = 0;
 		for(idx = 0; idx < keysLength; ++idx) {
 			var k = keys[idx];
+			var vArray = Array.from(values[idx]);
+			var vArrayLength = vArray.length;
+			var vIdx = undefined;
 			if( !thisLookup.hasOwnProperty(k) ) {
-				var v = new Set(values[idx]);
+				var vSet = new Set(vArray);
 				thisKeys.push(k);
-				thisValues.push(v);
-				thisLookup[k] = v;
+				thisValues.push(vSet);
+				thisLookup[k] = vSet;
+				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
+					var v = vArray[vIdx];
+					var vString = "v" + v.toString();
+					if( thisReverseLookup.hasOwnProperty(vString) ) {
+						thisReverseLookup[vString].push(k);
+					} else {
+						thisReverseLookup[vString] = [k];
+					}
+				}
 			} else {
-				var v = values[idx];
 				var found = thisLookup[k];
 				var vLength = v.length;
 				var vIdx = undefined;
-				for(vIdx = 0; vIdx < vLength; ++vIdx) {
-					found.add(v[vIdx]);
+				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
+					var v = vArray[vIdx];
+					var vString = "v" + v.toString();
+					found.add(v);
+					if( thisReverseLookup.hasOwnProperty(vString) ) {
+						thisReverseLookup[vString].push(k);
+					} else {
+						thisReverseLookup[vString] = [k];
+					}
 				}
 			}
 		}
@@ -94,6 +114,43 @@ function newIdRecord(keys, values) {
 	output.extend = function(record) {
 		this.ExtendRaw(record.keys, record.values);
 	};
+	output.NegateValues = function(values) {
+		// TODO: Optimize me. Avoid reallocating this array, and using indexOf to find the values
+		var thisLookup = this.lookup;
+		var thisReverseLookup = this.reverseLookup;
+		var thisKeys = this.keys;
+		var thisValues = this.values;
+		var valuesLength = values.length;
+		var idx = 0;
+		for(idx = 0; idx < valuesLength; ++idx) {
+			var vArray = Array.from(values[idx]);
+			var vArrayLength = vArray.length;
+			var vIdx = undefined;
+			for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
+				var v = vArray[vIdx];
+				var vString = "v" + v.toString();
+				if( thisReverseLookup.hasOwnProperty(vString) ) {
+					var reverseKeys = thisReverseLookup[vString];
+					var reverseKeysLength = reverseKeys.length;
+					var reverseKeysIdx = undefined;
+					for(reverseKeysIdx = 0; reverseKeysIdx < reverseKeysLength; ++reverseKeysIdx) {
+						var k = reverseKeys[reverseKeysIdx];
+						var vSet = thisLookup[k];
+						vSet.delete(v); //TODO: Make sure this reference works.
+						if(vSet.size === 0) {
+							thisKeys = thisKeys.splice(thisKeys.indexOf(k), 1);
+							thisValues = thisValues.splice(thisKeys.indexOf(k), 1);
+							delete thisLookup[k];
+						}
+					}
+					delete thisReverseLookup[vString];
+				}
+			}
+		}
+	};
+	//output.negate = function(record) {
+	//	this.NegateRaw(record.values);
+	//};
 	output.ExtendRaw(keys, values);
 	return output;
 }
@@ -112,10 +169,17 @@ function newIdLookup() {
 		return this._GetKey(this._keys[idx]);
 	};
 	output._GetIdxRange = function(startIdx, endIdx) {
-		var output = newIdRecord([], []);
+		var first = true;
+		var output = undefined;
 		var idx = undefined;
 		for(idx = startIdx; idx < endIdx; ++idx) {
-			output.extend( this._GetIdx(idx) );
+			if(first) {
+				output = this._GetIdx(idx);
+				first = false;
+			} else {
+				var tmp = this._GetIdx(idx);
+				output.ExtendRaw(tmp.keys, tmp.values);
+			}
 		}
 		return output;
 	};
