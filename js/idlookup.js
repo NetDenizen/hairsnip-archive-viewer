@@ -135,8 +135,9 @@ function newIdRecord(keys, values) {
 						var vSet = thisLookup[k];
 						vSet.delete(v);
 						if(vSet.size === 0) {
-							thisKeys = thisKeys.splice(thisKeys.indexOf(k), 1);
-							thisValues = thisValues.splice(thisKeys.indexOf(k), 1);
+							var kIndex = thisKeys.indexOf(k);
+							thisKeys = thisKeys.splice(kIndex, 1);
+							thisValues = thisValues.splice(kIndex, 1);
 							delete thisLookup[k];
 						}
 					}
