@@ -350,28 +350,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this._storyDisplayTarget.innerHTML = this.searcher.GetBody(id);
 		}
 	};
-	output.handleEvent = function(e) {
-		if(e.type === "input") {
-			if(e.target == this._pageNumberTarget) {
-				this._UpdatePageNumber(e);
-			} else if(e.target == this._resultsPerPageTarget) {
-				this._UpdateResultsPerPage(e);
-			}
-		} else if(e.type === "click") {
-			this._LoadStory(e.currentTarget);
-		}
-	};
-	//TODO: Remove duplication
-	output.PageNumberRight = function() {
-		if(this._pageNumber < this._maxPageNumber) {
-			this._pageNumber += 1;
-		} else if(this._maxPageNumber >= 0) {
-			this._pageNumber = 0;
-		}
-		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
-		this._UpdateResults();
-	};
-	output.PageNumberLeft = function() {
+	output._PageNumberLeft = function() {
 		if(this._maxPageNumber >= 0) {
 			if( (this._pageNumber > this._maxPageNumber || this._pageNumber <= 0) ) {
 				this._pageNumber = this._maxPageNumber;
@@ -381,6 +360,32 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		}
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
+	};
+	output._PageNumberRight = function() {
+		if(this._pageNumber < this._maxPageNumber) {
+			this._pageNumber += 1;
+		} else if(this._maxPageNumber >= 0) {
+			this._pageNumber = 0;
+		}
+		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
+		this._UpdateResults();
+	};
+	output.handleEvent = function(e) {
+		if(e.type === "input") {
+			if(e.target == this._pageNumberTarget) {
+				this._UpdatePageNumber(e);
+			} else if(e.target == this._resultsPerPageTarget) {
+				this._UpdateResultsPerPage(e);
+			}
+		} else if(e.type === "click") {
+			if(e.currentTarget === this._pageNumberLeftTarget) {
+				this._PageNumberLeft();
+			} else if(e.currentTarget === this._pageNumberRightTarget) {
+				this._PageNumberRight();
+			} else {
+				this._LoadStory(e.currentTarget);
+			}
+		}
 	};
 	output._BuildRangeTitleString = function(prefix, lookup) {
 		var allValues = lookup.GetAll();
@@ -535,7 +540,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		SetHTMLToText(this._pageNumberLeftTarget, "<");
-		this._pageNumberLeftTarget.setAttribute("onclick", this.name + ".PageNumberLeft()");
+		this.pageNumberLeftTarget.addEventListener("click", this, false);
 
 		this._pageNumber = pageNumber;
 		this._pageNumberTarget = document.createElement("input");
@@ -549,7 +554,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 
 		this._pageNumberRightTarget = document.createElement("button");
 		SetHTMLToText(this._pageNumberRightTarget, ">");
-		this._pageNumberRightTarget.setAttribute("onclick", this.name + ".PageNumberRight()");
+		this.pageNumberRightTarget.addEventListener("click", this, false);
 
 		pageNumberTargetContainer.appendChild(this._pageNumberLeftTarget);
 		pageNumberTargetContainer.appendChild( document.createTextNode(" ") );
