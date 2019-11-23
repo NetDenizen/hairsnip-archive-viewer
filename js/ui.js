@@ -538,7 +538,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 
 		this._pageNumberLeftTarget = document.createElement("button");
 		SetHTMLToText(this._pageNumberLeftTarget, "<");
-		this.pageNumberLeftTarget.addEventListener("click", this, false);
+		this._pageNumberLeftTarget.addEventListener("click", this, false);
 
 		this._pageNumber = pageNumber;
 		this._pageNumberTarget = document.createElement("input");
@@ -552,7 +552,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 
 		this._pageNumberRightTarget = document.createElement("button");
 		SetHTMLToText(this._pageNumberRightTarget, ">");
-		this.pageNumberRightTarget.addEventListener("click", this, false);
+		this._pageNumberRightTarget.addEventListener("click", this, false);
 
 		pageNumberTargetContainer.appendChild(this._pageNumberLeftTarget);
 		pageNumberTargetContainer.appendChild( document.createTextNode(" ") );
