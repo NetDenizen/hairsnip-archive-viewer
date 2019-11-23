@@ -1,5 +1,17 @@
 # Changelog
 
+## 2019-11-23.1
+
+* General code cleanup.
+
+* sql.js is upgraded from version 1.0.0 to version 1.0.1 Steps were also taken to reduce the size of the custom-compiled file.
+
+* Massive overhaul to the way search queries are handled, so that changes take effect incrementally, rather than negation (`-`) options always taking precedence. Beneath each field, the total number of selected stories is displayed, with negations and required (`+`) results already factored in.
+
+* Query field names are now center-aligned.
+
+* Date ranges (field 8) are now handled using the Chrono library from: https://github.com/wanasit/chrono
+
 ## 2019-11-18.1
 
 * Move autocomplete list sorting controls to the end of the title of the field.

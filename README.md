@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2019-11-18.1)
+# Hairsnip Archive Viewer (2019-11-23.1)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
@@ -9,11 +9,11 @@ To use the webapp, you will need a modern web browser with support for HTML5, as
 
 Compatibility code to replace some of the functionality has been included, which might help with browsers that have not fully implemented them, but it doesn't cover every feature, and viewing the browser console seems the only reliable way related errors are reported.
 
-Otherwise, the webapp should be entirely self-contained, and include any necessary code. The only third-party dependency, which is already included with the webapp, is https://github.com/kripken/sql.js/ custom-compiled to support FTS5. Please refer to the documentation of that project for building instructions.
+Otherwise, the webapp should be entirely self-contained, and include any necessary code. The only third-party dependencies, which are already included with the webapp, are sql.js from https://github.com/kripken/sql.js/ custom-compiled to support FTS5, and Chrono from https://github.com/wanasit/chrono. Please refer to the documentation of those projects for building instructions.
 
 Then, you may follow these steps.
 
-1. Make sure you are on the master branch of the repository at: `Branch: master` should be present on the left-hand side of the screen.
+1. Make sure you are on the master branch of the repository at: https://github.com/NetDenizen/hairsnip-archive-viewer/tree/master `Branch: master` should be present on the left-hand side of the screen.
 
 2. Click `Clone or download` on the right-hand side of the screen, and `Download ZIP` from the popup box. Save the ZIP archive where you please, and extract it.
 
@@ -21,17 +21,19 @@ Then, you may follow these steps.
 
 4. For instructions on using the software, check [Interface Guide](#interface-guide)
 
+Alternately, you could download any one of the releases from the relevant tab (between 'packages' and '<#> contributor'; replace `<#>` with any number. It is '1' at the time of this revision.)
+
 ## Interface Guide
 
 An example interface of the webapp is as follows; features are annotated with blue numbers.
 
-![screenshot](https://i.imgur.com/i0xkSHJ.png)
+![screenshot](https://i.imgur.com/gwSQMCM.png)
 
-Fields 6, 7, 9-12, and 16-25 may have multiple options, each separated by a comma. Commas themselves may be represented by `\,`.
+Fields 6-12, and 16-25 may have multiple options, each separated by a comma. Commas themselves may be represented by `\,`. Each successive option modifies the result of the last.
 
 In fields 6, 7, 9-12, and 16-24 `-` represents a search for an empty (blank) string, which differs from not filtering any options, by leaving the actual field blank. Options may be preceeded by `-` to negate them, including the blank string, which would be negated with `--`.
 
-Fields 5 and 25 include the aforementioned `-` negation option, but not the empty string representation.
+Fields 5, 8, and 25 include the aforementioned `-` negation option, but not the empty string representation.
 
 In fields 6, 7, 9-11, 16-21, 23, and 24, wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option. Keywords may be preceded by `+` to only match results if they contain them, regardless of whether they match and of the other keywords, or not
 
@@ -43,7 +45,7 @@ Fields 13-15 may also have multiple options, each separated by a comma. Here, an
 
 Fields 8, and 13-15 include their respective minimum and maximum values in their titles.
 
-Underneath every field, the number of selected options is displayed, and if there are negating options, the number of those will be shown in parentheses.
+Underneath every field, the number of selected options is displayed.
 
 1. Field to select the SQLite database to open. It also includes a status indicator, which will display the time taken to load the selected SQLite file. Note that when one is selected, the interface will completely freeze until it is loaded, which should take a few seconds. Only fields 1-4 are visible before that point.
 
@@ -59,7 +61,7 @@ Underneath every field, the number of selected options is displayed, and if ther
 
 7. Select stories by the names of their authors.
 
-8. Select stories by dates between the specified range, order irrelevant.
+8. Use the Chrono library from https://github.com/wanasit/chrono to parse each date in a variety of formats. Ranges may be specified, in addition to individual dates, but note that even if the specific time is not specifed, the date will default to exactly midnight of that day, and other times within that day will not be counted. For this reason, ranges are recommended for most situations.
 
 9. Select stories by the language they were written in.
 
