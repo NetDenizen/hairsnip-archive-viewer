@@ -15,7 +15,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 	output._ResetOptionElements = function() {
 		ClearChildren(this.targetElement);
 		this._optionElements = [];
-	}
+	};
 	output.activate = function() {
 		if(this._optionElements.length > 0 && this.targetElement.style.display == "none") {
 			this.targetElement.style.display = "block";

@@ -231,7 +231,6 @@ function newStorySearcher(_db) {
 		return newIdRecord(outputKeywords, outputIds);
 	};
 	output.GetBody = function(id) {
-		var idNum = parseInt(id, 10);
 		return this._db.exec("SELECT body FROM stories_body WHERE id=" + this._bodyLookup[id])[0]['values'][0];
 	};
 	output.init(_db);

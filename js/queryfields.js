@@ -274,7 +274,7 @@ function newDateSearcher(name, lookup, manager) {
 			if(pair[1] < pair[0]) {
 				var tmp = pair[0];
 				pair[0] = pair[1];
-				pair[1] = pair[0];
+				pair[1] = tmp;
 			}
 			output.extend( this.lookup.GetNumericalRange(pair[0], pair[1]) );
 		}

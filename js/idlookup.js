@@ -76,10 +76,9 @@ function newIdRecord(keys, values) {
 		} else {
 			thisReverseLookup[vString] = [k];
 		}
-	}
+	};
 	output.ExtendRaw = function(keys, values) {
 		var thisLookup = this.lookup;
-		var thisReverseLookup = this.reverseLookup;
 		var thisKeys = this.keys;
 		var thisValues = this.values;
 		var keysLength = keys.length;
