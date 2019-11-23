@@ -430,32 +430,6 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		}
 		this.targetList.update(prefixedKeys, prefixedValues);
 	};
-	output._ParseRanges = function() {
-		var encounteredValue = false;
-		var values = this.targetElement.value.split(",");
-		var valuesLength = values.length;
-		var idx = undefined;
-		this.results = newIdRecord([], []);
-		for(idx = 0; idx < valuesLength; ++idx) {
-			var vTrimmed = values[idx].trim();
-			if( vTrimmed.startsWith('-') ) {
-				vTrimmed = vTrimmed.slice(1, vTrimmed.length);
-				if(!encounteredValue) {
-					encounteredValue = true;
-					this.results = this.lookup.GetAll();
-				}
-				this.results.NegateValues(this._ExtractValues(vTrimmed).values);
-			} else {
-				if(!encounteredValue) {
-					encounteredValue = true;
-				}
-				this.results.extend( this._ExtractValues(vTrimmed) );
-			}
-		}
-		if(this.results.AllValues().length === 0) {
-			this.results = undefined;
-		}
-	};
 	output._ParseKeywords = function() {
 		var fullValue = this.targetElementInput.value;
 		if(fullValue === "") {
