@@ -102,7 +102,7 @@ function newStorySearcher(_db) {
 		this.siteLookup = newIdLookup();
 		this.titleLookup = newIdLookup();
 	};
-	output._PopulateContainers = function() {
+	output._PopulateLookups = function() {
 		var intArrays = this._BuildIntArrayLookup();
 
 		var sha256 = this._db.exec("SELECT id, sha256 FROM stories ORDER BY sha256")[0]['values'];
@@ -206,7 +206,7 @@ function newStorySearcher(_db) {
 	output.init = function(_db) {
 		this._db = _db;
 		this._NewLookups();
-		this._PopulateContainers();
+		this._PopulateLookups();
 		this._SortLookups();
 	};
 	output.LookupBody = function(keywords) {
