@@ -1,4 +1,3 @@
-// TODO: Rewrite onclick to event handler
 "use strict";
 
 var defaultResultsPerPage = 10;
@@ -308,7 +307,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		thisThis._UpdateSearch();
 	};
 	output._UpdatePageNumber = function(e) {
-		//TODO: Optimize
 		var value = Number(this._pageNumberTarget.value);
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._pageNumberTarget.value = (this._pageNumber + 1).toString();

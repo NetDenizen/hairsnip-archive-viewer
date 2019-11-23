@@ -1,6 +1,3 @@
-// TODO: Variable renaming.
-// TODO: Strict typing
-// TODO: constructors capitalize 'new'
 "use strict";
 
 function newStorySearcher(_db) {
