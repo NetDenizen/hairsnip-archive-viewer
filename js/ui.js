@@ -93,9 +93,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 												  new Set( found.results.AllValues() ) :
 												  undefined;
 			if( found.hasOwnProperty("necessaryResults") ) {
-				this.queryManagerNecessaryResultsLookup[idx] = found.necessaryResults !== undefined ?
-															   found.necessaryResults :
-															   undefined;
+				this.queryManagerNecessaryResultsLookup[idx] = found.necessaryResults;
 			}
 			found.edited = false;
 		}
