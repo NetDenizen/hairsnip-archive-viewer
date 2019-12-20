@@ -77,6 +77,7 @@ function newFulltextSearcher(name, searcher, manager) {
 		var keywordsLength = keywords.length;
 		var idx = undefined;
 		this.results = newIdRecord([], []);
+		var necessaryResults = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
 			if( kw.startsWith("-") ) {
@@ -85,15 +86,27 @@ function newFulltextSearcher(name, searcher, manager) {
 					this.results = this.searcher.titleLookup.GetAll();
 				}
 				this.results.NegateValues(this._AddToIndex(kw).values);
+			} else if( kw.startsWith("+") ) {
+				var result = undefined;
+				kw = kw.slice(1, kw.length);
+				result = this._AddToIndex(kw)
+				this.results.extend(result);
+				necessaryResults.extend(result);
 			} else {
 				this.results.extend( this._AddToIndex(kw) );
 			}
 			encounteredValue = true;
 		}
+		if(necessaryResults.AllValues().length > 0) {
+			this.necessaryResults = necessaryResults;
+		} else {
+			this.necessaryResults = undefined;
+		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.necessaryResults = undefined;
 		} else {
 			this._ParseKeywords();
 		}
