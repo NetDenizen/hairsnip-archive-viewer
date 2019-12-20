@@ -103,12 +103,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._StoryIdxHasNecessaryValues = function(queryIdx, storyIdx) {
 		var output = true;
 		if(this.queryManagerNecessaryResultsLookup[queryIdx] !== undefined) {
-			var necessaryValues = this.queryManagerNecessaryResultsLookup[queryIdx].keys;
+			var necessaryValues = this.queryManagerNecessaryResultsLookup[queryIdx].values;
 			var necessaryValuesLength = necessaryValues.length;
-			var results = new Set( this.queryManagerLookup[queryIdx].lookup.GetReverse(storyIdx) );
-			var idx = undefined;
-			for(idx = 0; idx < necessaryValuesLength; ++idx) {
-				if( !results.has(necessaryValues[idx]) ) {
+			var necessaryValuesIdx = undefined;
+			for(necessaryValuesIdx = 0; necessaryValuesIdx < necessaryValuesLength; ++necessaryValuesIdx) {
+				if( !necessaryValues[necessaryValuesIdx].has(storyIdx) ) {
 					output = false;
 					break;
 				}
