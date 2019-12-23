@@ -55,7 +55,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 
 	output.queryManagerLookup = [];
 	output.queryManagerResultsLookup = [];
-	output.queryManagerNecessaryResultsLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
 	output.searcher = undefined;
 
@@ -92,16 +91,13 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this.queryManagerResultsLookup[idx] = found.results !== undefined ?
 												  new Set( found.results.AllValues() ) :
 												  undefined;
-			if( found.hasOwnProperty("necessaryResults") ) {
-				this.queryManagerNecessaryResultsLookup[idx] = found.necessaryResults;
-			}
 			found.edited = false;
 		}
 	};
 	output._StoryIdxHasNecessaryValues = function(queryIdx, storyIdx) {
 		var output = true;
-		if(this.queryManagerNecessaryResultsLookup[queryIdx] !== undefined) {
-			var necessaryValues = this.queryManagerNecessaryResultsLookup[queryIdx].values;
+		if( this.queryManagerLookup[queryIdx].hasOwnProperty("necessaryResults") ) {
+			var necessaryValues = this.queryManagerLookup[queryIdx].necessaryResults.values;
 			var necessaryValuesLength = necessaryValues.length;
 			var necessaryValuesIdx = undefined;
 			for(necessaryValuesIdx = 0; necessaryValuesIdx < necessaryValuesLength; ++necessaryValuesIdx) {
@@ -445,7 +441,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
 			this.queryManagerResultsLookup.push(undefined);
-			this.queryManagerNecessaryResultsLookup.push(undefined);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
 		table.className = 'SearchWidgets';
