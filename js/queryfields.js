@@ -233,44 +233,64 @@ function newRangeSearcher(name, lookup, manager) {
 	output.edited = false;
 	output.results = undefined;
 
-	output._ExtractValues = function(valueString) {
-		var output = [];
+	output._ParseRanges = function() {
+		var encounteredValue = false;
 		var values = valueString.split(",");
 		var valuesLength = values.length;
 		var idx = undefined;
+		this.results = newIdRecord([], []);
+ 		var necessaryResults = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
-			var pair = values[idx].split("-", 2);
+			var pair = [];
+			var result = undefined;
+			var startChar = undefined;
+			if(value.length > 0) {
+				startChar = value.charAt(0);
+				if( value.startsWith('-') || value.startsWith('+') ) {
+					pair = value.slice(1, value.length).split("-", 2);
+				} else {
+					pair = value.split("-", 2);
+				}
+			}
 			if(pair.length === 2) {
 				var pair0 = pair[0].trim();
 				var pair1 = pair[1].trim();
 				pair0 = pair0 !== "" ? pair0 : undefined;
 				pair1 = pair1 !== "" ? pair1 : undefined;
 				if(pair1 < pair0) {
-					output.push([ pair1, pair0 ]);
+					result = this.lookup.GetNumericalRange(pair1, pair0);
 				} else {
-					output.push([ pair0, pair1 ]);
+					result = this.lookup.GetNumericalRange(pair0, pair1);
 				}
 			} else if(pair.length === 1) {
 				var pair0 = pair[0].trim();
 				if(pair0 !== "") {
-					output.push([ pair0, pair0 ]);
+					result = this.lookup.GetNumericalRange(pair0, pair0);
 				}
 			}
+			if(startChar === '-') {
+				if(!encounteredValue) {
+					this.results = this.lookup.GetAll();
+				}
+				this.results.NegateValues(result.values);
+			} else if(startChar === '+') {
+				this.results.extend(result);
+				necessaryResults.extend(result);
+			} else {
+				this.results.extend(result);
+			}
+			encounteredValue = true;
 		}
-		return output;
-	};
-	output._ParseRanges = function() {
-		var values = this._ExtractValues(this.targetElement.value);
-		var valuesLength = values.length;
-		var idx = undefined;
-		this.results = newIdRecord([], []);
-		for(idx = 0; idx < valuesLength; ++idx) {
-			this.results.extend( this.lookup.GetNumericalRange(values[idx][0], values[idx][1]) );
+		if(necessaryResults.AllValues().length > 0) {
+			this.necessaryResults = necessaryResults;
+		} else {
+			this.necessaryResults = undefined;
 		}
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.necessaryResults = undefined;
 		} else {
 			this._ParseRanges();
 		}
