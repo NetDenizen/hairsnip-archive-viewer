@@ -54,7 +54,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output.titleManager = undefined;
 
 	output.queryManagerLookup = [];
-	output.queryManagerResultsLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
 	output.searcher = undefined;
 
@@ -85,15 +84,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText( this._maxPageNumberTarget, " / " + (this._maxPageNumber + 1).toString() );
 		SetHTMLToText( this._storyAmountTarget, " (" + this._storyIndexes.length.toString() + ")" );
 	};
-	output._UpdateSingleQueryData = function(idx) {
-		var found = this.queryManagerLookup[idx];
-		if(found.edited) {
-			this.queryManagerResultsLookup[idx] = found.results !== undefined ?
-												  found.results.AllValuesSet() :
-												  undefined;
-			found.edited = false;
-		}
-	};
 	output._StoryIdxHasNecessaryValues = function(queryIdx, storyIdx) {
 		var output = true;
 		if( this.queryManagerLookup[queryIdx].hasOwnProperty("necessaryResults") &&
@@ -111,9 +101,9 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		return output;
 	};
 	output._UpdateSingleQuery = function(queryIdx) {
-		if(this.queryManagerResultsLookup[queryIdx] !== undefined) {
+		if(this.queryManagerLookup[queryIdx].results !== undefined) {
 			var filteredStoryIndexes = [];
-			var allValues = this.queryManagerResultsLookup[queryIdx];
+			var allValues = this.queryManagerLookup[queryIdx].results.AllValuesSet();
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
@@ -144,8 +134,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var idx = undefined;
 		this._storyIndexes = this._allStoryIndexes.slice(0);
 		for(idx = 0; idx < queryManagerLookupLength; ++idx) {
-			// TODO: Make sure this is right
-			this._UpdateSingleQueryData(idx);
 			this._UpdateSingleQuery(idx);
 			this._UpdateSingleQueryTarget(idx);
 		}
@@ -437,7 +425,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			queries.appendChild(query);
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
-			this.queryManagerResultsLookup.push(undefined);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
 		table.className = 'SearchWidgets';
