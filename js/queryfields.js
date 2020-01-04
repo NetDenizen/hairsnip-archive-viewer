@@ -338,6 +338,7 @@ function newDateSearcher(name, lookup, manager) {
 		var valuesLength = values.length;
 		var idx = undefined;
 		this.results = newIdRecord([], []);
+ 		var necessaryResults = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var vTrimmed = values[idx].trim();
 			if( vTrimmed.startsWith('-') ) {
@@ -346,20 +347,22 @@ function newDateSearcher(name, lookup, manager) {
 					this.results = this.lookup.GetAll();
 				}
 				this.results.NegateValues(this._ExtractValues(vTrimmed).values);
+			} else if( vTrimmed.startsWith('+') ) {
+				var result = undefined;
+				vTrimmed = vTrimmed.slice(1, vTrimmed.length);
+				result = this._ExtractValues(vTrimmed);
+				this.results.extend(result);
+				necessaryResults.extend(result);
 			} else {
 				this.results.extend( this._ExtractValues(vTrimmed) );
 			}
 			encounteredValue = true;
 		}
-	};
-	output._InputListener = function(e) {
-		if(this.targetElement.value === "") {
-			this.results = undefined;
+		if(necessaryResults.AllValues().length > 0) {
+			this.necessaryResults = necessaryResults;
 		} else {
-			this._ParseRanges();
+			this.necessaryResults = undefined;
 		}
-		this.edited = true;
-		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output.targetElement.setAttribute("placeholder", "<date range>[,...]");
 	return output;
