@@ -7,6 +7,7 @@ function newChecksumSearcher(name, lookup, manager) {
 	output._manager = undefined;
 	output.edited = false;
 	output.results = undefined;
+	output.necessaryResults = undefined;
 
 	output._ParseKeywords = function() {
 		var encounteredValue = false;
@@ -14,6 +15,7 @@ function newChecksumSearcher(name, lookup, manager) {
 		var checksumsLength = checksums.length;
 		var idx = undefined;
 		this.results = newIdRecord([], []);
+		var necessaryResults = newIdRecord([], []);
 		for(idx = 0; idx < checksumsLength; ++idx) {
 			var cs = checksums[idx].trim();
 			if( cs.startsWith("-") ) {
@@ -21,10 +23,21 @@ function newChecksumSearcher(name, lookup, manager) {
 					this.results = this.lookup.GetAll();
 				}
 				this.results.NegateValues(lookup.get( cs.slice(1, cs.length).trim() ).values);
+			} else if( cs.startsWith("+") ) {
+				var result = undefined;
+				cs = cs.slice(1, cs.length).trim();
+				result = lookup.get(cs);
+				this.results.extend(result);
+				necessaryResults.extend(result);
 			} else {
 				this.results.extend( lookup.get(cs) );
 			}
 			encounteredValue = true;
+		}
+		if(necessaryResults.AllValues().length > 0) {
+			this.necessaryResults = necessaryResults;
+		} else {
+			this.necessaryResults = undefined;
 		}
 	};
 	output._InputListener = function(e) {
