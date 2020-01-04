@@ -116,8 +116,10 @@ function newIdRecord(keys, values) {
 				var found = thisLookup[k];
 				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
 					var v = vArray[vIdx];
+					if( !thisLookup[k].has(v) ) {
+						this._AddToReverseLookup(v, k);
+					}
 					found.add(v);
-					this._AddToReverseLookup(v, k);
 				}
 			}
 		}
