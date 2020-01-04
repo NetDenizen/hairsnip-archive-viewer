@@ -60,6 +60,7 @@ function newFulltextSearcher(name, searcher, manager) {
 	output.edited = false;
 	output.index = {};
 	output.results = undefined;
+	output.necessaryResults = undefined;
 
 	output._AddToIndex = function(kw) {
 		var found;
@@ -137,6 +138,7 @@ function newKeywordSearcher(name, lookup, manager) {
 	output.edited = false;
 	output.index = {};
 	output.results = undefined;
+	output.necessaryResults = undefined;
 
 	output._AddToIndex = function(kw) {
 		var found;
