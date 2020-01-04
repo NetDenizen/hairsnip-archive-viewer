@@ -431,13 +431,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				heading.appendChild(managers[idx].targetListElementSortOrder);
 			}
 			headings.appendChild(heading);
-			if( managers[idx].hasOwnProperty("targetMinElement") ) {
-				query.appendChild(managers[idx].targetMinElement);
-				query.appendChild( document.createTextNode(" - ") );
-				query.appendChild(managers[idx].targetMaxElement);
-			} else {
-				query.appendChild(managers[idx].targetElement);
-			}
+			query.appendChild(managers[idx].targetElement);
 			queries.appendChild(query);
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
