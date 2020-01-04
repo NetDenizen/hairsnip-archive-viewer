@@ -89,7 +89,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var found = this.queryManagerLookup[idx];
 		if(found.edited) {
 			this.queryManagerResultsLookup[idx] = found.results !== undefined ?
-												  new Set( found.results.AllValues() ) :
+												  found.results.AllValuesSet() :
 												  undefined;
 			found.edited = false;
 		}
