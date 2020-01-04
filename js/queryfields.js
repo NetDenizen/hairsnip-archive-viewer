@@ -235,7 +235,7 @@ function newRangeSearcher(name, lookup, manager) {
 
 	output._ParseRanges = function() {
 		var encounteredValue = false;
-		var values = valueString.split(",");
+		var values = this.targetElement.value.split(",");
 		var valuesLength = values.length;
 		var idx = undefined;
 		this.results = newIdRecord([], []);
@@ -244,12 +244,12 @@ function newRangeSearcher(name, lookup, manager) {
 			var pair = [];
 			var result = undefined;
 			var startChar = undefined;
-			if(value.length > 0) {
-				startChar = value.charAt(0);
-				if( value.startsWith('-') || value.startsWith('+') ) {
-					pair = value.slice(1, value.length).split("-", 2);
+			if(values[idx].length > 0) {
+				startChar = values[idx].charAt(0);
+				if( values[idx].startsWith('-') || values[idx].startsWith('+') ) {
+					pair = values[idx].slice(1, values[idx].length).split("-", 2);
 				} else {
-					pair = value.split("-", 2);
+					pair = values[idx].split("-", 2);
 				}
 			}
 			if(pair.length === 2) {
@@ -268,16 +268,18 @@ function newRangeSearcher(name, lookup, manager) {
 					result = this.lookup.GetNumericalRange(pair0, pair0);
 				}
 			}
-			if(startChar === '-') {
-				if(!encounteredValue) {
-					this.results = this.lookup.GetAll();
+			if(result !== undefined) {
+				if(startChar === '-') {
+					if(!encounteredValue) {
+						this.results = this.lookup.GetAll();
+					}
+					this.results.NegateValues(result.values);
+				} else if(startChar === '+') {
+					this.results.extend(result);
+					necessaryResults.extend(result);
+				} else {
+					this.results.extend(result);
 				}
-				this.results.NegateValues(result.values);
-			} else if(startChar === '+') {
-				this.results.extend(result);
-				necessaryResults.extend(result);
-			} else {
-				this.results.extend(result);
 			}
 			encounteredValue = true;
 		}
