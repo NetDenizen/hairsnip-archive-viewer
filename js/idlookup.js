@@ -6,6 +6,36 @@ function newIdRecord(keys, values) {
 	output.values = [];
 	output.lookup = {};
 	output.reverseLookup = {};
+	output._allValues = undefined;
+	output._edited = false;
+	output._GenerateAllValues = function() {
+		if(this._edited) {
+			var output = new Set();
+			var values = this.values;
+			var valuesLength = values.length;
+			var idx = undefined;
+			for(idx = 0; idx < valuesLength; ++idx) {
+				var iter = values[idx].values();
+				while(true) {
+					var next = iter.next();
+					if(next.done) {
+						break;
+					}
+					output.add(next.value);
+				}
+			}
+			this._allValues = output;
+			this._edited = false;
+		}
+	};
+	output.AllValues = function() {
+		this._GenerateAllValues();
+		return Array.from(this._allValues);
+	};
+	output.AllValuesSet = function() {
+		this._GenerateAllValues();
+		return new Set(this._allValues);
+	};
 	output.SortKeyValues = function(compareFunction) {
 		var idx = undefined;
 		var valuesLength = this.values.length;
@@ -20,6 +50,7 @@ function newIdRecord(keys, values) {
 			this.keys.push(keyValues[idx][0]);
 			this.values.push(keyValues[idx][1]);
 		}
+		this._edited = true;
 	};
 	output.SortNumerical = function() {
 		this.SortKeyValues(function(a, b) {
@@ -50,23 +81,7 @@ function newIdRecord(keys, values) {
 	output.reverse = function() {
 		this.keys = this.keys.reverse();
 		this.values = this.values.reverse();
-	};
-	output.AllValues = function() {
-		var output = new Set();
-		var values = this.values;
-		var valuesLength = values.length;
-		var idx = undefined;
-		for(idx = 0; idx < valuesLength; ++idx) {
-			var iter = values[idx].values();
-			while(true) {
-				var next = iter.next();
-				if(next.done) {
-					break;
-				}
-				output.add(next.value);
-			}
-		}
-		return Array.from(output);
+		this._edited = true;
 	};
 	output._AddToReverseLookup = function(v, k) {
 		var vString = "v" + v.toString();
@@ -106,6 +121,7 @@ function newIdRecord(keys, values) {
 				}
 			}
 		}
+		this._edited = true;
 	};
 	output.extend = function(record) {
 		this.ExtendRaw(record.keys, record.values);
@@ -144,6 +160,7 @@ function newIdRecord(keys, values) {
 				}
 			}
 		}
+		this._edited = true;
 	};
 	output.ExtendRaw(keys, values);
 	return output;
