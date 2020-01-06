@@ -148,3 +148,13 @@ function range(start, end) {
 	}
 	return output;
 }
+
+function ParseFloatOrNull(value) {
+	var output = undefined;
+	if(value === "NULL") {
+		output = 0.0;
+	} else {
+		output = parseFloat(value);
+	}
+	return output;
+}

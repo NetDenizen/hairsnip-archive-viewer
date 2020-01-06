@@ -386,8 +386,14 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._BuildDateRangeTitleString = function(prefix, lookup) {
 		var allValues = lookup.GetAll();
 		var output = prefix;
+		var minDateIdx = undefined;
+		if(allValues.keys[0] === 'NULL') {
+			minDateIdx = 1;
+		} else {
+			minDateIdx = 0;
+		}
 		if(allValues.keys.length > 0) {
-			var minDate = new Date( parseInt(allValues.keys[0]) * 1000 ).toLocaleDateString(undefined, dateFormatOptions).slice(0, 10);
+			var minDate = new Date( parseInt(allValues.keys[minDateIdx]) * 1000 ).toLocaleDateString(undefined, dateFormatOptions).slice(0, 10);
 			output += (" (" + minDate);
 			if(allValues.keys.length > 1) {
 				output += (" - " +

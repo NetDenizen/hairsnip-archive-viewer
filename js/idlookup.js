@@ -176,7 +176,8 @@ function newIdLookup() {
 	output._all = undefined;
 	output._allChanged = true;
 	output._GetKey = function(key) {
-		return newIdRecord([key], [ Array.from(this._lookup[key]) ]);
+		var cleanKey = key.slice(3);
+		return newIdRecord([cleanKey], [ Array.from(this._lookup[key]) ]);
 	};
 	output._GetIdx = function(idx) {
 		return this._GetKey(this._keys[idx]);
@@ -197,9 +198,18 @@ function newIdLookup() {
 		}
 		return output;
 	};
+	output._GetKeyString = function(key) {
+		var strKey = undefined;
+		if(key === null) {
+			strKey = "_LKNULL";
+		} else {
+			strKey = "LK_" + key.toString();
+		}
+		return strKey;
+	};
 	output._GetSingle = function(key) {
 		var output = newIdRecord([], []);
-		var strKey = key.toString();
+		var strKey = this._GetKeyString(key);
 		if( this._lookup.hasOwnProperty(strKey) ) {
 			output = this._GetKey(strKey);
 		}
@@ -214,7 +224,7 @@ function newIdLookup() {
 		}
 	};
 	output._AddSingle = function(key, item) {
-		var strKey = key.toString();
+		var strKey = this._GetKeyString(key);
 		if( this._lookup.hasOwnProperty(strKey) ) {
 			this._lookup[strKey].add(item);
 		} else {
@@ -233,19 +243,17 @@ function newIdLookup() {
 		var arrayKeyIdx = undefined;
 		for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
 			var k = arrayKey[arrayKeyIdx];
-			if(k !== null) {
-				var arrayItemIdx = undefined;
-				for(arrayItemIdx = 0; arrayItemIdx < arrayItemLength; ++arrayItemIdx) {
-					this._AddSingle(k, arrayItem[arrayItemIdx]);
-				}
+			var arrayItemIdx = undefined;
+			for(arrayItemIdx = 0; arrayItemIdx < arrayItemLength; ++arrayItemIdx) {
+				this._AddSingle(k, arrayItem[arrayItemIdx]);
 			}
 		}
 	};
 	output.sort = function() {
 		this._keys.sort(function(a, b) {
 			var output = 0;
-			var numA = parseFloat(a);
-			var numB = parseFloat(b);
+			var numA = ParseFloatOrNull( a.slice(3) );
+			var numB = ParseFloatOrNull( b.slice(3) );
 			if( !isNaN(numA) && !isNaN(numB) ) {
 				if(numA < numB) {
 					output = -1;
@@ -289,7 +297,7 @@ function newIdLookup() {
 			startNum = parseFloat(start);
 			if( !isNaN(startNum) ) {
 				for(keysIdx = 0; keysIdx < keysLength; ++keysIdx) {
-					var keyFloat = parseFloat(this._keys[keysIdx]);
+					var keyFloat = parseFloat( this._keys[keysIdx].slice(3) );
 					if(!isNaN(keyFloat) && keyFloat >= startNum) {
 						startIdx = keysIdx;
 						break;
@@ -305,7 +313,7 @@ function newIdLookup() {
 			endNum = parseFloat(end);
 			if( !isNaN(endNum) ) {
 				for(keysIdx = keysLength - 1; keysIdx >= 0; --keysIdx) {
-					var keyFloat = parseFloat(this._keys[keysIdx]);
+					var keyFloat = parseFloat( this._keys[keysIdx].slice(3) );
 					if(!isNaN(keyFloat) && keyFloat <= endNum) {
 						endIdx = keysIdx;
 						break;
@@ -347,8 +355,8 @@ function newIdLookup() {
 		var lookupIdx = undefined;
 		for(lookupIdx = 0; lookupIdx < lookupLength; ++lookupIdx) {
 			for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
-				if( this._keys[lookupIdx].toLowerCase().indexOf(arrayKey[arrayKeyIdx].toLowerCase() ) !== -1) {
-					matches.push(this._keys[lookupIdx]);
+				if( this._keys[lookupIdx].slice(3).toLowerCase().indexOf(arrayKey[arrayKeyIdx].toLowerCase() ) !== -1) {
+					matches.push( this._keys[lookupIdx].slice(3) );
 					break;
 				}
 			}
@@ -359,7 +367,13 @@ function newIdLookup() {
 		var output = [];
 		var strItem = item.toString();
 		if( this._lookupReverse.hasOwnProperty(strItem) ) {
+			var idx = undefined;
+			var outputLength = undefined;
 			output = Array.from(this._lookupReverse[strItem]);
+			outputLength = output.length;
+			for(idx = 0; idx < outputLength; ++idx) {
+				output[idx] = output[idx].slice(3);
+			}
 		}
 		return output;
 	};
