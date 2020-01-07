@@ -323,8 +323,18 @@ function newDateSearcher(name, lookup, manager) {
 		var parsedLength = parsed.length;
 		var idx = undefined;
 		for(idx = 0; idx < parsedLength; ++idx) {
-			var pair = [( parsed[idx].start === null || parsed[idx].start === undefined ? new Date(1970, 0, 1, 0, 0, 0).getTime() : parsed[idx].start.date().getTime() ) / 1000,
-					    ( parsed[idx].end === null || parsed[idx].end === undefined ? new Date(2038, 0, 19, 3, 14, 7).getTime() : parsed[idx].end.date().getTime() ) / 1000];
+			var pair = undefined;
+			if(parsed[idx].start === null || parsed[idx].start === undefined) {
+				if(parsed[idx].end === null || parsed[idx].end === undefined) {
+					pair = [new Date(1970, 0, 1, 0, 0, 0).getTime() / 1000, new Date(2038, 0, 19, 3, 14, 7).getTime() / 1000];
+				} else {
+					pair = [parsed[idx].end.date().getTime() / 1000, parsed[idx].end.date().getTime() / 1000];
+				}
+			} else if(parsed[idx].end === null || parsed[idx].end === undefined) {
+				pair = [parsed[idx].start.date().getTime() / 1000, parsed[idx].start.date().getTime() / 1000];
+			} else {
+				pair = [parsed[idx].start.date().getTime() / 1000, parsed[idx].end.date().getTime() / 1000];
+			}
 			if(pair[1] < pair[0]) {
 				var tmp = pair[0];
 				pair[0] = pair[1];
