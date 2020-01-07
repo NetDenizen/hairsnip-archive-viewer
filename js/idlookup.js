@@ -306,7 +306,7 @@ function newIdLookup() {
 		} else {
 			startNum = parseFloat(start);
 			if( !isNaN(startNum) ) {
-				for(keysIdx = 0; keysIdx < keysLength; ++keysIdx) {
+				for(keysIdx = this._keys[0] === '_LKNULL' ? 1 : 0; keysIdx < keysLength; ++keysIdx) {
 					var keyFloat = parseFloat( this._keys[keysIdx].slice(3) );
 					if(!isNaN(keyFloat) && keyFloat >= startNum) {
 						if(keyFloat === startNum) {
