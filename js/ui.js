@@ -367,12 +367,18 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._BuildRangeTitleString = function(prefix, lookup) {
 		var allValues = lookup.GetAll();
 		var output = prefix;
+		var minValueIdx = undefined;
+		if(allValues.keys[0] === 'NULL') {
+			minValueIdx = 1;
+		} else {
+			minValueIdx = 0;
+		}
 		if(allValues.keys.length > 0) {
-			output += (" (" + allValues.keys[0]);
+			output += (" (" + allValues.keys[minValueIdx]);
 			if(allValues.keys.length > 1) {
 				output += (" - " + allValues.keys[allValues.keys.length - 1] + ")");
 			} else {
-				output += (" - " + allValues.keys[0] + ")");
+				output += (" - " + allValues.keys[minValueIdx] + ")");
 			}
 		}
 		return output;
