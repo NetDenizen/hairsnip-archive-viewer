@@ -309,7 +309,11 @@ function newIdLookup() {
 				for(keysIdx = 0; keysIdx < keysLength; ++keysIdx) {
 					var keyFloat = parseFloat( this._keys[keysIdx].slice(3) );
 					if(!isNaN(keyFloat) && keyFloat >= startNum) {
-						startIdx = keysIdx;
+						if(keyFloat === startNum) {
+							startIdx = keysIdx;
+						} else if(keysIdx > 0) {
+							startIdx = keysIdx - 1;
+						}
 						break;
 					}
 				}
@@ -325,16 +329,21 @@ function newIdLookup() {
 				for(keysIdx = keysLength - 1; keysIdx >= 0; --keysIdx) {
 					var keyFloat = parseFloat( this._keys[keysIdx].slice(3) );
 					if(!isNaN(keyFloat) && keyFloat <= endNum) {
-						endIdx = keysIdx;
+						if(keyFloat === endNum) {
+							endIdx = keysIdx;
+						} else if(keysIdx < keysLength - 1) {
+							endIdx = keysIdx + 1;
+						}
 						break;
 					}
 				}
 			}
 		}
 		if(startIdx !== undefined && endIdx !== undefined) {
-			output = startIdx > endIdx ?
-					 this._GetIdxRangeReverse(startIdx, endIdx - 1) :
-					 this._GetIdxRange(startIdx, endIdx + 1);
+			if(startIdx > endIdx) {
+				console.log('reverse');
+			}
+			this._GetIdxRange(startIdx, endIdx);
 		}
 		return output;
 	};
