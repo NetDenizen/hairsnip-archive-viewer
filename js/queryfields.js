@@ -362,7 +362,14 @@ function newDateSearcher(name, lookup, manager) {
  		var necessaryResults = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var vTrimmed = values[idx].trim();
-			if( vTrimmed.startsWith('-') ) {
+			if(vTrimmed === '-') {
+				this.results.extend( this.lookup.GetNumericalRange(undefined, undefined) );
+			} else if(vTrimmed === '--') {
+				if(!encounteredValue) {
+					this.results = this.lookup.GetAll();
+				}
+				this.results.NegateValues( this.lookup.GetNumericalRange(undefined, undefined).values );
+			} else if( vTrimmed.startsWith('-') ) {
 				vTrimmed = vTrimmed.slice(1, vTrimmed.length);
 				if(!encounteredValue) {
 					this.results = this.lookup.GetAll();
