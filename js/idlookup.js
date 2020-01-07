@@ -336,10 +336,7 @@ function newIdLookup() {
 			}
 		}
 		if(startIdx !== undefined && endIdx !== undefined) {
-			if(startIdx > endIdx) {
-				console.log('reverse');
-			}
-			this._GetIdxRange(startIdx, endIdx);
+			output = this._GetIdxRange(startIdx, endIdx);
 		}
 		return output;
 	};
