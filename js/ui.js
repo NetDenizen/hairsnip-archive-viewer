@@ -119,12 +119,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
 		var lookup = this.queryManagerLookup[idx];
 		if(lookup.results !== undefined) {
-			if( lookup.hasOwnProperty("necessaryResults") &&
-				lookup.necessaryResults !== undefined ) {
-				SetHTMLToText( target, lookup.necessaryResults.AllValues().length.toString() );
-			} else {
-				SetHTMLToText( target, lookup.results.AllValues().length.toString() );
-			}
+			SetHTMLToText( target, lookup.results.AllValues().length.toString() );
 		} else {
 			ClearChildren(target);
 		}

@@ -36,6 +36,7 @@ function newChecksumSearcher(name, lookup, manager) {
 		}
 		if(necessaryResults.AllValues().length > 0) {
 			this.necessaryResults = necessaryResults;
+			this.results.intersect(necessaryResults);
 		} else {
 			this.necessaryResults = undefined;
 		}
@@ -113,6 +114,7 @@ function newFulltextSearcher(name, searcher, manager) {
 		}
 		if(necessaryResults.AllValues().length > 0) {
 			this.necessaryResults = necessaryResults;
+			this.results.intersect(necessaryResults);
 		} else {
 			this.necessaryResults = undefined;
 		}
@@ -195,6 +197,7 @@ function newKeywordSearcher(name, lookup, manager) {
 		}
 		if(necessaryResults.AllValues().length > 0) {
 			this.necessaryResults = necessaryResults;
+			this.results.intersect(necessaryResults);
 		} else {
 			this.necessaryResults = undefined;
 		}
@@ -285,6 +288,7 @@ function newRangeSearcher(name, lookup, manager) {
 		}
 		if(necessaryResults.AllValues().length > 0) {
 			this.necessaryResults = necessaryResults;
+			this.results.intersect(necessaryResults);
 		} else {
 			this.necessaryResults = undefined;
 		}
@@ -372,6 +376,7 @@ function newDateSearcher(name, lookup, manager) {
 		}
 		if(necessaryResults.AllValues().length > 0) {
 			this.necessaryResults = necessaryResults;
+			this.results.intersect(necessaryResults);
 		} else {
 			this.necessaryResults = undefined;
 		}
@@ -552,7 +557,12 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				searchValues.push(searchValue);
 			}
 			necessaryResults = this.lookup.get(necessaryValues);
-			this.necessaryResults = necessaryValues.length > 0 ? necessaryResults : undefined;
+			if(necessaryValues.length > 0) {
+				this.necessaryResults = necessaryResults;
+				this.results.intersect(necessaryResults);
+			} else {
+				this.necessaryResults = undefined;
+			}
 			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   searchValues.slice(0, valuesLength - 1)

@@ -164,6 +164,12 @@ function newIdRecord(keys, values) {
 		}
 		this._edited = true;
 	};
+	output.intersect = function(record) {
+		var tmp = newIdRecord([], []);
+		tmp.extend(this);
+		tmp.NegateValues(record.values);
+		this.NegateValues(tmp.values);
+	};
 	output.ExtendRaw(keys, values);
 	return output;
 }
