@@ -298,7 +298,11 @@ function newIdLookup() {
 		var keysLength = this._keys.length;
 		var keysIdx = undefined;
 		if(start === undefined) {
-			startIdx = 0;
+			if(this._keys[0] === '_LKNULL') {
+				startIdx = 1;
+			} else {
+				startIdx = 0;
+			}
 		} else {
 			startNum = parseFloat(start);
 			if( !isNaN(startNum) ) {
