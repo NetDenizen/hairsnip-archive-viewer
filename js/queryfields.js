@@ -251,7 +251,10 @@ function newRangeSearcher(name, lookup, manager) {
 			var startChar = undefined;
 			if(values[idx].length > 0) {
 				startChar = values[idx].charAt(0);
-				if( values[idx].startsWith('-') || values[idx].startsWith('+') ) {
+				if(values[idx] === '-') {
+					pair = values[idx].split("-", 2);
+					startChar = undefined;
+				} else if( values[idx].startsWith('-') || values[idx].startsWith('+') ) {
 					pair = values[idx].slice(1, values[idx].length).split("-", 2);
 				} else {
 					pair = values[idx].split("-", 2);
