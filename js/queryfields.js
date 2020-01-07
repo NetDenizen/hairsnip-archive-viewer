@@ -337,12 +337,12 @@ function newDateSearcher(name, lookup, manager) {
 				if(parsed[idx].end === null || parsed[idx].end === undefined) {
 					pair = [new Date(1970, 0, 1, 0, 0, 0).getTime() / 1000, new Date(2038, 0, 19, 3, 14, 7).getTime() / 1000];
 				} else {
-					pair = [parsed[idx].end.date().getTime() / 1000, parsed[idx].end.date().getTime() / 1000];
+					pair = [(parsed[idx].end.date().getTime() - parsed[idx].end.date().getTimezoneOffset() * 60 * 1000) / 1000, (parsed[idx].end.date().getTime() - parsed[idx].end.date().getTimezoneOffset() * 60 * 1000) / 1000];
 				}
 			} else if(parsed[idx].end === null || parsed[idx].end === undefined) {
-				pair = [parsed[idx].start.date().getTime() / 1000, parsed[idx].start.date().getTime() / 1000];
+				pair = [(parsed[idx].start.date().getTime() - parsed[idx].start.date().getTimezoneOffset() * 60 * 1000) / 1000, (parsed[idx].start.date().getTime() - parsed[idx].start.date().getTimezoneOffset() * 60 * 1000) / 1000];
 			} else {
-				pair = [parsed[idx].start.date().getTime() / 1000, parsed[idx].end.date().getTime() / 1000];
+				pair = [(parsed[idx].start.date().getTime() - parsed[idx].start.date().getTimezoneOffset() * 60 * 1000) / 1000, (parsed[idx].end.date().getTime() - parsed[idx].end.date().getTimezoneOffset() * 60 * 1000) / 1000];
 			}
 			if(pair[1] < pair[0]) {
 				var tmp = pair[0];
