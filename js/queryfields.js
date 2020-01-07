@@ -178,7 +178,9 @@ function newKeywordSearcher(name, lookup, manager) {
  		var necessaryResults = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
-			if( kw.startsWith("-") ) {
+			if( kw === '-' ) {
+				this.results.extend( this._AddToIndex(kw) );
+			} else if( kw.startsWith("-") ) {
 				kw = kw.slice(1, kw.length);
 				if(!encounteredValue) {
 					this.results = this.lookup.GetAll();
