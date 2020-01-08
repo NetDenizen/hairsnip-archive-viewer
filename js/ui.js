@@ -144,6 +144,13 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				}
 				terms[idx] = '-';
 			}
+			while(true) {
+				idx = terms.indexOf('NULL');
+				if(idx === -1) {
+					break;
+				}
+				terms.splice(idx, 1);
+			}
 		}
 		return terms.join(", ");
 	};
