@@ -336,7 +336,7 @@ function newIdLookup() {
 			}
 		}
 		if(startIdx !== undefined && endIdx !== undefined) {
-			output = this._GetIdxRange(startIdx, endIdx);
+			output = this._GetIdxRange(startIdx + 1, endIdx);
 		}
 		return output;
 	};
