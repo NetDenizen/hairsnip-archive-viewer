@@ -145,7 +145,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				terms[idx] = '-';
 			}
 			while(true) {
-				idx = terms.indexOf('NULL');
+				idx = terms.indexOf('NULL'); // TODO: Would it suffice to check for 'NULL' when parsing keys from allValues, or should we find some way to check for the true _LKNULL value, to ensure there aren't any actual keys that come out to be 'NULL'?
 				if(idx === -1) {
 					break;
 				}
@@ -375,7 +375,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var allValues = lookup.GetAll();
 		var output = prefix;
 		var minValueIdx = undefined;
-		if(allValues.keys[0] === 'NULL') {
+		if(allValues.keys[0] === 'NULL') { // TODO: Would it suffice to check for 'NULL' when parsing keys from allValues, or should we find some way to check for the true _LKNULL value, to ensure there aren't any actual keys that come out to be 'NULL'?
 			minValueIdx = 1;
 		} else {
 			minValueIdx = 0;
@@ -395,7 +395,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var allValues = lookup.GetAll();
 		var output = prefix;
 		var minDateIdx = undefined;
-		if(allValues.keys[0] === 'NULL') {
+		if(allValues.keys[0] === 'NULL') { // TODO: Would it suffice to check for 'NULL' when parsing keys from allValues, or should we find some way to check for the true _LKNULL value, to ensure there aren't any actual keys that come out to be 'NULL'?
 			minDateIdx = 1;
 		} else {
 			minDateIdx = 0;
