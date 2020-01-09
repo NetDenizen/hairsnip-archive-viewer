@@ -258,21 +258,27 @@ function newIdLookup() {
 	output.sort = function() {
 		this._keys.sort(function(a, b) {
 			var output = 0;
-			var numA = ParseFloatOrNull( a.slice(3) );
-			var numB = ParseFloatOrNull( b.slice(3) );
-			if( !isNaN(numA) && !isNaN(numB) ) {
-				if(numA < numB) {
-					output = -1;
-				} else if(numA > numB) {
-					output = 1;
-				}
+			if(a === '_LKNULL' && b !== '_LKNULL') {
+				output = -1;
+			} else if(b === '_LKNULL' && a !== '_LKNULL') {
+				output = 1;
 			} else {
-				var aLower = a.toLowerCase();
-				var bLower = b.toLowerCase();
-				if(aLower < bLower) {
-					output = -1;
-				} else if(aLower > bLower) {
-					output = 1;
+				var numA = parseFloat( a.slice(3) );
+				var numB = parseFloat( b.slice(3) );
+				if( !isNaN(numA) && !isNaN(numB) ) {
+					if(numA < numB) {
+						output = -1;
+					} else if(numA > numB) {
+						output = 1;
+					}
+				} else {
+					var aLower = a.toLowerCase();
+					var bLower = b.toLowerCase();
+					if(aLower < bLower) {
+						output = -1;
+					} else if(aLower > bLower) {
+						output = 1;
+					}
 				}
 			}
 			return output;
