@@ -6,6 +6,9 @@ var defaultSearchResultClass = "SearchResult";
 var defaultSearchResultSelectedClass = "SearchResult selected";
 var defaultListHeight = "10em";
 
+var defaultListSortButtonClass = "SearchResultsSort";
+var defaultListSortButtonSelectedClass = "SearchResultsSort selected";
+
 var defaultListContainerClass = "border AutocompleteArea container";
 var defaultListHoveredClass = "AutocompleteArea option hovered";
 var defaultListUnhoveredClass = "AutocompleteArea option unhovered";
@@ -54,7 +57,9 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output.titleManager = undefined;
 
 	output.queryManagerLookup = [];
+	output.queryManagerSortTargetsLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
+	output._currentSortManager = undefined;
 	output.searcher = undefined;
 
 	output._allStoryIndexes = undefined;
@@ -361,6 +366,18 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
+	output._SortResults = function(e) {
+		var idx = parseInt(e.getAttribute("data-value"), 10);
+		if(idx !== this._currentSortManager) {
+			if(this._currentSortManager !== undefined) {
+				this.queryManagerSortTargetsLookup[this._currentSortManager].className = defaultListSortButtonClass;
+			}
+			this.queryManagerSortTargetsLookup[idx].className = defaultListSortButtonSelectedClass;
+			this._allStoryIndexes = this.queryManagerLookup[idx].lookup.GetAll().AllValues();
+			this._UpdateSearch();
+			this._currentSortManager = idx;
+		}
+	};
 	output.handleEvent = function(e) {
 		if(e.type === "input") {
 			if(e.target == this._pageNumberTarget) {
@@ -373,8 +390,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				this._PageNumberLeft();
 			} else if(e.currentTarget === this._pageNumberRightTarget) {
 				this._PageNumberRight();
-			} else {
+			} else if( e.currentTarget.classList.contains(defaultSearchResultClass) ) {
 				this._LoadStory(e.currentTarget);
+			} else if( e.currentTarget.classList.contains(defaultListSortButtonClass) ) {
+				this._SortResults(e.currentTarget);
 			}
 		}
 	};
@@ -433,6 +452,15 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			var query = document.createElement("td");
 			var occurrence = document.createElement("td");
 			heading.innerHTML = names[idx];
+			if( managers[idx].hasOwnProperty('lookup') ) {
+				var sortButton = document.createElement('button');
+				sortButton.className = defaultListSortButtonClass;
+				sortButton.setAttribute( "data-value", this.queryManagerSortTargetsLookup.length.toString() );
+				sortButton.addEventListener("click", this, false);
+				SetHTMLToText(sortButton, "K");
+				heading.insertBefore(document.createTextNode(" "), heading.firstChild);
+				heading.insertBefore(sortButton, heading.firstChild);
+			}
 			if( managers[idx].hasOwnProperty('targetListElementSort') ) {
 				heading.appendChild( document.createTextNode(" ") );
 				heading.appendChild(managers[idx].targetListElementSort);
@@ -446,6 +474,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			queries.appendChild(query);
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
+			this.queryManagerSortTargetsLookup.push(sortButton);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
 		table.className = 'SearchWidgets';
@@ -608,7 +637,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._InitAllQueryTables();
 		this._InitSearchResults(pageNumber, resultsPerPage);
 
-		this._allStoryIndexes = range(0, this.titleManager.lookup.GetAll().AllValues().length);
+		this._allStoryIndexes = this.titleManager.lookup.GetAll().AllValues();
 		this._UpdateSearch();
 	};
 	output.init(searcher, name, classes, pageNumber, resultsPerPage);
