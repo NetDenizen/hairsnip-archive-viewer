@@ -331,8 +331,14 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this._currentResultTarget.className = defaultSearchResultSelectedClass;
 		}
 		if(this._currentResultId !== id) {
+			var storyInfo = this._currentResultTarget.cloneNode(true);
+			storyInfo.className = "";
 			this._currentResultId = id;
 			this._storyDisplayTarget.innerHTML = this.searcher.GetBody(id);
+			this._storyDisplayTarget.insertBefore(document.createElement("hr"),
+												  this._storyDisplayTarget.firstChild);
+			this._storyDisplayTarget.insertBefore(storyInfo,
+												  this._storyDisplayTarget.firstChild);
 		}
 	};
 	output._PageNumberLeft = function() {
