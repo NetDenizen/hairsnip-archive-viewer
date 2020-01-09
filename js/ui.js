@@ -283,6 +283,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				item.dispatchEvent( new Event('click', {'bubbles': true, 'cancelable': true}) );
 			}
 		}
+		this._resultsDisplayTarget.scrollTo(0, 0);
 	};
 	output._UpdateSearch = function() {
 		this._UpdateQueries();
