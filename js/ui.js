@@ -379,9 +379,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._allStoryIndexes.reverse();
 		this._UpdateSearch();
 	};
-
-	output._SortResults = function(e) {
-		var idx = parseInt(e.getAttribute("data-value"), 10);
+	output._SortResults = function(idx) {
 		if(idx !== this._currentSortManager) {
 			if(this._currentSortManager !== undefined) {
 				this.queryManagerSortTargetsLookup[this._currentSortManager].className = defaultListSortButtonClass;
@@ -409,7 +407,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			} else if( e.currentTarget.classList.contains(defaultSearchResultClass) ) {
 				this._LoadStory(e.currentTarget);
 			} else if( e.currentTarget.classList.contains(defaultListSortButtonClass) ) {
-				this._SortResults(e.currentTarget);
+				this._SortResults( parseInt(e.currentTarget.getAttribute("data-value"), 10) );
 			}
 		}
 	};
@@ -660,8 +658,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._InitAllQueryTables();
 		this._InitSearchResults(pageNumber, resultsPerPage);
 
-		this._allStoryIndexes = this.titleManager.lookup.GetAll().AllValues();
-		this._UpdateSearch();
+		this._SortResults(1);
 	};
 	output.init(searcher, name, classes, pageNumber, resultsPerPage);
 	return output;
