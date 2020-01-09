@@ -75,6 +75,8 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._storyAmountTarget = undefined;
 	output._pageNumber = undefined;
 	output._maxPageNumber = undefined;
+	output._resultsOrderTarget = undefined;
+	output._resultsOrder = undefined;
 
 	output._currentResultId = undefined;
 	output._currentResultTarget = undefined;
@@ -366,6 +368,18 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
+	output._ToggleResultsOrder = function() {
+		if(this._resultsOrder === "normal") {
+			SetHTMLToText(this._resultsOrderTarget, "v");
+			this._resultsOrder = "reverse";
+		} else {
+			SetHTMLToText(this._resultsOrderTarget, "^");
+			this._resultsOrder = "normal";
+		}
+		this._allStoryIndexes.reverse();
+		this._UpdateSearch();
+	};
+
 	output._SortResults = function(e) {
 		var idx = parseInt(e.getAttribute("data-value"), 10);
 		if(idx !== this._currentSortManager) {
@@ -390,6 +404,8 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				this._PageNumberLeft();
 			} else if(e.currentTarget === this._pageNumberRightTarget) {
 				this._PageNumberRight();
+			} else if(e.currentTarget === this._resultsOrderTarget) {
+				this._ToggleResultsOrder();
 			} else if( e.currentTarget.classList.contains(defaultSearchResultClass) ) {
 				this._LoadStory(e.currentTarget);
 			} else if( e.currentTarget.classList.contains(defaultListSortButtonClass) ) {
@@ -600,6 +616,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var resultsPerPageContainer = document.createElement("tr");
 		var resultsPerPageTitle = document.createElement("td");
 		var resultsPerPageTargetContainer = document.createElement("td");
+		var resultsOrderTarget = document.createElement("button");
 
 		ClearChildren(searchResults);
 
@@ -623,7 +640,13 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		resultsControlTable.appendChild(resultsPerPageContainer);
 		resultsControlTable.appendChild( this._InitPageNumber(pageNumber) );
 
+		SetHTMLToText(resultsOrderTarget, "^");
+		resultsOrderTarget.addEventListener("click", this, false);
+		this._resultsOrderTarget = resultsOrderTarget;
+		this._resultsOrder = "normal";
+
 		searchResults.appendChild(resultsControlTable);
+		searchResults.appendChild(resultsOrderTarget);
 		searchResults.appendChild( document.createElement("hr") );
 		searchResults.appendChild(resultsDisplay);
 	};
