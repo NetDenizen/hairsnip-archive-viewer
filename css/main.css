@@ -42,6 +42,14 @@ table.SearchWidgets {
 	resize: vertical;
 }
 
+.selected {
+	background-color: DarkGrey;
+}
+
+.selected:hover {
+	background-color: grey;
+}
+
 p#DbLoadStatus {
 	display: inline-block;
 }

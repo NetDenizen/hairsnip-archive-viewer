@@ -27,11 +27,3 @@ div.SearchResult:hover {
 	background-color: LightGrey;
 	cursor: pointer;
 }
-
-div.SearchResult.selected {
-	background-color: DarkGrey;
-}
-
-div.SearchResult.selected:hover {
-	background-color: grey;
-}
