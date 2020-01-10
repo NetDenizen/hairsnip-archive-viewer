@@ -464,9 +464,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			var heading = document.createElement("th");
 			var query = document.createElement("td");
 			var occurrence = document.createElement("td");
+			var sortButton = undefined;
 			heading.innerHTML = names[idx];
 			if( managers[idx].hasOwnProperty('lookup') ) {
-				var sortButton = document.createElement('button');
+				sortButton = document.createElement('button');
 				sortButton.className = defaultListSortButtonClass;
 				sortButton.setAttribute( "data-value", this.queryManagerSortTargetsLookup.length.toString() );
 				sortButton.addEventListener("click", this, false);

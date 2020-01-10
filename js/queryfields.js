@@ -104,7 +104,7 @@ function newFulltextSearcher(name, searcher, manager) {
 			} else if( kw.startsWith("+") ) {
 				var result = undefined;
 				kw = kw.slice(1, kw.length);
-				result = this._AddToIndex(kw)
+				result = this._AddToIndex(kw);
 				this.results.extend(result);
 				necessaryResults.extend(result);
 			} else {
@@ -189,7 +189,7 @@ function newKeywordSearcher(name, lookup, manager) {
 			} else if( kw.startsWith("+") ) {
 				var result = undefined;
 				kw = kw.slice(1, kw.length);
-				result = this._AddToIndex(kw)
+				result = this._AddToIndex(kw);
 				this.results.extend(result);
 				necessaryResults.extend(result);
 			} else {
