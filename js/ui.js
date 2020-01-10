@@ -454,8 +454,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		}
 		return output;
 	};
-	output._InitQueryTable = function(parentField, names, managers) {
-		var table = document.createElement("table");
+	output._InitQueryTableRow = function(table, names, managers) {
 		var headings = document.createElement("tr");
 		var queries = document.createElement("tr");
 		var occurrences = document.createElement("tr");
@@ -495,7 +494,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		table.appendChild(headings);
 		table.appendChild(queries);
 		table.appendChild(occurrences);
-		parentField.appendChild(table);
 	};
 	output._InitManagers = function(searcher) {
 		this.searcher = searcher;
@@ -535,39 +533,41 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	};
 	output._InitAllQueryTables = function() {
 		var searchFields = document.getElementById("SearchFields");
+		var table = document.createElement("table");
+		this._InitQueryTableRow(table, ["Story Checksum"], [this.sha256Manager]);
+		this._InitQueryTableRow(table,
+								["Title",
+								 "Author",
+								 this._BuildDateRangeTitleString("Date Range", this.searcher.posixdateLookup),
+								 "Story Language"
+								],
+								[this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]
+							   );
+		this._InitQueryTableRow(table,
+								["Site Domain", "Archive Format", "Archive Comment"],
+								[this.domainManager, this.formatManager, this.commentsManager]
+							   );
+		this._InitQueryTableRow(table,
+								[this._BuildRangeTitleString("Views", this.searcher.viewcountLookup),
+								 this._BuildRangeTitleString("Rating", this.searcher.ratingLookup),
+								 this._BuildRangeTitleString("Raters", this.searcher.ratersLookup)
+								],
+								[this.viewcountManager, this.ratingManager, this.ratersManager]
+							   );
+		this._InitQueryTableRow(table,
+								["Content Rating", "Story Type", "Category", "Story Location"],
+								[this.contentManager, this.typeManager, this.categoryManager, this.locationManager]
+							   );
+		this._InitQueryTableRow(table,
+								["Author Website", "Author Email", "Author Description"],
+								[this.siteManager, this.emailManager, this.descriptionManager]
+							   );
+		this._InitQueryTableRow(table,
+								["Story Origin", "Story Tags", "Body Keywords"],
+								[this.originManager, this.tagManager, this.bodyManager]
+							   );
 		ClearChildren(searchFields);
-		this._InitQueryTable(searchFields, ["Story Checksum"], [this.sha256Manager]);
-		this._InitQueryTable(searchFields,
-							 ["Title",
-							  "Author",
-							  this._BuildDateRangeTitleString("Date Range", this.searcher.posixdateLookup),
-							  "Story Language"
-							 ],
-							 [this.titleManager, this.authorManager, this.posixdateManager, this.languageManager]
-							);
-		this._InitQueryTable(searchFields,
-							 ["Site Domain", "Archive Format", "Archive Comment"],
-							 [this.domainManager, this.formatManager, this.commentsManager]
-							);
-		this._InitQueryTable(searchFields,
-							 [this._BuildRangeTitleString("Views", this.searcher.viewcountLookup),
-							  this._BuildRangeTitleString("Rating", this.searcher.ratingLookup),
-							  this._BuildRangeTitleString("Raters", this.searcher.ratersLookup)
-							 ],
-							 [this.viewcountManager, this.ratingManager, this.ratersManager]
-							);
-		this._InitQueryTable(searchFields,
-							 ["Content Rating", "Story Type", "Category", "Story Location"],
-							 [this.contentManager, this.typeManager, this.categoryManager, this.locationManager]
-							);
-		this._InitQueryTable(searchFields,
-							 ["Author Website", "Author Email", "Author Description"],
-							 [this.siteManager, this.emailManager, this.descriptionManager]
-							);
-		this._InitQueryTable(searchFields,
-							 ["Story Origin", "Story Tags", "Body Keywords"],
-							 [this.originManager, this.tagManager, this.bodyManager]
-							);
+		searchFields.appendChild(table);
 	};
 	output._InitPageNumber = function(pageNumber) {
 		var pageNumberContainer = document.createElement("tr");

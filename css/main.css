@@ -23,7 +23,8 @@ button:hover {
 
 table.SearchWidgets {
 	white-space: normal;
-	text-align: center;
+	text-align: left;
+	border-spacing: 0.5em 0.25em;
 }
 
 .border {
