@@ -637,9 +637,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 
 		resultsControlTable.appendChild(resultsPerPageContainer);
 		resultsControlTable.appendChild( this._InitPageNumber(pageNumber) );
+		resultsControlTable.className = "HorizontalCenter left";
 
 		SetHTMLToText(resultsOrderTarget, "^");
 		resultsOrderTarget.addEventListener("click", this, false);
+		resultsOrderTarget.className = "HorizontalCenter left";
 		this._resultsOrderTarget = resultsOrderTarget;
 		this._resultsOrder = "normal";
 

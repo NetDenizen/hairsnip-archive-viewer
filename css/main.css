@@ -37,6 +37,10 @@ table.SearchWidgets {
 	transform: translateX(-50%);
 }
 
+.HorizontalCenter.left {
+	text-align: left;
+}
+
 .ScrollField {
 	height: 20em;
 	overflow: scroll;
