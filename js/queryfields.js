@@ -8,6 +8,14 @@ function newBasicSearcher() {
 	output.results = undefined;
 	output.necessaryResults = undefined;
 
+	output._SetNecessaryResults = function(necessaryResults) {
+		if(necessaryResults.AllValues().length > 0) {
+			this.necessaryResults = necessaryResults;
+			this.results.intersect(necessaryResults);
+		} else {
+			this.necessaryResults = undefined;
+		}
+	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
@@ -56,12 +64,7 @@ function newChecksumSearcher(name, lookup, manager) {
 			}
 			encounteredValue = true;
 		}
-		if(necessaryResults.AllValues().length > 0) {
-			this.necessaryResults = necessaryResults;
-			this.results.intersect(necessaryResults);
-		} else {
-			this.necessaryResults = undefined;
-		}
+		this._SetNecessaryResults(necessaryResults);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -114,12 +117,7 @@ function newFulltextSearcher(name, searcher, manager) {
 			}
 			encounteredValue = true;
 		}
-		if(necessaryResults.AllValues().length > 0) {
-			this.necessaryResults = necessaryResults;
-			this.results.intersect(necessaryResults);
-		} else {
-			this.necessaryResults = undefined;
-		}
+		this._SetNecessaryResults(necessaryResults);
 	};
 	output.init = function(name, searcher, manager) {
 		this.targetElement = document.createElement('input');
@@ -173,12 +171,7 @@ function newKeywordSearcher(name, lookup, manager) {
 			}
 			encounteredValue = true;
 		}
-		if(necessaryResults.AllValues().length > 0) {
-			this.necessaryResults = necessaryResults;
-			this.results.intersect(necessaryResults);
-		} else {
-			this.necessaryResults = undefined;
-		}
+		this._SetNecessaryResults(necessaryResults);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -245,12 +238,7 @@ function newRangeSearcher(name, lookup, manager) {
 			}
 			encounteredValue = true;
 		}
-		if(necessaryResults.AllValues().length > 0) {
-			this.necessaryResults = necessaryResults;
-			this.results.intersect(necessaryResults);
-		} else {
-			this.necessaryResults = undefined;
-		}
+		this._SetNecessaryResults(necessaryResults);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -327,12 +315,7 @@ function newDateSearcher(name, lookup, manager) {
 			}
 			encounteredValue = true;
 		}
-		if(necessaryResults.AllValues().length > 0) {
-			this.necessaryResults = necessaryResults;
-			this.results.intersect(necessaryResults);
-		} else {
-			this.necessaryResults = undefined;
-		}
+		this._SetNecessaryResults(necessaryResults);
 	};
 	output.targetElement.setAttribute("placeholder", "<date range>[,...]");
 	return output;
@@ -466,7 +449,6 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this._SetDataList("", "", []);
 		} else {
 			var encounteredValue = false;
-			var necessaryResults = undefined;
 			var necessaryValues = [];
 			var searchValues = [];
 			var currentValue = undefined;
@@ -503,13 +485,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				encounteredValue = true;
 				searchValues.push(searchValue);
 			}
-			necessaryResults = this.lookup.get(necessaryValues);
-			if(necessaryValues.length > 0) {
-				this.necessaryResults = necessaryResults;
-				this.results.intersect(necessaryResults);
-			} else {
-				this.necessaryResults = undefined;
-			}
+			this._SetNecessaryResults( this.lookup.get(necessaryValues) );
 			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   SliceRear(searchValues, valuesLength - 1)
