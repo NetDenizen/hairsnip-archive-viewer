@@ -285,7 +285,7 @@ function newDateSearcher(name, lookup, manager) {
 		}
 		return output;
 	};
-	output._ParseRanges = function() {
+	output._ParseTarget = function() {
 		var encounteredValue = false;
 		var values = this.targetElement.value.split(",");
 		var valuesLength = values.length;
