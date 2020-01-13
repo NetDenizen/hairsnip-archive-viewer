@@ -7,6 +7,20 @@ function newBasicSearcher() {
 	output.edited = false;
 	output.results = undefined;
 	output.necessaryResults = undefined;
+
+	output._InputListener = function(e) {
+		if(this.targetElement.value === "") {
+			this.results = undefined;
+			this.necessaryResults = undefined;
+		} else {
+			this._ParseKeywords();
+		}
+		this.edited = true;
+		this._manager.UpdateSearchCallback(this._manager);
+	};
+	output.handleEvent = function(e) {
+		this._InputListener(e);
+	};
 	return output;
 }
 
@@ -48,18 +62,6 @@ function newChecksumSearcher(name, lookup, manager) {
 		} else {
 			this.necessaryResults = undefined;
 		}
-	};
-	output._InputListener = function(e) {
-		if(this.targetElement.value === "") {
-			this.results = undefined;
-		} else {
-			this._ParseKeywords();
-		}
-		this.edited = true;
-		this._manager.UpdateSearchCallback(this._manager);
-	};
-	output.handleEvent = function(e) {
-		this._InputListener(e);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -119,19 +121,6 @@ function newFulltextSearcher(name, searcher, manager) {
 			this.necessaryResults = undefined;
 		}
 	};
-	output._InputListener = function(e) {
-		if(this.targetElement.value === "") {
-			this.results = undefined;
-			this.necessaryResults = undefined;
-		} else {
-			this._ParseKeywords();
-		}
-		this.edited = true;
-		this._manager.UpdateSearchCallback(this._manager);
-	};
-	output.handleEvent = function(e) {
-		this._InputListener(e);
-	};
 	output.init = function(name, searcher, manager) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
@@ -190,19 +179,6 @@ function newKeywordSearcher(name, lookup, manager) {
 		} else {
 			this.necessaryResults = undefined;
 		}
-	};
-	output._InputListener = function(e) {
-		if(this.targetElement.value === "") {
-			this.results = undefined;
-			this.necessaryResults = undefined;
-		} else {
-			this._ParseKeywords();
-		}
-		this.edited = true;
-		this._manager.UpdateSearchCallback(this._manager);
-	};
-	output.handleEvent = function(e) {
-		this._InputListener(e);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -285,9 +261,6 @@ function newRangeSearcher(name, lookup, manager) {
 		}
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
-	};
-	output.handleEvent = function(e) {
-		this._InputListener(e);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
