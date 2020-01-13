@@ -53,7 +53,7 @@ function newBasicIndexedSearcher() {
 	return output;
 }
 
-function newBasicLookupSearcher {
+function newBasicLookupSearcher() {
 	var output = newBasicSearcher();
 	output.lookup = undefined;
 	return output;
