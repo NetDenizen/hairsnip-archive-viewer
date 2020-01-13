@@ -8,6 +8,11 @@ function newBasicSearcher() {
 	output.results = undefined;
 	output.necessaryResults = undefined;
 
+	output._CheckResultsNegate = function(encounteredValue) {
+		if(!encounteredValue) {
+			this.results = this.lookup.GetAll();
+		}
+	};
 	output._SetNecessaryResults = function(necessaryResults) {
 		if(necessaryResults.AllValues().length > 0) {
 			this.necessaryResults = necessaryResults;
@@ -67,9 +72,7 @@ function newChecksumSearcher(name, lookup, manager) {
 		for(idx = 0; idx < checksumsLength; ++idx) {
 			var cs = checksums[idx].trim();
 			if( cs.startsWith("-") ) {
-				if(!encounteredValue) {
-					this.results = this.lookup.GetAll();
-				}
+				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(lookup.get( cs.slice(1).trim() ).values);
 			} else if( cs.startsWith("+") ) {
 				var result = lookup.get( cs.slice(1).trim() );
@@ -159,9 +162,7 @@ function newKeywordSearcher(name, lookup, manager) {
 			if( kw === '-' ) {
 				this.results.extend( this._AddToIndex(kw) );
 			} else if( kw.startsWith("-") ) {
-				if(!encounteredValue) {
-					this.results = this.lookup.GetAll();
-				}
+				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(this._AddToIndex( kw.slice(1) ).values);
 			} else if( kw.startsWith("+") ) {
 				var result = this._AddToIndex( kw.slice(1) );
@@ -226,9 +227,7 @@ function newRangeSearcher(name, lookup, manager) {
 			}
 			if(result !== undefined) {
 				if(startChar === '-') {
-					if(!encounteredValue) {
-						this.results = this.lookup.GetAll();
-					}
+					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(result.values);
 				} else if(startChar === '+') {
 					this.results.extend(result);
@@ -298,14 +297,10 @@ function newDateSearcher(name, lookup, manager) {
 			if(vTrimmed === '-') {
 				this.results.extend( this.lookup.GetNumericalRange(undefined, undefined) );
 			} else if(vTrimmed === '--') {
-				if(!encounteredValue) {
-					this.results = this.lookup.GetAll();
-				}
+				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues( this.lookup.GetNumericalRange(undefined, undefined).values );
 			} else if( vTrimmed.startsWith('-') ) {
-				if(!encounteredValue) {
-					this.results = this.lookup.GetAll();
-				}
+				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(this._ExtractValues( vTrimmed.slice(1) ).values);
 			} else if( vTrimmed.startsWith('+') ) {
 				var result = this._ExtractValues( vTrimmed.slice(1) );
@@ -463,14 +458,10 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				if(searchValue === "-") {
 					this.results.extend( this.lookup.get("") );
 				} else if(searchValue === "--") {
-					if(!encounteredValue) {
-						this.results = this.lookup.GetAll();
-					}
+					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(this.lookup.get("").values);
 				} else if( searchValue.startsWith("-") ) {
-					if(!encounteredValue) {
-						this.results = this.lookup.GetAll();
-					}
+					this._CheckResultsNegate(encounteredValue);
 					searchValue = searchValue.slice(1);
 					this.results.NegateValues(this.lookup.get( this._MatchGlob(searchValue) ).values);
 				} else if( searchValue.startsWith("+") ) {
