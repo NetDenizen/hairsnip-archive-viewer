@@ -32,6 +32,22 @@ function newBasicSearcher() {
 	return output;
 }
 
+function newBasicIndexedSearcher() {
+	var output = newBasicSearcher();
+	output.index = {};
+	output._AddToIndex = function(kw) {
+		var found = undefined;
+		if( !this.index.hasOwnProperty(kw) ) {
+			found = this._GetKwValue(kw);
+			this.index[kw] = found;
+		} else {
+			found = this.index[kw];
+		}
+		return found;
+	};
+	return output;
+}
+
 function newBasicLookupSearcher {
 	var output = newBasicSearcher();
 	output.lookup = undefined;
@@ -80,19 +96,11 @@ function newChecksumSearcher(name, lookup, manager) {
 }
 
 function newFulltextSearcher(name, searcher, manager) {
-	var output = newBasicSearcher();
+	var output = newBasicIndexedSearcher();
 	output.searcher = undefined;
-	output.index = {};
 
-	output._AddToIndex = function(kw) {
-		var found = undefined;
-		if( !this.index.hasOwnProperty(kw) ) {
-			found = this.searcher.LookupBody('"' + kw + '"');
-			this.index[kw] = found;
-		} else {
-			found = this.index[kw];
-		}
-		return found;
+	output._GetKwValue = function(kw) {
+		return this.searcher.LookupBody('"' + kw + '"');
 	};
 	output._ParseTarget = function() {
 		var encounteredValue = false;
@@ -133,18 +141,11 @@ function newFulltextSearcher(name, searcher, manager) {
 }
 
 function newKeywordSearcher(name, lookup, manager) {
-	var output = newBasicLookupSearcher();
-	output.index = {};
+	var output = newBasicIndexedSearcher();
+	output.lookup = undefined;
 
-	output._AddToIndex = function(kw) {
-		var found = undefined;
-		if( !this.index.hasOwnProperty(kw) ) {
-			found = kw === '-' ? this.lookup.get('') : this.lookup.GetFuzzy(kw);
-			this.index[kw] = found;
-		} else {
-			found = this.index[kw];
-		}
-		return found;
+	output._GetKwValue = function(kw) {
+		return kw === '-' ? this.lookup.get('') : this.lookup.GetFuzzy(kw);
 	};
 	output._ParseTarget = function() {
 		var encounteredValue = false;
