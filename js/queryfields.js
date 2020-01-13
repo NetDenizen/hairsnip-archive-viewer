@@ -13,7 +13,7 @@ function newBasicSearcher() {
 			this.results = undefined;
 			this.necessaryResults = undefined;
 		} else {
-			this._ParseKeywords();
+			this._ParseTarget();
 		}
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
@@ -33,7 +33,7 @@ function newBasicLookupSearcher {
 function newChecksumSearcher(name, lookup, manager) {
 	var output = newBasicLookupSearcher();
 
-	output._ParseKeywords = function() {
+	output._ParseTarget = function() {
 		var encounteredValue = false;
 		var checksums = this.targetElement.value.split(",");
 		var checksumsLength = checksums.length;
@@ -91,7 +91,7 @@ function newFulltextSearcher(name, searcher, manager) {
 		}
 		return found;
 	};
-	output._ParseKeywords = function() {
+	output._ParseTarget = function() {
 		var encounteredValue = false;
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
@@ -148,7 +148,7 @@ function newKeywordSearcher(name, lookup, manager) {
 		}
 		return found;
 	};
-	output._ParseKeywords = function() {
+	output._ParseTarget = function() {
 		var encounteredValue = false;
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
@@ -196,7 +196,7 @@ function newKeywordSearcher(name, lookup, manager) {
 function newRangeSearcher(name, lookup, manager) {
 	var output = newBasicLookupSearcher();
 
-	output._ParseRanges = function() {
+	output._ParseTarget = function() {
 		var encounteredValue = false;
 		var values = this.targetElement.value.split(",");
 		var valuesLength = values.length;
@@ -251,16 +251,6 @@ function newRangeSearcher(name, lookup, manager) {
 		} else {
 			this.necessaryResults = undefined;
 		}
-	};
-	output._InputListener = function(e) {
-		if(this.targetElement.value === "") {
-			this.results = undefined;
-			this.necessaryResults = undefined;
-		} else {
-			this._ParseRanges();
-		}
-		this.edited = true;
-		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
