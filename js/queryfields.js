@@ -1,13 +1,23 @@
 "use strict";
 
-function newChecksumSearcher(name, lookup, manager) {
+function newBasicSearcher() {
 	var output = {};
 	output.targetElement = undefined;
-	output.lookup = undefined;
 	output._manager = undefined;
 	output.edited = false;
 	output.results = undefined;
 	output.necessaryResults = undefined;
+	return output;
+}
+
+function newBasicLookupSearcher {
+	var output = newBasicSearcher();
+	output.lookup = undefined;
+	return output;
+}
+
+function newChecksumSearcher(name, lookup, manager) {
+	var output = newBasicLookupSearcher();
 
 	output._ParseKeywords = function() {
 		var encounteredValue = false;
@@ -65,14 +75,9 @@ function newChecksumSearcher(name, lookup, manager) {
 }
 
 function newFulltextSearcher(name, searcher, manager) {
-	var output = {};
-	output.targetElement = undefined;
+	var output = newBasicSearcher();
 	output.searcher = undefined;
-	output._manager = undefined;
-	output.edited = false;
 	output.index = {};
-	output.results = undefined;
-	output.necessaryResults = undefined;
 
 	output._AddToIndex = function(kw) {
 		var found = undefined;
@@ -141,14 +146,8 @@ function newFulltextSearcher(name, searcher, manager) {
 }
 
 function newKeywordSearcher(name, lookup, manager) {
-	var output = {};
-	output.targetElement = undefined;
-	output.lookup = undefined;
-	output._manager = undefined;
-	output.edited = false;
+	var output = newBasicLookupSearcher();
 	output.index = {};
-	output.results = undefined;
-	output.necessaryResults = undefined;
 
 	output._AddToIndex = function(kw) {
 		var found = undefined;
@@ -219,12 +218,7 @@ function newKeywordSearcher(name, lookup, manager) {
 }
 
 function newRangeSearcher(name, lookup, manager) {
-	var output = {};
-	output.targetElement = undefined;
-	output.lookup = undefined;
-	output._manager = undefined;
-	output.edited = false;
-	output.results = undefined;
+	var output = newBasicLookupSearcher();
 
 	output._ParseRanges = function() {
 		var encounteredValue = false;
@@ -382,19 +376,13 @@ function newDateSearcher(name, lookup, manager) {
 }
 
 function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
-	var output = {};
-	output.targetElement = undefined;
+	var output = newBasicLookupSearcher();
 	output.targetElementInput = undefined;
 	output.targetListElementSort = undefined;
 	output._targetListElementSortMode = 'alphabetical';
 	output.targetListElementSortOrder = undefined;
 	output._targetListElementSortOrderMode = 'normal';
 	output.targetList = undefined;
-	output.lookup = undefined;
-	output._manager = undefined;
-	output.edited = false;
-	output.necessaryResults = undefined;
-	output.results = undefined;
 
 	output._datalistKeys = undefined;
 	output._datalistValues = undefined;
