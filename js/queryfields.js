@@ -14,19 +14,17 @@ function newChecksumSearcher(name, lookup, manager) {
 		var checksums = this.targetElement.value.split(",");
 		var checksumsLength = checksums.length;
 		var idx = undefined;
-		this.results = newIdRecord([], []);
 		var necessaryResults = newIdRecord([], []);
+		this.results = newIdRecord([], []);
 		for(idx = 0; idx < checksumsLength; ++idx) {
 			var cs = checksums[idx].trim();
 			if( cs.startsWith("-") ) {
 				if(!encounteredValue) {
 					this.results = this.lookup.GetAll();
 				}
-				this.results.NegateValues(lookup.get( cs.slice(1, cs.length).trim() ).values);
+				this.results.NegateValues(lookup.get( cs.slice(1).trim() ).values);
 			} else if( cs.startsWith("+") ) {
-				var result = undefined;
-				cs = cs.slice(1, cs.length).trim();
-				result = lookup.get(cs);
+				var result = lookup.get( cs.slice(1).trim() );
 				this.results.extend(result);
 				necessaryResults.extend(result);
 			} else {
@@ -77,7 +75,7 @@ function newFulltextSearcher(name, searcher, manager) {
 	output.necessaryResults = undefined;
 
 	output._AddToIndex = function(kw) {
-		var found;
+		var found = undefined;
 		if( !this.index.hasOwnProperty(kw) ) {
 			found = this.searcher.LookupBody('"' + kw + '"');
 			this.index[kw] = found;
@@ -91,20 +89,17 @@ function newFulltextSearcher(name, searcher, manager) {
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
 		var idx = undefined;
-		this.results = newIdRecord([], []);
 		var necessaryResults = newIdRecord([], []);
+		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
 			if( kw.startsWith("-") ) {
-				kw = kw.slice(1, kw.length);
 				if(!encounteredValue) {
 					this.results = this.searcher.titleLookup.GetAll();
 				}
-				this.results.NegateValues(this._AddToIndex(kw).values);
+				this.results.NegateValues(this._AddToIndex( kw.slice(1) ).values);
 			} else if( kw.startsWith("+") ) {
-				var result = undefined;
-				kw = kw.slice(1, kw.length);
-				result = this._AddToIndex(kw);
+				var result = this._AddToIndex( kw.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
 			} else {
@@ -156,13 +151,9 @@ function newKeywordSearcher(name, lookup, manager) {
 	output.necessaryResults = undefined;
 
 	output._AddToIndex = function(kw) {
-		var found;
+		var found = undefined;
 		if( !this.index.hasOwnProperty(kw) ) {
-			if(kw === '-') {
-				found = this.lookup.get('');
-			} else {
-				found = this.lookup.GetFuzzy(kw);
-			}
+			found = kw === '-' ? this.lookup.get('') : this.lookup.GetFuzzy(kw);
 			this.index[kw] = found;
 		} else {
 			found = this.index[kw];
@@ -174,22 +165,19 @@ function newKeywordSearcher(name, lookup, manager) {
 		var keywords = SplitUnescapedCommas(this.targetElement.value);
 		var keywordsLength = keywords.length;
 		var idx = undefined;
-		this.results = newIdRecord([], []);
  		var necessaryResults = newIdRecord([], []);
+		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
 			if( kw === '-' ) {
 				this.results.extend( this._AddToIndex(kw) );
 			} else if( kw.startsWith("-") ) {
-				kw = kw.slice(1, kw.length);
 				if(!encounteredValue) {
 					this.results = this.lookup.GetAll();
 				}
-				this.results.NegateValues(this._AddToIndex(kw).values);
+				this.results.NegateValues(this._AddToIndex( kw.slice(1) ).values);
 			} else if( kw.startsWith("+") ) {
-				var result = undefined;
-				kw = kw.slice(1, kw.length);
-				result = this._AddToIndex(kw);
+				var result = this._AddToIndex( kw.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
 			} else {
@@ -243,33 +231,29 @@ function newRangeSearcher(name, lookup, manager) {
 		var values = this.targetElement.value.split(",");
 		var valuesLength = values.length;
 		var idx = undefined;
-		this.results = newIdRecord([], []);
  		var necessaryResults = newIdRecord([], []);
+		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var pair = [];
 			var result = undefined;
 			var startChar = undefined;
-			if(values[idx].length > 0) {
-				startChar = values[idx].charAt(0);
-				if(values[idx] === '-') {
-					pair = values[idx].split("-", 2);
+			var value = values[idx];
+			if(value.length > 0) {
+				startChar = value.charAt(0);
+				if(value === '-') {
 					startChar = undefined;
-				} else if( values[idx].startsWith('-') || values[idx].startsWith('+') ) {
-					pair = values[idx].slice(1, values[idx].length).split("-", 2);
-				} else {
-					pair = values[idx].split("-", 2);
+				} else if( value.startsWith('-') || value.startsWith('+') ) {
+					value = value.slice(1);
 				}
+				pair = value.split("-", 2);
 			}
 			if(pair.length === 2) {
 				var pair0 = pair[0].trim();
 				var pair1 = pair[1].trim();
 				pair0 = pair0 !== "" ? pair0 : undefined;
 				pair1 = pair1 !== "" ? pair1 : undefined;
-				if(pair1 < pair0) {
-					result = this.lookup.GetNumericalRange(pair1, pair0);
-				} else {
-					result = this.lookup.GetNumericalRange(pair0, pair1);
-				}
+				result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
+										 this.lookup.GetNumericalRange(pair0, pair1);
 			} else if(pair.length === 1) {
 				var pair0 = pair[0].trim();
 				if(pair0 !== "") {
@@ -335,14 +319,17 @@ function newDateSearcher(name, lookup, manager) {
 			var pair = undefined;
 			if(parsed[idx].start === null || parsed[idx].start === undefined) {
 				if(parsed[idx].end === null || parsed[idx].end === undefined) {
-					pair = [new Date(1970, 0, 1, 0, 0, 0).getTime() / 1000, new Date(2038, 0, 19, 3, 14, 7).getTime() / 1000];
+					pair = [unixEpochStartSeconds, unixEpochEndSeconds];
 				} else {
-					pair = [(parsed[idx].end.date().getTime() - parsed[idx].end.date().getTimezoneOffset() * 60 * 1000) / 1000, (parsed[idx].end.date().getTime() - parsed[idx].end.date().getTimezoneOffset() * 60 * 1000) / 1000];
+					var adjustedDate = GetUnixEpochSeconds( parsed[idx].end.date() );
+					pair = [adjustedDate, adjustedDate];
 				}
 			} else if(parsed[idx].end === null || parsed[idx].end === undefined) {
-				pair = [(parsed[idx].start.date().getTime() - parsed[idx].start.date().getTimezoneOffset() * 60 * 1000) / 1000, (parsed[idx].start.date().getTime() - parsed[idx].start.date().getTimezoneOffset() * 60 * 1000) / 1000];
+				var adjustedDate = GetUnixEpochSeconds( parsed[idx].start.date() );
+				pair = [adjustedDate, adjustedDate];
 			} else {
-				pair = [(parsed[idx].start.date().getTime() - parsed[idx].start.date().getTimezoneOffset() * 60 * 1000) / 1000, (parsed[idx].end.date().getTime() - parsed[idx].end.date().getTimezoneOffset() * 60 * 1000) / 1000];
+				pair = [GetUnixEpochSeconds( parsed[idx].start.date() ),
+						GetUnixEpochSeconds( parsed[idx].end.date() )];
 			}
 			if(pair[1] < pair[0]) {
 				var tmp = pair[0];
@@ -358,8 +345,8 @@ function newDateSearcher(name, lookup, manager) {
 		var values = this.targetElement.value.split(",");
 		var valuesLength = values.length;
 		var idx = undefined;
-		this.results = newIdRecord([], []);
  		var necessaryResults = newIdRecord([], []);
+		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var vTrimmed = values[idx].trim();
 			if(vTrimmed === '-') {
@@ -370,15 +357,12 @@ function newDateSearcher(name, lookup, manager) {
 				}
 				this.results.NegateValues( this.lookup.GetNumericalRange(undefined, undefined).values );
 			} else if( vTrimmed.startsWith('-') ) {
-				vTrimmed = vTrimmed.slice(1, vTrimmed.length);
 				if(!encounteredValue) {
 					this.results = this.lookup.GetAll();
 				}
-				this.results.NegateValues(this._ExtractValues(vTrimmed).values);
+				this.results.NegateValues(this._ExtractValues( vTrimmed.slice(1) ).values);
 			} else if( vTrimmed.startsWith('+') ) {
-				var result = undefined;
-				vTrimmed = vTrimmed.slice(1, vTrimmed.length);
-				result = this._ExtractValues(vTrimmed);
+				var result = this._ExtractValues( vTrimmed.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
 			} else {
@@ -485,7 +469,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			}
 		}
 		if(strongEnd < matchValue.length) {
-			output.push( document.createTextNode( matchValue.slice(strongEnd, matchValue.length) ) );
+			output.push( document.createTextNode( matchValue.slice(strongEnd) ) );
 		}
 		return output;
 	};
@@ -499,10 +483,10 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		var negator = "";
 		var necessitator = "";
 		if( currentValue !== "-" && currentValue.startsWith("-") ) {
-			rawCurrentValue = currentValue.slice(1, currentValue.length);
+			rawCurrentValue = currentValue.slice(1);
 			negator = "-";
 		} else if( currentValue.startsWith("+") ) {
-			rawCurrentValue = currentValue.slice(1, currentValue.length);
+			rawCurrentValue = currentValue.slice(1);
 			necessitator = "+";
 		}
 		rawCurrentValueSlices = ProcessGlob(rawCurrentValue);
@@ -553,14 +537,14 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 					if(!encounteredValue) {
 						this.results = this.lookup.GetAll();
 					}
-					searchValue = searchValue.slice(1, searchValue.length);
+					searchValue = searchValue.slice(1);
 					this.results.NegateValues(this.lookup.get( this._MatchGlob(searchValue) ).values);
 				} else if( searchValue.startsWith("+") ) {
-					var glob;
-					searchValue = searchValue.slice(1, searchValue.length);
+					var glob = undefined;
+					searchValue = searchValue.slice(1);
 					glob = this._MatchGlob(searchValue);
 					necessaryValues = necessaryValues.concat(glob);
-					searchValue = searchValue.slice(1, searchValue.length);
+					searchValue = searchValue.slice(1);
 					this.results.extend( this.lookup.get(glob) );
 				} else if(searchValue !== "") {
 					this.results.extend( this.lookup.get( this._MatchGlob(searchValue) ) );
@@ -575,9 +559,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			} else {
 				this.necessaryResults = undefined;
 			}
-			this._SetDataList( fullValue.slice( 0, this._FindPrefix(fullValue) ),
+			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
-							   searchValues.slice(0, valuesLength - 1)
+							   SliceRear(searchValues, valuesLength - 1)
 							 );
 		}
 	};
@@ -652,11 +636,11 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			var fullVal = this.targetElementInput.value;
 			var allValues = SplitUnescapedCommas(fullVal);
 			var allValuesLength = allValues.length;
-			var prefixValues = allValues.slice(0, allValuesLength - 1).join(',');
+			var prefixValues = SliceRear(allValues, allValuesLength - 1).join(',');
 			var rawVal = allValues[allValuesLength - 1];
 			var val = rawVal.trim();
 			var valLower = val.toLowerCase();
-			var valSpace = rawVal.slice(0, rawVal.length - rawVal.trimLeft().length);
+			var valSpace = SliceRear(rawVal, rawVal.length - rawVal.trimLeft().length);
 			var containsVal = [];
 			var startsVal = [];
 			var exactStartsVal = [];

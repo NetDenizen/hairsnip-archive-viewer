@@ -214,7 +214,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		item.className = defaultSearchResultClass;
 		SetHTMLToText(titleItem, title + author + " (" + sha256 + ")");
 		if(date !== "") {
-			SetHTMLToText(infoItem, new Date( parseInt(date) * 1000 ).toUTCString() + domain + language + format);
+			SetHTMLToText(infoItem, GetUnixEpochSecondsDatetime(date).toUTCString() + domain + language + format);
 		} else {
 			SetHTMLToText(infoItem, "Date not found " + domain + language + format);
 		}

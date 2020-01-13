@@ -205,13 +205,7 @@ function newIdLookup() {
 		return output;
 	};
 	output._GetKeyString = function(key) {
-		var strKey = undefined;
-		if(key === null) {
-			strKey = "_LKNULL";
-		} else {
-			strKey = "LK_" + key.toString();
-		}
-		return strKey;
+		return key === null ? "_LKNULL" : "LK_" + key.toString();
 	};
 	output._GetSingle = function(key) {
 		var output = newIdRecord([], []);
@@ -365,8 +359,9 @@ function newIdLookup() {
 		var lookupIdx = undefined;
 		for(lookupIdx = 0; lookupIdx < lookupLength; ++lookupIdx) {
 			for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
-				if( this._keys[lookupIdx].slice(3).toLowerCase().indexOf(arrayKey[arrayKeyIdx].toLowerCase() ) !== -1) {
-					matches.push( this._keys[lookupIdx].slice(3) );
+				var cleanKey = this._keys[lookupIdx].slice(3);
+				if(cleanKey.toLowerCase().indexOf( arrayKey[arrayKeyIdx].toLowerCase() ) !== -1) {
+					matches.push(cleanKey);
 					break;
 				}
 			}

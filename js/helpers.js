@@ -139,6 +139,11 @@ function TestGlob(value, slices) {
 	return output;
 }
 
+// String Manipulations
+function SliceRear(input, end) {
+	return input.slice(0, end);
+}
+
 // Miscellaneous
 function range(start, end) {
 	var idx = undefined;
@@ -147,4 +152,16 @@ function range(start, end) {
 		output.push(idx);
 	}
 	return output;
+}
+
+// Datetime Manipulations
+var unixEpochStartSeconds = 0;
+var unixEpochEndSeconds = 2147483647;
+
+function GetUnixEpochSeconds(datetime) {
+	return (datetime.getTime() - datetime.getTimezoneOffset() * 60 * 1000) / 1000;
+}
+
+function GetUnixEpochSecondsDatetime(seconds) {
+	return new Date(parseInt(seconds) * 1000);
 }
