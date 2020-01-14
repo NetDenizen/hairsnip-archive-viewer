@@ -64,13 +64,13 @@ function newChecksumSearcher(name, lookup, manager) {
 
 	output._ParseTarget = function() {
 		var encounteredValue = false;
-		var checksums = this.targetElement.value.split(",");
+		var checksums = SplitUnescapedCommas(this.targetElement.value);
 		var checksumsLength = checksums.length;
 		var idx = undefined;
 		var necessaryResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < checksumsLength; ++idx) {
-			var cs = checksums[idx].trim();
+			var cs = checksums[idx].replace(/\\,/g, ',').trim();
 			if( cs.startsWith("-") ) {
 				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(lookup.get( cs.slice(1).trim() ).values);
@@ -193,7 +193,7 @@ function newRangeSearcher(name, lookup, manager) {
 
 	output._ParseTarget = function() {
 		var encounteredValue = false;
-		var values = this.targetElement.value.split(",");
+		var values = SplitUnescapedCommas(this.targetElement.value);
 		var valuesLength = values.length;
 		var idx = undefined;
  		var necessaryResults = newIdRecord([], []);
@@ -202,7 +202,7 @@ function newRangeSearcher(name, lookup, manager) {
 			var pair = [];
 			var result = undefined;
 			var startChar = undefined;
-			var value = values[idx];
+			var value = values[idx].replace(/\\,/g, ',');
 			if(value.length > 0) {
 				startChar = value.charAt(0);
 				if(value === '-') {
@@ -287,13 +287,13 @@ function newDateSearcher(name, lookup, manager) {
 	};
 	output._ParseTarget = function() {
 		var encounteredValue = false;
-		var values = this.targetElement.value.split(",");
+		var values = SplitUnescapedValues(this.targetElement.value);
 		var valuesLength = values.length;
 		var idx = undefined;
  		var necessaryResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
-			var vTrimmed = values[idx].trim();
+			var vTrimmed = values[idx].replace(/\\,/g, ',').trim();
 			if(vTrimmed === '-') {
 				this.results.extend( this.lookup.GetNumericalRange(undefined, undefined) );
 			} else if(vTrimmed === '--') {
