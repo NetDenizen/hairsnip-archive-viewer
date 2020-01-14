@@ -107,6 +107,11 @@ function newFulltextSearcher(name, searcher, manager) {
 	var output = newBasicIndexedSearcher();
 	output.searcher = undefined;
 
+	output._CheckResultsNegate = function(encounteredValue) {
+		if(!encounteredValue) {
+			this.results = this.searcher.titleLookup.GetAll();
+		}
+	};
 	output._GetKwValue = function(kw) {
 		return this.searcher.LookupBody('"' + kw + '"');
 	};
@@ -119,10 +124,13 @@ function newFulltextSearcher(name, searcher, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
-			if( kw.startsWith("-") ) {
-				if(!encounteredValue) {
-					this.results = this.searcher.titleLookup.GetAll();
-				}
+			if(cs === '--') {
+				this._CheckResultsNegate(encounteredValue);
+				this.results.NegateValues(this._AddToIndex("").values);
+			} else if(cs === '-') {
+				this.results.extend( this._AddToIndex("") );
+			} else if( kw.startsWith("-") ) {
+				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(this._AddToIndex( kw.slice(1) ).values);
 			} else if( kw.startsWith("+") ) {
 				var result = this._AddToIndex( kw.slice(1) );
