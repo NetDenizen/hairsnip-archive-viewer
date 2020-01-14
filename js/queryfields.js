@@ -71,7 +71,12 @@ function newChecksumSearcher(name, lookup, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < checksumsLength; ++idx) {
 			var cs = checksums[idx].replace(/\\,/g, ',').trim();
-			if( cs.startsWith("-") ) {
+			if(cs === '--') {
+				this._CheckResultsNegate(encounteredValue);
+				this.results.NegateValues(lookup.get("").values);
+			} else if(cs === '-') {
+				this.results.extend( lookup.get("") );
+			} else if( cs.startsWith("-") ) {
 				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(lookup.get( cs.slice(1).trim() ).values);
 			} else if( cs.startsWith("+") ) {
