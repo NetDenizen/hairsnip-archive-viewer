@@ -386,6 +386,9 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			}
 			this.queryManagerSortTargetsLookup[idx].className = defaultListSortButtonSelectedClass;
 			this._allStoryIndexes = this.queryManagerLookup[idx].lookup.GetAll().AllValues();
+			if(this._resultsOrder === "reverse") {
+				this._allStoryIndexes.reverse();
+			}
 			this._UpdateSearch();
 			this._currentSortManager = idx;
 		}
