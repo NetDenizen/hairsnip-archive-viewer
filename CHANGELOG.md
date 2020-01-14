@@ -1,5 +1,25 @@
 # Changelog
 
+## 2020-01-13.1
+
+* Modify all the query fields (items 5-25) to be more consistent. They now all support negation options, necessary options, comma escapes, and the dash representation for empty strings; even if this doesn't make sense.
+
+* NULL values from the SQLite tables will now be recognized by the query fields, instead of ignored. Among other things, this allows for stories without recorded ratings, raters, views, or date values (items 8 and 13-15) to be searched.
+
+* The date searcher (field 8) will now actually properly recognize ranges, and individual values.
+
+* The results page is scrolled to the top, each time it loads.
+
+* The story info (formatted like relevant search option) is displayed before each story.
+
+* Results can be sorted according to query categories.
+
+* Story results can be reversed.
+
+* The query fields (items 5-25) and the result controls (26-32) layouts are aligned differently. For the former, they're all handled as a single table and the cells are left-aligned, instead of center aligned, while for the latter, the result controls are centered.
+
+* Assorted bugfixes, minor optimizations, and code cleanup.
+
 ## 2019-11-23.1
 
 * General code cleanup.
