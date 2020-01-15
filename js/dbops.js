@@ -121,7 +121,7 @@ function newStorySearcher(_db) {
 		var tags_array_id = this._db.exec("SELECT id, tags_array_id FROM stories ORDER BY tags_array_id")[0]['values'];
 		var origin_id = this._db.exec("SELECT id, origin_id FROM stories ORDER BY origin_id")[0]['values'];
 		var site_id = this._db.exec("SELECT id, site_id FROM stories ORDER BY site_id")[0]['values'];
-		var description = this._db.exec("SELECT id, description FROM stories ORDER BY description")[0]['values'];
+		var description_id = this._db.exec("SELECT id, description_id FROM stories ORDER BY description_id")[0]['values'];
 		var title_id = this._db.exec("SELECT id, title_id FROM stories ORDER BY title_id")[0]['values'];
 
 		var domainIds = this._LoadIds("domain_ids");
@@ -135,6 +135,7 @@ function newStorySearcher(_db) {
 		var emailIds = this._LoadIds("email_ids");
 		var tagIds = this._LoadIds("tag_ids");
 		var originIds = this._LoadIds("origin_ids");
+		var descriptionIds = this._LoadIds("description_ids");
 		var siteIds = this._LoadIds("site_ids");
 		var titleIds = this._LoadIds("title_ids");
 
@@ -152,7 +153,6 @@ function newStorySearcher(_db) {
 
 			this.sha256Lookup.add(sha256[idx][1], sha256[idx][0]);
 			this.commentsLookup.add(comments[idx][1], comments[idx][0]);
-			this.descriptionLookup.add(description[idx][1], description[idx][0]);
 
 			this.ratingLookup.add(rating[idx][1], rating[idx][0]);
 			this.ratersLookup.add(raters[idx][1], raters[idx][0]);
@@ -163,6 +163,7 @@ function newStorySearcher(_db) {
 			this.authorLookup.add(authorIds.get(author_id[idx][1]).AllValues(), author_id[idx][0]);
 			this.originLookup.add(originIds.get(origin_id[idx][1]).AllValues(), origin_id[idx][0]);
 			this.siteLookup.add(siteIds.get(site_id[idx][1]).AllValues(), site_id[idx][0]);
+			this.descriptionLookup.add(descriptionIds.get(description[idx][1]).AllValues(), description[idx][0]);
 			this.titleLookup.add(titleIds.get(title_id[idx][1]).AllValues(), title_id[idx][0]);
 
 			this.domainLookup.add(domainIds.get(domainArray).AllValues(), domain_array_id[idx][0]);
