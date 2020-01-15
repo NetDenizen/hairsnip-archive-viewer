@@ -124,10 +124,10 @@ function newFulltextSearcher(name, searcher, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
-			if(cs === '--') {
+			if(kw === '--') {
 				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(this._AddToIndex("").values);
-			} else if(cs === '-') {
+			} else if(kw === '-') {
 				this.results.extend( this._AddToIndex("") );
 			} else if( kw.startsWith("-") ) {
 				this._CheckResultsNegate(encounteredValue);
