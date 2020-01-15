@@ -51,6 +51,7 @@ function newStorySearcher(_db) {
 		var values = this._db.exec("SELECT id, name FROM " + table)[0]['values'];
 		var valuesLength = values.length;
 		var idx = undefined;
+		output.add(null, "");
 		for (idx = 0; idx < valuesLength; ++idx) {
 			output.add(values[idx][0], values[idx][1]);
 		}
@@ -140,14 +141,14 @@ function newStorySearcher(_db) {
 		var sha256Length = sha256.length;
 		var idx = undefined;
 		for(idx = 0; idx < sha256Length; ++idx) {
-			var domainArray = domain_array_id[idx][1] !== null ? intArrays[ domain_array_id[idx][1] ] : [];
-			var contentArray = content_array_id[idx][1] !== null ? intArrays[ content_array_id[idx][1] ] : [];
-			var typeArray = type_array_id[idx][1] !== null ? intArrays[ type_array_id[idx][1] ] : [];
-			var categoryArray = category_array_id[idx][1] !== null ? intArrays[ category_array_id[idx][1] ] : [];
-			var locationArray = location_array_id[idx][1] !== null ? intArrays[ location_array_id[idx][1] ] : [];
-			var formatArray = format_array_id[idx][1] !== null ? intArrays[ format_array_id[idx][1] ] : [];
-			var emailArray = email_array_id[idx][1] !== null ? intArrays[ email_array_id[idx][1] ] : [];
-			var tagArray = tags_array_id[idx][1] !== null ? intArrays[ tags_array_id[idx][1] ] : [];
+			var domainArray = domain_array_id[idx][1] !== null ? intArrays[ domain_array_id[idx][1] ] : null;
+			var contentArray = content_array_id[idx][1] !== null ? intArrays[ content_array_id[idx][1] ] : null;
+			var typeArray = type_array_id[idx][1] !== null ? intArrays[ type_array_id[idx][1] ] : null;
+			var categoryArray = category_array_id[idx][1] !== null ? intArrays[ category_array_id[idx][1] ] : null;
+			var locationArray = location_array_id[idx][1] !== null ? intArrays[ location_array_id[idx][1] ] : null;
+			var formatArray = format_array_id[idx][1] !== null ? intArrays[ format_array_id[idx][1] ] : null;
+			var emailArray = email_array_id[idx][1] !== null ? intArrays[ email_array_id[idx][1] ] : null;
+			var tagArray = tags_array_id[idx][1] !== null ? intArrays[ tags_array_id[idx][1] ] : null;
 
 			this.sha256Lookup.add(sha256[idx][1], sha256[idx][0]);
 			this.commentsLookup.add(comments[idx][1], comments[idx][0]);
