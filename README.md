@@ -47,7 +47,7 @@ The order of the list may be toggled between alphabetical and number of occurren
 
 In fields 8, and 13-15 an option is a single value, or a range. A range is two values separated by a `-`, their order being irrelevant. If either of these values is left out, the maximum or minimum is available is assumed. The respective minimum and maximum values are included in the titles of these fields.
 
-Underneath every field, the number of selected options is displayed.
+Underneath every field, the number of selected options is displayed. If there is a number preceded by a `-` in parentheses, if represents the number of negated options (preceded by the same symbol when their keywords). Similarly, if a number in parentheses is preceded by a `+`, it represents the number of options preceded with a `+`, which only match results that contain them, regardless of other keywords. The number of selected options is calculated after both of these other numbers are applied.
 
 ### Items
 

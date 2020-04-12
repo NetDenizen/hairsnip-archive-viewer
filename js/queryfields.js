@@ -7,6 +7,7 @@ function newBasicSearcher() {
 	output.edited = false;
 	output.results = undefined;
 	output.necessaryResults = undefined;
+	output.negatedResultsCount = 0;
 
 	output._CheckResultsNegate = function(encounteredValue) {
 		if(!encounteredValue) {
@@ -20,6 +21,9 @@ function newBasicSearcher() {
 		} else {
 			this.necessaryResults = undefined;
 		}
+	};
+	output._SetNegatedResultsCount = function(negatedResults) {
+		this.negatedResultsCount = negatedResults.AllValues().length;
 	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
@@ -68,27 +72,38 @@ function newChecksumSearcher(name, lookup, manager) {
 		var checksumsLength = checksums.length;
 		var idx = undefined;
 		var necessaryResults = newIdRecord([], []);
+		var negatedResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < checksumsLength; ++idx) {
 			var cs = checksums[idx].replace(/\\,/g, ',').trim();
 			if(cs === '--') {
+				var result = lookup.get("");
 				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(lookup.get("").values);
+				this.results.NegateValues(result.values);
+				negatedResults.extend(result);
 			} else if(cs === '-') {
-				this.results.extend( lookup.get("") );
+				var result = lookup.get("");
+				this.results.extend(result);
+				negatedResults.NegateValues(result.values);
 			} else if( cs.startsWith("-") ) {
+				var result = lookup.get( cs.slice(1).trim() );
 				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(lookup.get( cs.slice(1).trim() ).values);
+				this.results.NegateValues(result.values);
+				negatedResults.extend(result);
 			} else if( cs.startsWith("+") ) {
 				var result = lookup.get( cs.slice(1).trim() );
 				this.results.extend(result);
 				necessaryResults.extend(result);
+				negatedResults.NegateValues(result.values);
 			} else {
-				this.results.extend( lookup.get(cs) );
+				var result = lookup.get(cs);
+				this.results.extend(result);
+				negatedResults.NegateValues(result.values);
 			}
 			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
+		this._SetNegatedResultsCount(negatedResults);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -121,27 +136,38 @@ function newFulltextSearcher(name, searcher, manager) {
 		var keywordsLength = keywords.length;
 		var idx = undefined;
 		var necessaryResults = newIdRecord([], []);
+		var negatedResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
 			if(kw === '--') {
+				var result = this._AddToIndex("");
 				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(this._AddToIndex("").values);
+				this.results.NegateValues(result.values);
+				negatedResults.extend(result);
 			} else if(kw === '-') {
-				this.results.extend( this._AddToIndex("") );
+				var result = this._AddToIndex("");
+				this.results.extend(result);
+				negatedResults.Negatevalues(result.values);
 			} else if( kw.startsWith("-") ) {
+				var result = this._AddToIndex( kw.slice(1) );
 				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(this._AddToIndex( kw.slice(1) ).values);
+				this.results.NegateValues(result.values);
+				negatedResults.extend(result);
 			} else if( kw.startsWith("+") ) {
 				var result = this._AddToIndex( kw.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
+				negatedResults.Negatevalues(result.values);
 			} else {
-				this.results.extend( this._AddToIndex(kw) );
+				var result = this._AddToIndex(kw);
+				this.results.extend(result);
+				negatedResults.NegateValues(result.values);
 			}
 			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
+		this._SetNegatedResultsCount(negatedResults);
 	};
 	output.init = function(name, searcher, manager) {
 		this.targetElement = document.createElement('input');
@@ -169,24 +195,33 @@ function newKeywordSearcher(name, lookup, manager) {
 		var keywordsLength = keywords.length;
 		var idx = undefined;
  		var necessaryResults = newIdRecord([], []);
+		var negatedResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',');
 			if( kw === '-' ) {
-				this.results.extend( this._AddToIndex(kw) );
+				var result = this._AddToIndex(kw);
+				this.results.extend(result);
+				negatedResults.NegateValues(result.values);
 			} else if( kw.startsWith("-") ) {
+				var result = this._AddToIndex( kw.slice(1) );
 				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(this._AddToIndex( kw.slice(1) ).values);
+				this.results.NegateValues(result.values);
+				negatedResults.extend(result);
 			} else if( kw.startsWith("+") ) {
 				var result = this._AddToIndex( kw.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
+				negatedResults.NegateValues(result.values);
 			} else {
-				this.results.extend( this._AddToIndex(kw) );
+				var result = this._AddToIndex(kw);
+				this.results.extend(result);
+				negatedResults.NegateValues(result.values);
 			}
 			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
+		this._SetNegatedResultsCount(negatedResults);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -210,6 +245,7 @@ function newRangeSearcher(name, lookup, manager) {
 		var valuesLength = values.length;
 		var idx = undefined;
  		var necessaryResults = newIdRecord([], []);
+		var negatedResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var pair = [];
@@ -242,9 +278,11 @@ function newRangeSearcher(name, lookup, manager) {
 				if(startChar === '-') {
 					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
 				} else if(startChar === '+') {
 					this.results.extend(result);
 					necessaryResults.extend(result);
+					negatedResults.NegateValues(result.values);
 				} else {
 					this.results.extend(result);
 				}
@@ -252,6 +290,7 @@ function newRangeSearcher(name, lookup, manager) {
 			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
+		this._SetNegatedResultsCount(negatedResults);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -304,27 +343,38 @@ function newDateSearcher(name, lookup, manager) {
 		var valuesLength = values.length;
 		var idx = undefined;
  		var necessaryResults = newIdRecord([], []);
+		var negatedResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var vTrimmed = values[idx].replace(/\\,/g, ',').trim();
 			if(vTrimmed === '-') {
-				this.results.extend( this.lookup.GetNumericalRange(undefined, undefined) );
+				var result = this.lookup.GetNumericalRange(undefined, undefined);
+				this.results.extend(result);
+				negatedResults.NegateValues(result.values);
 			} else if(vTrimmed === '--') {
+				var result = this.lookup.GetNumericalRange(undefined, undefined);
 				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues( this.lookup.GetNumericalRange(undefined, undefined).values );
+				this.results.NegateValues(result.values);
+				negatedResults.extend(result);
 			} else if( vTrimmed.startsWith('-') ) {
+				var result = this._ExtractValues( vTrimmed.slice(1) );
 				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(this._ExtractValues( vTrimmed.slice(1) ).values);
+				this.results.NegateValues(result.values);
+				negatedResults.extend(result);
 			} else if( vTrimmed.startsWith('+') ) {
 				var result = this._ExtractValues( vTrimmed.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
+				negatedResults.NegateValues(result.values);
 			} else {
-				this.results.extend( this._ExtractValues(vTrimmed) );
+				var result = this._ExtractValues(vTrimmed);
+				this.results.extend(result);
+				negatedResults.NegateValues(result.values);
 			}
 			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
+		this._SetNegatedResultsCount(negatedResults);
 	};
 	output.targetElement.setAttribute("placeholder", "<date range>[,...]");
 	return output;
@@ -452,6 +502,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	};
 	output._ParseKeywords = function() {
 		var fullValue = this.targetElementInput.value;
+		var negatedResults = newIdRecord([], []);
 		if(fullValue === "") {
 			this.results = undefined;
 			this.necessaryResults = undefined;
@@ -469,28 +520,41 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				var searchValue = values[idx].trim();
 				currentValue = searchValue;
 				if(searchValue === "-") {
-					this.results.extend( this.lookup.get("") );
+					var result = this.lookup.get("");
+					this.results.extend(result);
+					negatedValues.NegateValues(result.values);
 				} else if(searchValue === "--") {
+					var result = this.lookup.get("");
 					this._CheckResultsNegate(encounteredValue);
-					this.results.NegateValues(this.lookup.get("").values);
+					this.results.NegateValues(result.values);
+					negatedValues.extend(result);
 				} else if( searchValue.startsWith("-") ) {
+					var result = undefined;
 					this._CheckResultsNegate(encounteredValue);
 					searchValue = searchValue.slice(1);
-					this.results.NegateValues(this.lookup.get( this._MatchGlob(searchValue) ).values);
+					result = this.lookup.get( this._MatchGlob(searchValue) );
+					this.results.NegateValues(result.values);
+					negatedValues.extend(result);
 				} else if( searchValue.startsWith("+") ) {
 					var glob = undefined;
+					var result = undefined;
 					searchValue = searchValue.slice(1);
 					glob = this._MatchGlob(searchValue);
+					result = this.lookup.get(glob);
 					necessaryValues = necessaryValues.concat(glob);
 					searchValue = searchValue.slice(1);
-					this.results.extend( this.lookup.get(glob) );
+					this.results.extend(result);
+					negatedValues.NegateValues(result.values);
 				} else if(searchValue !== "") {
-					this.results.extend( this.lookup.get( this._MatchGlob(searchValue) ) );
+					var result = this.lookup.get( this._MatchGlob(searchValue) );
+					this.results.extend(result);
+					negatedValues.NegateValues(result.values);
 				}
 				encounteredValue = true;
 				searchValues.push(searchValue);
 			}
 			this._SetNecessaryResults( this.lookup.get(necessaryValues) );
+			this._SetNegatedResultsCount(negatedResults);
 			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   SliceRear(searchValues, valuesLength - 1)

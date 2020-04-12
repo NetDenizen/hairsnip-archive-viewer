@@ -126,7 +126,18 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
 		var lookup = this.queryManagerLookup[idx];
 		if(lookup.results !== undefined) {
-			SetHTMLToText( target, lookup.results.AllValues().length.toString() );
+			var value = lookup.results.AllValues().length.toString();
+			if(lookup.negatedResultsCount > 0) {
+				value += " (-";
+				value += lookup.negatedResultsCount.toString();
+				value += ")";
+			}
+			if(lookup.necessaryResults !== undefined) {
+				value += " (+";
+				value += lookup.necessaryResults.AllValues().length.toString();
+				value += ")";
+			}
+			SetHTMLToText(target, value);
 		} else {
 			ClearChildren(target);
 		}
