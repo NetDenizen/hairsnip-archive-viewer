@@ -36,7 +36,10 @@ function OnSQLSelect() {
 }
 
 function OnPageLoad() {
-	initSqlJs(config);
+	initSqlWasmJs(config);
+	if(initSqlWasmError) {
+		initSqlAsmJs(config);
+	}
 	SetHTMLToText( document.getElementById("DbLoadStatus"), "Waiting for SQLite file" );
 }
 
