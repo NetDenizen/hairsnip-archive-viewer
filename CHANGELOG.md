@@ -1,5 +1,23 @@
 # Changelog
 
+## 2020-04-27.1
+
+* chrono is upgraded from to version 1.4.6
+
+* sql.js is upgraded from version 1.0.1 to version 1.2.2
+
+* Buttons now have tooltips/alt text.
+
+* Properly display negated (`-`) and necessary (`+`) options retrieved beneath each query field (items 5-25)
+
+* Fix bug which causes the results (item 33) order to be set back to normal whenever the query category they're sorted by is changed, regardless of the status of the order reverse button (item 32).
+
+* Fix bug preventing NULL values for tags (item 24) from being recognized by the query fields. This will allow the full range of stories to be sorted by tag, and for tagless stories to be searched.
+
+* Fix bug that broke the story body keyword searcher (item 25).
+
+* Update the SQLite database format; versions released prior to the date of this release will no longer be supported.
+
 ## 2020-01-13.1
 
 * Modify all the query fields (items 5-25) to be more consistent. They now all support negation options, necessary options, comma escapes, and the dash representation for empty strings; even if this doesn't make sense.
