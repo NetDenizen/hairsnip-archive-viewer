@@ -148,7 +148,7 @@ function newFulltextSearcher(name, searcher, manager) {
 			} else if(kw === '-') {
 				var result = this._AddToIndex("");
 				this.results.extend(result);
-				negatedResults.Negatevalues(result.values);
+				negatedResults.NegateValues(result.values);
 			} else if( kw.startsWith("-") ) {
 				var result = this._AddToIndex( kw.slice(1) );
 				this._CheckResultsNegate(encounteredValue);
@@ -158,7 +158,7 @@ function newFulltextSearcher(name, searcher, manager) {
 				var result = this._AddToIndex( kw.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
-				negatedResults.Negatevalues(result.values);
+				negatedResults.NegateValues(result.values);
 			} else {
 				var result = this._AddToIndex(kw);
 				this.results.extend(result);
