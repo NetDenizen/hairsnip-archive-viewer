@@ -213,7 +213,7 @@ function newKeywordSearcher(name, lookup, manager) {
 				this.results.extend(result);
 				necessaryResults.extend(result);
 				negatedResults.NegateValues(result.values);
-			} else {
+			} else if(kw.length > 0) {
 				var result = this._AddToIndex(kw);
 				this.results.extend(result);
 				negatedResults.NegateValues(result.values);
