@@ -57,6 +57,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output.titleManager = undefined;
 
 	output.queryManagerLookup = [];
+	output.querySelectionLookup = [];
 	output.queryManagerSortTargetsLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
 	output._currentSortManager = undefined;
@@ -110,6 +111,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQuery = function(queryIdx) {
 		if(this.queryManagerLookup[queryIdx].results !== undefined) {
 			var filteredStoryIndexes = [];
+			this.querySelectionLookup[queryIdx] = [];
 			var allValues = this.queryManagerLookup[queryIdx].results.AllValuesSet();
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
@@ -117,6 +119,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				var storyIdx = this._storyIndexes[idx];
 				if( allValues.has(storyIdx) && this._StoryIdxHasNecessaryValues(queryIdx, storyIdx) ) {
 					filteredStoryIndexes.push(storyIdx);
+					this.querySelectionLookup[queryIdx].push(storyIdx);
 				}
 			}
 			this._storyIndexes = filteredStoryIndexes;
@@ -126,7 +129,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
 		var lookup = this.queryManagerLookup[idx];
 		if(lookup.results !== undefined) {
-			var value = lookup.results.AllValues().length.toString();
+			var value = this.querySelectionLookup[idx].length.toString();
 			if(lookup.negatedResultsCount > 0) {
 				value += " (-";
 				value += lookup.negatedResultsCount.toString();
@@ -505,6 +508,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			queries.appendChild(query);
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
+			this.querySelectionLookup.push(undefined);
 			this.queryManagerSortTargetsLookup.push(sortButton);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
