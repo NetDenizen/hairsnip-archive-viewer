@@ -268,7 +268,7 @@ function newRangeSearcher(name, lookup, manager) {
 				pair1 = pair1 !== "" ? pair1 : undefined;
 				result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
 										 this.lookup.GetNumericalRange(pair0, pair1);
-			} else if(pair.length === 1) {
+			} else if( pair.length === 1 ) {
 				var pair0 = pair[0].trim();
 				if(pair0 !== "") {
 					result = this.lookup.GetNumericalRange(pair0, pair0);
@@ -416,8 +416,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._MatchGlob = function(value) {
 		var output = [];
 		var cleanValue = value.replace(/\\,/g, ',');
-		var sliceEnd = cleanValue.indexOf('*');
-		if(sliceEnd === -1) {
+		if( !cleanValue.includes('*') ) {
 			output.push(cleanValue);
 		} else {
 			var slices = ProcessGlob( cleanValue.toLowerCase() );

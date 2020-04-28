@@ -369,7 +369,7 @@ function newIdLookup() {
 		for(lookupIdx = 0; lookupIdx < lookupLength; ++lookupIdx) {
 			for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
 				var cleanKey = this._keys[lookupIdx].slice(3);
-				if(cleanKey.toLowerCase().indexOf( arrayKey[arrayKeyIdx].toLowerCase() ) !== -1) {
+				if( cleanKey.toLowerCase().includes( arrayKey[arrayKeyIdx].toLowerCase() ) ) {
 					matches.push(cleanKey);
 					break;
 				}
