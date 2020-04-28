@@ -272,7 +272,7 @@ function initSqlJs(moduleConfig) {
 	if (initSqlModule !== undefined || initSqlError !== undefined){
 	  return;
 	}
-	GetSqlJsModule(OnModule, OnError);
+	return GetSqlJsModule(OnModule, OnError);
 }
 
 // This bit below is copied almost exactly from what you get when you use the MODULARIZE=1 flag with emcc
