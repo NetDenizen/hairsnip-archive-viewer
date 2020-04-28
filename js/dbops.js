@@ -163,7 +163,7 @@ function newStorySearcher(_db) {
 			this.authorLookup.add(authorIds.get(author_id[idx][1]).AllValues(), author_id[idx][0]);
 			this.originLookup.add(originIds.get(origin_id[idx][1]).AllValues(), origin_id[idx][0]);
 			this.siteLookup.add(siteIds.get(site_id[idx][1]).AllValues(), site_id[idx][0]);
-			this.descriptionLookup.add(descriptionIds.get(description[idx][1]).AllValues(), description[idx][0]);
+			this.descriptionLookup.add(descriptionIds.get(description_id[idx][1]).AllValues(), description_id[idx][0]);
 			this.titleLookup.add(titleIds.get(title_id[idx][1]).AllValues(), title_id[idx][0]);
 
 			this.domainLookup.add(domainIds.get(domainArray).AllValues(), domain_array_id[idx][0]);
