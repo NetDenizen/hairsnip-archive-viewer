@@ -522,19 +522,19 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				if(searchValue === "-") {
 					var result = this.lookup.get("");
 					this.results.extend(result);
-					negatedValues.NegateValues(result.values);
+					negatedResults.NegateValues(result.values);
 				} else if(searchValue === "--") {
 					var result = this.lookup.get("");
 					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(result.values);
-					negatedValues.extend(result);
+					negatedResults.extend(result);
 				} else if( searchValue.startsWith("-") ) {
 					var result = undefined;
 					this._CheckResultsNegate(encounteredValue);
 					searchValue = searchValue.slice(1);
 					result = this.lookup.get( this._MatchGlob(searchValue) );
 					this.results.NegateValues(result.values);
-					negatedValues.extend(result);
+					negatedResults.extend(result);
 				} else if( searchValue.startsWith("+") ) {
 					var glob = undefined;
 					var result = undefined;
@@ -544,11 +544,11 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 					necessaryValues = necessaryValues.concat(glob);
 					searchValue = searchValue.slice(1);
 					this.results.extend(result);
-					negatedValues.NegateValues(result.values);
+					negatedResults.NegateValues(result.values);
 				} else if(searchValue !== "") {
 					var result = this.lookup.get( this._MatchGlob(searchValue) );
 					this.results.extend(result);
-					negatedValues.NegateValues(result.values);
+					negatedResults.NegateValues(result.values);
 				}
 				encounteredValue = true;
 				searchValues.push(searchValue);
