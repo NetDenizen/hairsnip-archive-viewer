@@ -385,11 +385,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._ToggleResultsOrder = function() {
 		if(this._resultsOrder === "normal") {
 			SetHTMLToText(this._resultsOrderTarget, "v");
-			this._resultsOrderTarget.title = 'Order results normally (first to last).'
+			this._resultsOrderTarget.title = 'Order results normally (first to last).';
 			this._resultsOrder = "reverse";
 		} else {
 			SetHTMLToText(this._resultsOrderTarget, "^");
-			this._resultsOrderTarget.title = 'Order results in reverse (last to first).'
+			this._resultsOrderTarget.title = 'Order results in reverse (last to first).';
 			this._resultsOrder = "normal";
 		}
 		this._allStoryIndexes.reverse();
@@ -599,7 +599,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText(pageNumberTitle, "Page number: ");
 
 		this._pageNumberLeftTarget = document.createElement("button");
-		this._pageNumberLeftTarget.title = 'Go to previous page.'
+		this._pageNumberLeftTarget.title = 'Go to previous page.';
 		SetHTMLToText(this._pageNumberLeftTarget, "<");
 		this._pageNumberLeftTarget.addEventListener("click", this, false);
 
@@ -614,7 +614,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._storyAmountTarget = document.createElement("span");
 
 		this._pageNumberRightTarget = document.createElement("button");
-		this._pageNumberRightTarget.title = 'Go to next page.'
+		this._pageNumberRightTarget.title = 'Go to next page.';
 		SetHTMLToText(this._pageNumberRightTarget, ">");
 		this._pageNumberRightTarget.addEventListener("click", this, false);
 
@@ -666,7 +666,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText(resultsOrderTarget, "^");
 		resultsOrderTarget.addEventListener("click", this, false);
 		resultsOrderTarget.className = "HorizontalCenter left";
-		resultsOrderTarget.title = 'Order results in reverse (last to first).'
+		resultsOrderTarget.title = 'Order results in reverse (last to first).';
 		this._resultsOrderTarget = resultsOrderTarget;
 		this._resultsOrder = "normal";
 
