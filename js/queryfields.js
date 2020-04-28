@@ -281,7 +281,7 @@ function newRangeSearcher(name, lookup, manager) {
 					negatedResults.extend(result);
 				} else if(startChar === '+') {
 					this.results.extend(result);
-					necessaryResults.extend(result);
+					necessaryResults.ExtendAllToEachKey(result);
 					negatedResults.NegateValues(result.values);
 				} else {
 					this.results.extend(result);
@@ -364,7 +364,7 @@ function newDateSearcher(name, lookup, manager) {
 			} else if( vTrimmed.startsWith('+') ) {
 				var result = this._ExtractValues( vTrimmed.slice(1) );
 				this.results.extend(result);
-				necessaryResults.extend(result);
+				necessaryResults.ExtendAllToEachKey(result);
 				negatedResults.NegateValues(result.values);
 			} else {
 				var result = this._ExtractValues(vTrimmed);
@@ -509,7 +509,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this._SetDataList("", "", []);
 		} else {
 			var encounteredValue = false;
-			var necessaryValues = [];
+			var necessaryResults = newIdRecord([], []);
 			var searchValues = [];
 			var currentValue = undefined;
 			var values = SplitUnescapedCommas(fullValue);
@@ -540,9 +540,9 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 					var result = undefined;
 					searchValue = searchValue.slice(1);
 					glob = this._MatchGlob(searchValue);
-					result = this.lookup.get(glob);
-					necessaryValues = necessaryValues.concat(glob);
 					searchValue = searchValue.slice(1);
+					result = this.lookup.get(glob);
+					necessaryResults.ExtendAllToEachKey(result);
 					this.results.extend(result);
 					negatedResults.NegateValues(result.values);
 				} else if(searchValue !== "") {
@@ -553,7 +553,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				encounteredValue = true;
 				searchValues.push(searchValue);
 			}
-			this._SetNecessaryResults( this.lookup.get(necessaryValues) );
+			this._SetNecessaryResults(necessaryResults);
 			this._SetNegatedResultsCount(negatedResults);
 			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
