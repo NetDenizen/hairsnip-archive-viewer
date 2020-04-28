@@ -318,13 +318,17 @@ function newDateSearcher(name, lookup, manager) {
 				if(parsed[idx].end === null || parsed[idx].end === undefined) {
 					pair = [unixEpochStartSeconds, unixEpochEndSeconds];
 				} else {
+					parsed[idx].end.assign('timezoneOffset', 0);
 					var adjustedDate = GetUnixEpochSeconds( parsed[idx].end.date() );
 					pair = [adjustedDate, adjustedDate];
 				}
 			} else if(parsed[idx].end === null || parsed[idx].end === undefined) {
+				parsed[idx].start.assign('timezoneOffset', 0);
 				var adjustedDate = GetUnixEpochSeconds( parsed[idx].start.date() );
 				pair = [adjustedDate, adjustedDate];
 			} else {
+				parsed[idx].start.assign('timezoneOffset', 0);
+				parsed[idx].end.assign('timezoneOffset', 0);
 				pair = [GetUnixEpochSeconds( parsed[idx].start.date() ),
 						GetUnixEpochSeconds( parsed[idx].end.date() )];
 			}
