@@ -2,7 +2,7 @@
 
 ## 2020-04-28.1
 
-* Range searches (fields 13-15)
+* Range searches (fields 13-15) will only work if both ends of the range is included.
 
 * Wildcard globs will now be treated as one selection when using necessary (`+`) options.
 
