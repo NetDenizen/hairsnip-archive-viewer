@@ -382,9 +382,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._ToggleResultsOrder = function() {
 		if(this._resultsOrder === "normal") {
 			SetHTMLToText(this._resultsOrderTarget, "v");
+			this._resultsOrderTarget.title = 'Order results normally (first to last).'
 			this._resultsOrder = "reverse";
 		} else {
 			SetHTMLToText(this._resultsOrderTarget, "^");
+			this._resultsOrderTarget.title = 'Order results in reverse (last to first).'
 			this._resultsOrder = "normal";
 		}
 		this._allStoryIndexes.reverse();
@@ -483,6 +485,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			if( managers[idx].hasOwnProperty('lookup') ) {
 				sortButton = document.createElement('button');
 				sortButton.className = defaultListSortButtonClass;
+				sortButton.title = 'Sort results according to this query field.';
 				sortButton.setAttribute( "data-value", this.queryManagerSortTargetsLookup.length.toString() );
 				sortButton.addEventListener("click", this, false);
 				SetHTMLToText(sortButton, "K");
@@ -592,6 +595,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText(pageNumberTitle, "Page number: ");
 
 		this._pageNumberLeftTarget = document.createElement("button");
+		this._pageNumberLeftTarget.title = 'Go to previous page.'
 		SetHTMLToText(this._pageNumberLeftTarget, "<");
 		this._pageNumberLeftTarget.addEventListener("click", this, false);
 
@@ -606,6 +610,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._storyAmountTarget = document.createElement("span");
 
 		this._pageNumberRightTarget = document.createElement("button");
+		this._pageNumberRightTarget.title = 'Go to next page.'
 		SetHTMLToText(this._pageNumberRightTarget, ">");
 		this._pageNumberRightTarget.addEventListener("click", this, false);
 
@@ -657,6 +662,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText(resultsOrderTarget, "^");
 		resultsOrderTarget.addEventListener("click", this, false);
 		resultsOrderTarget.className = "HorizontalCenter left";
+		resultsOrderTarget.title = 'Order results in reverse (last to first).'
 		this._resultsOrderTarget = resultsOrderTarget;
 		this._resultsOrder = "normal";
 
@@ -681,24 +687,26 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	return output;
 }
 
-function ToggleSection(button, buttonOnText, buttonOffText, section) {
+function ToggleSection(button, buttonOnText, buttonOffText, buttonOnTitle, buttonOffTitle, section) {
 	if(section.style.display === "none") {
 		section.style.display = "";
 		button.innerHTML = buttonOffText;
+		button.title = buttonOffTitle;
 	} else {
 		section.style.display = "none";
 		button.innerHTML = buttonOnText;
+		button.title = buttonOnTitle;
 	}
 }
 
 function ToggleSearchFields(button, section) {
-	ToggleSection( button, "Search Fields v", "Search Fields ^", document.getElementById("SearchFields") );
+	ToggleSection( button, "Search Fields v", "Search Fields ^", "Show the first pane.", "Hide the first pane.", document.getElementById("SearchFields") );
 }
 
 function ToggleSearchResults(button, section) {
-	ToggleSection( button, "Search Results v", "Search Results ^", document.getElementById("SearchResults") );
+	ToggleSection( button, "Search Results v", "Search Results ^", "Show the second pane.", "Hide the second pane.", document.getElementById("SearchResults") );
 }
 
 function ToggleStoryArea(button, section) {
-	ToggleSection( button, "Story Area v", "Story Area ^", document.getElementById("StoryArea") );
+	ToggleSection( button, "Story Area v", "Story Area ^", "Show the third pane.", "Hide the third pane.",  document.getElementById("StoryArea") );
 }

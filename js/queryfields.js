@@ -611,9 +611,11 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		if(this._targetListElementSortMode === 'alphabetical') {
 			this._targetListElementSortMode = 'numerical';
 			SetHTMLToText(this.targetListElementSort, "ABC");
+			this.targetListElementSort.title = 'Sort list alphabetically.';
 		} else {
 			this._targetListElementSortMode = 'alphabetical';
 			SetHTMLToText(this.targetListElementSort, "123");
+			this.targetListElementSort.title = 'Sort list by occurrences.';
 		}
 		this._BuildDatalistValues(true);
 	};
@@ -621,9 +623,11 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		if(this._targetListElementSortOrderMode === 'normal') {
 			this._targetListElementSortOrderMode = 'reverse';
 			SetHTMLToText(this.targetListElementSortOrder, "v");
+			this.targetListElementSortOrder.title = 'Sort list in normally (first to last).';
 		} else {
 			this._targetListElementSortOrderMode = 'normal';
 			SetHTMLToText(this.targetListElementSortOrder, "^");
+			this.targetListElementSortOrder.title = 'Sort list in reverse (last to first).';
 		}
 		this._BuildDatalistValues(true);
 	};
@@ -703,10 +707,12 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
 		this.targetListElementSort = document.createElement('button');
+		this.targetListElementSort.title = 'Sort list by occurrences.';
 		SetHTMLToText(this.targetListElementSort, "123");
 		this.targetListElementSort.addEventListener("click", this, false);
 		this.targetListElementSortOrder = document.createElement('button');
 		SetHTMLToText(this.targetListElementSortOrder, "^");
+		this.targetListElementSortOrder.title = 'Sort list in reverse.';
 		this.targetListElementSortOrder.addEventListener("click", this, false);
 		this.targetList = newAutocompleteList(listHeight, classes, this.targetElementInput);
 		this.targetList.relevantTargets.push(this.targetListElementSort);
