@@ -21,7 +21,7 @@ function OnAsmError(error) {
 	initSqlAsmError = error;
 }
 
-function GetSqlJsModule(resolveModule, reject) {
+function GetSqlAsmJsModule(resolveModule, reject) {
 	// If we're here, we've never called this function before
 	// We are modularizing this manually because the current modularize setting in Emscripten has some issues:
 	// https://github.com/kripken/emscripten/issues/5820
