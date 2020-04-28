@@ -268,7 +268,7 @@ function newRangeSearcher(name, lookup, manager) {
 				pair1 = pair1 !== "" ? pair1 : undefined;
 				result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
 										 this.lookup.GetNumericalRange(pair0, pair1);
-			} else if( pair.length === 1 ) {
+			} else if( pair.length === 1 && !value.includes('-') ) {
 				var pair0 = pair[0].trim();
 				if(pair0 !== "") {
 					result = this.lookup.GetNumericalRange(pair0, pair0);
@@ -314,26 +314,19 @@ function newDateSearcher(name, lookup, manager) {
 		var idx = undefined;
 		for(idx = 0; idx < parsedLength; ++idx) {
 			var pair = undefined;
-			if(parsed[idx].start === null || parsed[idx].start === undefined) {
-				if(parsed[idx].end === null || parsed[idx].end === undefined) {
-					pair = [unixEpochStartSeconds, unixEpochEndSeconds];
-				} else {
-					var adjustedDate = GetUnixEpochSeconds( parsed[idx].end.date() );
-					pair = [adjustedDate, adjustedDate];
-				}
-			} else if(parsed[idx].end === null || parsed[idx].end === undefined) {
-				var adjustedDate = GetUnixEpochSeconds( parsed[idx].start.date() );
-				pair = [adjustedDate, adjustedDate];
-			} else {
+			if( (parsed[idx].start !== null && parsed[idx].start !== undefined) &&
+				(parsed[idx].end !== null && parsed[idx].end !== undefined) ) {
 				pair = [GetUnixEpochSeconds( parsed[idx].start.date() ),
 						GetUnixEpochSeconds( parsed[idx].end.date() )];
 			}
-			if(pair[1] < pair[0]) {
-				var tmp = pair[0];
-				pair[0] = pair[1];
-				pair[1] = tmp;
+			if(pair !== undefined) {
+				if(pair[1] < pair[0]) {
+					var tmp = pair[0];
+					pair[0] = pair[1];
+					pair[1] = tmp;
+				}
+				output.extend( this.lookup.GetNumericalRange(pair[0], pair[1]) );
 			}
-			output.extend( this.lookup.GetNumericalRange(pair[0], pair[1]) );
 		}
 		return output;
 	};
