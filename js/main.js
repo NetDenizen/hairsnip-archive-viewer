@@ -36,7 +36,11 @@ function OnSQLSelect() {
 }
 
 function OnPageLoad() {
-	initSqlWasmJs(config);
+	try {
+		initSqlWasmJs(config);
+	} catch(err) {
+		initSqlAsmJs(config);
+	}
 	if(initSqlWasmError) {
 		initSqlAsmJs(config);
 	}

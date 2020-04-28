@@ -13,12 +13,12 @@
 var initSqlWasmModule = undefined;
 var initSqlWasmError = undefined;
 
-function OnAsmModule(module) {
-	initSqlAsmModule = module;
+function OnWasmModule(module) {
+	initSqlWasmModule = module;
 }
 
-function OnAsmError(error) {
-	initSqlAsmError = error;
+function OnWasmError(error) {
+	initSqlWasmError = error;
 }
 
 function GetSqlWasmJsModule(resolveModule, reject) {
@@ -189,7 +189,7 @@ function initSqlWasmJs(moduleConfig) {
 	if (initSqlWasmModule !== undefined || initSqlWasmError !== undefined){
 	  return;
 	}
-	GetSqlWasmJsModule(OnAsmModule, OnAsmError);
+	GetSqlWasmJsModule(OnWasmModule, OnWasmError);
 }
 
 // This bit below is copied almost exactly from what you get when you use the MODULARIZE=1 flag with emcc
