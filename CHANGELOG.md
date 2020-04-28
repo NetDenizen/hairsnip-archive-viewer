@@ -1,6 +1,12 @@
 # Changelog
 
-## 2020-04-27.1
+## 2020-04-28.1
+
+* Range searches (fields 13-15) will only work if both ends of the range is included.
+
+* Wildcard globs will now be treated as one selection when using necessary (`+`) options.
+
+* Text keyword searches (fields 12 and 22) will no longer match empty completely strings to mean any message with any keywords.
 
 * chrono is upgraded from to version 1.4.6
 

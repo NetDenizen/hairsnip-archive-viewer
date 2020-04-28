@@ -272,7 +272,7 @@ function initSqlAsmJs(moduleConfig) {
 	if (initSqlAsmModule !== undefined || initSqlAsmError !== undefined){
 	  return;
 	}
-	GetSqlAsmJsModule(OnAsmModule, OnAsmError);
+	return GetSqlAsmJsModule(OnAsmModule, OnAsmError);
 }
 
 // This bit below is copied almost exactly from what you get when you use the MODULARIZE=1 flag with emcc

@@ -71,7 +71,7 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 				this._OutputOptionKey(value);
 			}
 			e.stopPropagation();
-		} else if(this.relevantTargets.indexOf(e.currentTarget) === -1 && this.relevantTargets.indexOf(e.target) === -1) {
+		} else if( !this.relevantTargets.includes(e.currentTarget) && !this.relevantTargets.includes(e.target) ) {
 			this.deactivate();
 		}
 	};

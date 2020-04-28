@@ -128,6 +128,15 @@ function newIdRecord(keys, values) {
 	output.extend = function(record) {
 		this.ExtendRaw(record.keys, record.values);
 	};
+	output.ExtendAllToEachKey = function(record) {
+		var idx = undefined;
+		var keysLength = record.keys.length;
+		var recordKeys = record.keys;
+		var values = [record.AllValuesSet()];
+		for(idx = 0; idx < keysLength; ++idx) {
+			this.ExtendRaw([ recordKeys[idx] ], values);
+		}
+	};
 	output.NegateValues = function(values) {
 		// TODO: Optimize me. Avoid reallocating this array, and using indexOf to find the values
 		var thisLookup = this.lookup;
@@ -360,7 +369,7 @@ function newIdLookup() {
 		for(lookupIdx = 0; lookupIdx < lookupLength; ++lookupIdx) {
 			for(arrayKeyIdx = 0; arrayKeyIdx < arrayKeyLength; ++arrayKeyIdx) {
 				var cleanKey = this._keys[lookupIdx].slice(3);
-				if(cleanKey.toLowerCase().indexOf( arrayKey[arrayKeyIdx].toLowerCase() ) !== -1) {
+				if( cleanKey.toLowerCase().includes( arrayKey[arrayKeyIdx].toLowerCase() ) ) {
 					matches.push(cleanKey);
 					break;
 				}

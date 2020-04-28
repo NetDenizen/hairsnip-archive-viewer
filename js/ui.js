@@ -57,6 +57,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output.titleManager = undefined;
 
 	output.queryManagerLookup = [];
+	output.querySelectionLookup = [];
 	output.queryManagerSortTargetsLookup = [];
 	output.queryOccurrenceTargetsLookup = [];
 	output._currentSortManager = undefined;
@@ -110,6 +111,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQuery = function(queryIdx) {
 		if(this.queryManagerLookup[queryIdx].results !== undefined) {
 			var filteredStoryIndexes = [];
+			this.querySelectionLookup[queryIdx] = [];
 			var allValues = this.queryManagerLookup[queryIdx].results.AllValuesSet();
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
@@ -117,6 +119,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				var storyIdx = this._storyIndexes[idx];
 				if( allValues.has(storyIdx) && this._StoryIdxHasNecessaryValues(queryIdx, storyIdx) ) {
 					filteredStoryIndexes.push(storyIdx);
+					this.querySelectionLookup[queryIdx].push(storyIdx);
 				}
 			}
 			this._storyIndexes = filteredStoryIndexes;
@@ -126,7 +129,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
 		var lookup = this.queryManagerLookup[idx];
 		if(lookup.results !== undefined) {
-			var value = lookup.results.AllValues().length.toString();
+			var value = this.querySelectionLookup[idx].length.toString();
 			if(lookup.negatedResultsCount > 0) {
 				value += " (-";
 				value += lookup.negatedResultsCount.toString();
@@ -382,11 +385,11 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._ToggleResultsOrder = function() {
 		if(this._resultsOrder === "normal") {
 			SetHTMLToText(this._resultsOrderTarget, "v");
-			this._resultsOrderTarget.title = 'Order results normally (first to last).'
+			this._resultsOrderTarget.title = 'Order results normally (first to last).';
 			this._resultsOrder = "reverse";
 		} else {
 			SetHTMLToText(this._resultsOrderTarget, "^");
-			this._resultsOrderTarget.title = 'Order results in reverse (last to first).'
+			this._resultsOrderTarget.title = 'Order results in reverse (last to first).';
 			this._resultsOrder = "normal";
 		}
 		this._allStoryIndexes.reverse();
@@ -505,6 +508,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			queries.appendChild(query);
 			occurrences.appendChild(occurrence);
 			this.queryManagerLookup.push(managers[idx]);
+			this.querySelectionLookup.push(undefined);
 			this.queryManagerSortTargetsLookup.push(sortButton);
 			this.queryOccurrenceTargetsLookup.push(occurrence);
 		}
@@ -595,7 +599,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText(pageNumberTitle, "Page number: ");
 
 		this._pageNumberLeftTarget = document.createElement("button");
-		this._pageNumberLeftTarget.title = 'Go to previous page.'
+		this._pageNumberLeftTarget.title = 'Go to previous page.';
 		SetHTMLToText(this._pageNumberLeftTarget, "<");
 		this._pageNumberLeftTarget.addEventListener("click", this, false);
 
@@ -610,7 +614,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._storyAmountTarget = document.createElement("span");
 
 		this._pageNumberRightTarget = document.createElement("button");
-		this._pageNumberRightTarget.title = 'Go to next page.'
+		this._pageNumberRightTarget.title = 'Go to next page.';
 		SetHTMLToText(this._pageNumberRightTarget, ">");
 		this._pageNumberRightTarget.addEventListener("click", this, false);
 
@@ -662,7 +666,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		SetHTMLToText(resultsOrderTarget, "^");
 		resultsOrderTarget.addEventListener("click", this, false);
 		resultsOrderTarget.className = "HorizontalCenter left";
-		resultsOrderTarget.title = 'Order results in reverse (last to first).'
+		resultsOrderTarget.title = 'Order results in reverse (last to first).';
 		this._resultsOrderTarget = resultsOrderTarget;
 		this._resultsOrder = "normal";
 

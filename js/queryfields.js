@@ -148,7 +148,7 @@ function newFulltextSearcher(name, searcher, manager) {
 			} else if(kw === '-') {
 				var result = this._AddToIndex("");
 				this.results.extend(result);
-				negatedResults.Negatevalues(result.values);
+				negatedResults.NegateValues(result.values);
 			} else if( kw.startsWith("-") ) {
 				var result = this._AddToIndex( kw.slice(1) );
 				this._CheckResultsNegate(encounteredValue);
@@ -158,7 +158,7 @@ function newFulltextSearcher(name, searcher, manager) {
 				var result = this._AddToIndex( kw.slice(1) );
 				this.results.extend(result);
 				necessaryResults.extend(result);
-				negatedResults.Negatevalues(result.values);
+				negatedResults.NegateValues(result.values);
 			} else {
 				var result = this._AddToIndex(kw);
 				this.results.extend(result);
@@ -213,7 +213,7 @@ function newKeywordSearcher(name, lookup, manager) {
 				this.results.extend(result);
 				necessaryResults.extend(result);
 				negatedResults.NegateValues(result.values);
-			} else {
+			} else if(kw != "") {
 				var result = this._AddToIndex(kw);
 				this.results.extend(result);
 				negatedResults.NegateValues(result.values);
@@ -268,7 +268,7 @@ function newRangeSearcher(name, lookup, manager) {
 				pair1 = pair1 !== "" ? pair1 : undefined;
 				result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
 										 this.lookup.GetNumericalRange(pair0, pair1);
-			} else if(pair.length === 1) {
+			} else if( pair.length === 1 && !value.includes('-') ) {
 				var pair0 = pair[0].trim();
 				if(pair0 !== "") {
 					result = this.lookup.GetNumericalRange(pair0, pair0);
@@ -281,7 +281,7 @@ function newRangeSearcher(name, lookup, manager) {
 					negatedResults.extend(result);
 				} else if(startChar === '+') {
 					this.results.extend(result);
-					necessaryResults.extend(result);
+					necessaryResults.ExtendAllToEachKey(result);
 					negatedResults.NegateValues(result.values);
 				} else {
 					this.results.extend(result);
@@ -314,32 +314,25 @@ function newDateSearcher(name, lookup, manager) {
 		var idx = undefined;
 		for(idx = 0; idx < parsedLength; ++idx) {
 			var pair = undefined;
-			if(parsed[idx].start === null || parsed[idx].start === undefined) {
-				if(parsed[idx].end === null || parsed[idx].end === undefined) {
-					pair = [unixEpochStartSeconds, unixEpochEndSeconds];
-				} else {
-					var adjustedDate = GetUnixEpochSeconds( parsed[idx].end.date() );
-					pair = [adjustedDate, adjustedDate];
-				}
-			} else if(parsed[idx].end === null || parsed[idx].end === undefined) {
-				var adjustedDate = GetUnixEpochSeconds( parsed[idx].start.date() );
-				pair = [adjustedDate, adjustedDate];
-			} else {
+			if( (parsed[idx].start !== null && parsed[idx].start !== undefined) &&
+				(parsed[idx].end !== null && parsed[idx].end !== undefined) ) {
 				pair = [GetUnixEpochSeconds( parsed[idx].start.date() ),
 						GetUnixEpochSeconds( parsed[idx].end.date() )];
 			}
-			if(pair[1] < pair[0]) {
-				var tmp = pair[0];
-				pair[0] = pair[1];
-				pair[1] = tmp;
+			if(pair !== undefined) {
+				if(pair[1] < pair[0]) {
+					var tmp = pair[0];
+					pair[0] = pair[1];
+					pair[1] = tmp;
+				}
+				output.extend( this.lookup.GetNumericalRange(pair[0], pair[1]) );
 			}
-			output.extend( this.lookup.GetNumericalRange(pair[0], pair[1]) );
 		}
 		return output;
 	};
 	output._ParseTarget = function() {
 		var encounteredValue = false;
-		var values = SplitUnescapedValues(this.targetElement.value);
+		var values = SplitUnescapedCommas(this.targetElement.value);
 		var valuesLength = values.length;
 		var idx = undefined;
  		var necessaryResults = newIdRecord([], []);
@@ -364,7 +357,7 @@ function newDateSearcher(name, lookup, manager) {
 			} else if( vTrimmed.startsWith('+') ) {
 				var result = this._ExtractValues( vTrimmed.slice(1) );
 				this.results.extend(result);
-				necessaryResults.extend(result);
+				necessaryResults.ExtendAllToEachKey(result);
 				negatedResults.NegateValues(result.values);
 			} else {
 				var result = this._ExtractValues(vTrimmed);
@@ -416,8 +409,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 	output._MatchGlob = function(value) {
 		var output = [];
 		var cleanValue = value.replace(/\\,/g, ',');
-		var sliceEnd = cleanValue.indexOf('*');
-		if(sliceEnd === -1) {
+		if( !cleanValue.includes('*') ) {
 			output.push(cleanValue);
 		} else {
 			var slices = ProcessGlob( cleanValue.toLowerCase() );
@@ -509,7 +501,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this._SetDataList("", "", []);
 		} else {
 			var encounteredValue = false;
-			var necessaryValues = [];
+			var necessaryResults = newIdRecord([], []);
 			var searchValues = [];
 			var currentValue = undefined;
 			var values = SplitUnescapedCommas(fullValue);
@@ -522,38 +514,38 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 				if(searchValue === "-") {
 					var result = this.lookup.get("");
 					this.results.extend(result);
-					negatedValues.NegateValues(result.values);
+					negatedResults.NegateValues(result.values);
 				} else if(searchValue === "--") {
 					var result = this.lookup.get("");
 					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(result.values);
-					negatedValues.extend(result);
+					negatedResults.extend(result);
 				} else if( searchValue.startsWith("-") ) {
 					var result = undefined;
 					this._CheckResultsNegate(encounteredValue);
 					searchValue = searchValue.slice(1);
 					result = this.lookup.get( this._MatchGlob(searchValue) );
 					this.results.NegateValues(result.values);
-					negatedValues.extend(result);
+					negatedResults.extend(result);
 				} else if( searchValue.startsWith("+") ) {
 					var glob = undefined;
 					var result = undefined;
 					searchValue = searchValue.slice(1);
 					glob = this._MatchGlob(searchValue);
-					result = this.lookup.get(glob);
-					necessaryValues = necessaryValues.concat(glob);
 					searchValue = searchValue.slice(1);
+					result = this.lookup.get(glob);
+					necessaryResults.ExtendAllToEachKey(result);
 					this.results.extend(result);
-					negatedValues.NegateValues(result.values);
+					negatedResults.NegateValues(result.values);
 				} else if(searchValue !== "") {
 					var result = this.lookup.get( this._MatchGlob(searchValue) );
 					this.results.extend(result);
-					negatedValues.NegateValues(result.values);
+					negatedResults.NegateValues(result.values);
 				}
 				encounteredValue = true;
 				searchValues.push(searchValue);
 			}
-			this._SetNecessaryResults( this.lookup.get(necessaryValues) );
+			this._SetNecessaryResults(necessaryResults);
 			this._SetNegatedResultsCount(negatedResults);
 			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),

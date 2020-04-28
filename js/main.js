@@ -6,6 +6,7 @@ var config = {
 
 var dbId = "DbFile";
 
+var SQL = undefined;
 var db = undefined;
 var searcher = undefined;
 var documentUi = undefined;
@@ -37,12 +38,12 @@ function OnSQLSelect() {
 
 function OnPageLoad() {
 	try {
-		initSqlWasmJs(config);
+		SQL = initSqlWasmJs(config);
 	} catch(err) {
-		initSqlAsmJs(config);
+		SQL = initSqlAsmJs(config);
 	}
 	if(initSqlWasmError) {
-		initSqlAsmJs(config);
+		SQL = initSqlAsmJs(config);
 	}
 	SetHTMLToText( document.getElementById("DbLoadStatus"), "Waiting for SQLite file" );
 }
