@@ -10,15 +10,15 @@
 // Instead, we want to return the previously loaded module
 
 // TODO: Make this not declare a global if used in the browser
-var initSqlModule = undefined;
-var initSqlError = undefined;
+var initSqlAsmModule = undefined;
+var initSqlAsmError = undefined;
 
-function OnModule(module) {
-	initSqlModule = module;
+function OnAsmModule(module) {
+	initSqlAsmModule = module;
 }
 
-function OnError(error) {
-	initSqlError = error;
+function OnAsmError(error) {
+	initSqlAsmError = error;
 }
 
 function GetSqlJsModule(resolveModule, reject) {
@@ -268,23 +268,23 @@ function wd(){function a(){if(!ud&&(ud=!0,e.calledRun=!0,!fb)){e.noFSInit||Zc||(
 	return Module;
 }
 
-function initSqlJs(moduleConfig) {
-	if (initSqlModule !== undefined || initSqlError !== undefined){
+function initSqlAsmJs(moduleConfig) {
+	if (initSqlAsmModule !== undefined || initSqlAsmError !== undefined){
 	  return;
 	}
-	GetSqlJsModule(OnModule, OnError);
+	GetSqlAsmJsModule(OnAsmModule, OnAsmError);
 }
 
 // This bit below is copied almost exactly from what you get when you use the MODULARIZE=1 flag with emcc
 // However, we don't want to use the emcc modularization. See shell-pre.js
 if (typeof exports === 'object' && typeof module === 'object'){
-	module.exports = initSqlJs;
+	module.exports = initSqlAsmJs;
 	// This will allow the module to be used in ES6 or CommonJS
-	module.exports.default = initSqlJs;
+	module.exports.default = initSqlAsmJs;
 }
 else if (typeof define === 'function' && define['amd']) {
-	define([], function() { return initSqlJs; });
+	define([], function() { return initSqlAsmJs; });
 }
 else if (typeof exports === 'object'){
-	exports["Module"] = initSqlJs;
+	exports["Module"] = initSqlAsmJs;
 }
