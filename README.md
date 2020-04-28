@@ -27,6 +27,8 @@ Alternately, you could download any one of the releases from the relevant tab (b
 
 An example interface of the webapp is as follows; features are annotated with blue numbers. Note that the story body is note included in the display.
 
+All buttons should also have tooltips if hovered over.
+
 ![screenshot](https://i.imgur.com/boVbeIH.png)
 
 ### Query Fields
