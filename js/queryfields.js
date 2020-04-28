@@ -339,7 +339,7 @@ function newDateSearcher(name, lookup, manager) {
 	};
 	output._ParseTarget = function() {
 		var encounteredValue = false;
-		var values = SplitUnescapedValues(this.targetElement.value);
+		var values = SplitUnescapedCommas(this.targetElement.value);
 		var valuesLength = values.length;
 		var idx = undefined;
  		var necessaryResults = newIdRecord([], []);
