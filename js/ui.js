@@ -138,7 +138,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				value += ")";
 			}
 			if(lookup.necessaryResults !== undefined) {
-				value += " (+";
+				value += " (?";
 				value += lookup.necessaryResults.AllValues().length.toString();
 				value += ")";
 			}
