@@ -1,5 +1,19 @@
 # Changelog
 
+## TODO-TO-DO.T
+
+* An attempt was made to fix an intermittent bug where the autocomplete list will not open automatically. It seems this bug applies to negated (`-`) options, but perhaps now normal ones. Necessary (`+`) options were not tested for when this bug occurred.
+
+* The height and overflow properties of autocomplete lists can now be freely adjusted in CSS.
+
+* 'Archiver Comments' is reworded to 'Archivist Comments' in story info.
+
+* Extra licensing information for chrono dependencies is included in the package.
+
+* Autocomplete should now work consistently with negated (`-`) and necessary (`+`) options.
+
+* Tidy up some code.
+
 ## 2020-04-28.1
 
 * Range searches (fields 13-15) will only work if both ends of the range is included.
