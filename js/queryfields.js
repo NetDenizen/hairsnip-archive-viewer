@@ -90,6 +90,9 @@ function newChecksumSearcher(name, lookup, manager) {
 				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(result.values);
 				negatedResults.extend(result);
+			} else if( cs.startsWith("?") ) {
+				var result = lookup.get( cs.slice(1).trim() );
+				necessaryResults.extend(result);
 			} else if( cs.startsWith("+") ) {
 				var result = lookup.get( cs.slice(1).trim() );
 				this.results.extend(result);
