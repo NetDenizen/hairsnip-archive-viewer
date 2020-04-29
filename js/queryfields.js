@@ -476,10 +476,14 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		var rawCurrentValue = currentValue;
 		var rawCurrentValueSlices = undefined;
 		var negator = "";
+		var softNecessitator = "";
 		var necessitator = "";
 		if( currentValue !== "-" && currentValue.startsWith("-") ) {
 			rawCurrentValue = currentValue.slice(1);
 			negator = "-";
+		} else if( currentValue.startsWith("?") ) {
+			rawCurrentValue = currentValue.slice(1);
+			softNecessitator = "?";
 		} else if( currentValue.startsWith("+") ) {
 			rawCurrentValue = currentValue.slice(1);
 			necessitator = "+";
@@ -490,7 +494,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		for(idx = 0; idx < datalistLength; ++idx) {
 			var rawK = this._datalistKeys[idx];
 			var rawKLower = rawK.toLowerCase();
-			var k =  negator + necessitator + rawK;
+			var k =  negator + softNecessitator + necessitator + rawK;
 			if( ( rawKLower.includes(rawCurrentValue) ||
 				  TestGlob(rawKLower, rawCurrentValueSlices) ) &&
 			    !excludedValues.includes(rawK) ) {
@@ -538,6 +542,12 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 					result = this.lookup.get( this._MatchGlob(searchValue) );
 					this.results.NegateValues(result.values);
 					negatedResults.extend(result);
+				} else if( searchValue.startsWith("?") ) {
+					var glob = undefined;
+					searchValue = searchValue.slice(1);
+					glob = this._MatchGlob(searchValue);
+					searchValue = searchValue.slice(1);
+					necessaryResults.ExtendAllToEachKey( this.lookup.get(glob) );
 				} else if( searchValue.startsWith("+") ) {
 					var glob = undefined;
 					var result = undefined;
@@ -650,7 +660,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 			var exactStartsVal = [];
 			var currentLength = this._currentKeys.length;
 			var idx = undefined;
-			if( ( valLower !== "-" && valLower.startsWith("-") ) || valLower.startsWith("+") ) {
+			if( ( valLower !== "-" && valLower.startsWith("-") ) || valLower.startsWith("+") || valLower.startsWith("?") ) {
 				valSliceAmount = 1;
 			}
 			valLower = valLower.slice(valSliceAmount);
