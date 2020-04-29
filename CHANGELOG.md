@@ -2,6 +2,8 @@
 
 ## TODO-TO-DO.T
 
+* Create a soft-necessary option (`?`) which ensures that other results will have its value, but not generate any results of its own. Thus, the `+` option will have the result of entering the option normally, then again, preceded by `?`.
+
 * Include base number of options retrieved by each field, before the actual value is calculated.
 
 * An attempt was made to fix an intermittent bug where the autocomplete list will not open automatically. It seems this bug applies to negated (`-`) options, but perhaps now normal ones. Necessary (`+`) options were not tested for when this bug occurred.
