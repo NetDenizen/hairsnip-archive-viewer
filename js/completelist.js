@@ -1,6 +1,6 @@
 "use strict";
 
-function newAutocompleteList(listHeight, classes, targetElementOutput) {
+function newAutocompleteList(classes, targetElementOutput) {
 	var output = {};
 	output.targetElement = undefined;
 	output.targetElementOutput = undefined;

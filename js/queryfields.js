@@ -373,7 +373,7 @@ function newDateSearcher(name, lookup, manager) {
 	return output;
 }
 
-function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
+function newAutocompleteSearcher(name, classes, lookup, manager) {
 	var output = newBasicLookupSearcher();
 	output.targetElementInput = undefined;
 	output.targetListElementSort = undefined;
