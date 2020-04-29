@@ -2,6 +2,8 @@
 
 ## TODO-TO-DO.T
 
+* Include base number of options retrieved by each field, before the actual value is calculated.
+
 * An attempt was made to fix an intermittent bug where the autocomplete list will not open automatically. It seems this bug applies to negated (`-`) options, but perhaps now normal ones. Necessary (`+`) options were not tested for when this bug occurred.
 
 * The height and overflow properties of autocomplete lists can now be freely adjusted in CSS.

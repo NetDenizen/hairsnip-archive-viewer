@@ -129,6 +129,9 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var lookup = this.queryManagerLookup[idx];
 		if(lookup.results !== undefined) {
 			var value = this.querySelectionLookup[idx].length.toString();
+			value += " (";
+			value += lookup.results.AllValues().length.toString();
+			value += ")";
 			if(lookup.negatedResultsCount > 0) {
 				value += " (-";
 				value += lookup.negatedResultsCount.toString();
