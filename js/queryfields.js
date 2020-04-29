@@ -285,6 +285,8 @@ function newRangeSearcher(name, lookup, manager) {
 					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(result.values);
 					negatedResults.extend(result);
+				} else if(startChar === '?') {
+					necessaryResults.ExtendAllToEachKey(result);
 				} else if(startChar === '+') {
 					this.results.extend(result);
 					necessaryResults.ExtendAllToEachKey(result);
