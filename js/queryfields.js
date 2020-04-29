@@ -91,8 +91,7 @@ function newChecksumSearcher(name, lookup, manager) {
 				this.results.NegateValues(result.values);
 				negatedResults.extend(result);
 			} else if( cs.startsWith("?") ) {
-				var result = lookup.get( cs.slice(1).trim() );
-				necessaryResults.extend(result);
+				necessaryResults.extend( lookup.get( cs.slice(1).trim() ) );
 			} else if( cs.startsWith("+") ) {
 				var result = lookup.get( cs.slice(1).trim() );
 				this.results.extend(result);
