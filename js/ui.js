@@ -238,7 +238,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		// Hideable items
 		if(comments !== "") {
 			var commentsItem = document.createElement("p"); // Comments
-			SetHTMLToText(commentsItem, "Archiver Comments: " + comments);
+			SetHTMLToText(commentsItem, "Archivist Comments: " + comments);
 			item.appendChild(commentsItem);
 		}
 		// TODO: Should we check for block element descriptions?
