@@ -556,13 +556,13 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 	};
 	output._update = function(selected) {
 		this._ParseKeywords();
+		this.edited = true;
+		this._manager.UpdateSearchCallback(this._manager);
 		if(selected && this._currentKeys.length > 0) {
 			this.targetList.activate();
 		} else {
 			this.targetList.deactivate();
 		}
-		this.edited = true;
-		this._manager.UpdateSearchCallback(this._manager);
 	};
 	output._InputListener = function(e) {
 		this._update(true);
