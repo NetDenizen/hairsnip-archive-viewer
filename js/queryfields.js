@@ -362,6 +362,8 @@ function newDateSearcher(name, lookup, manager) {
 				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(result.values);
 				negatedResults.extend(result);
+			} else if( vTrimmed.startsWith('?') ) {
+				necessaryResults.ExtendAllToEachKey( this._ExtractValues( vTrimmed.slice(1) ) );
 			} else if( vTrimmed.startsWith('+') ) {
 				var result = this._ExtractValues( vTrimmed.slice(1) );
 				this.results.extend(result);
