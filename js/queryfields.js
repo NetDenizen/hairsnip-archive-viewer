@@ -479,9 +479,10 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this._currentValues = [];
 		for(idx = 0; idx < datalistLength; ++idx) {
 			var rawK = this._datalistKeys[idx];
+			var rawKLower = rawK.toLowerCase();
 			var k =  negator + necessitator + rawK;
-			if( ( rawK.toLowerCase().includes(rawCurrentValue) ||
-				  TestGlob(rawK.toLowerCase(), rawCurrentValueSlices) ) &&
+			if( ( rawKLower.includes(rawCurrentValue) ||
+				  TestGlob(rawKLower, rawCurrentValueSlices) ) &&
 			    !excludedValues.includes(rawK) ) {
 				var v = this._datalistValues[idx];
 				this._currentKeys.push(k);
