@@ -696,7 +696,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			this._ClickListener(e);
 		}
 	};
-	output.init = function(name, listHeight, classes, lookup, manager) {
+	output.init = function(name, classes, lookup, manager) {
 		this.targetElementInput = document.createElement('input');
 		this.targetElementInput.setAttribute("type", "text");
 		this.targetElementInput.setAttribute("id", name);
@@ -712,7 +712,7 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		SetHTMLToText(this.targetListElementSortOrder, "^");
 		this.targetListElementSortOrder.title = 'Sort list in reverse.';
 		this.targetListElementSortOrder.addEventListener("click", this, false);
-		this.targetList = newAutocompleteList(listHeight, classes, this.targetElementInput);
+		this.targetList = newAutocompleteList(classes, this.targetElementInput);
 		this.targetList.relevantTargets.push(this.targetListElementSort);
 		this.targetList.relevantTargets.push(this.targetListElementSortOrder);
 		this.targetElement = document.createElement('div');
@@ -722,6 +722,6 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 		this._manager = manager;
 		this._BuildDatalistValues(false);
 	};
-	output.init(name, listHeight, classes, lookup, manager);
+	output.init(name, classes, lookup, manager);
 	return output;
 }

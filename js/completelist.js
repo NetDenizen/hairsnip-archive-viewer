@@ -142,21 +142,18 @@ function newAutocompleteList(listHeight, classes, targetElementOutput) {
 		this._SetDataList();
 		this._SelectNewOption(this._optionSelected);
 	};
-	output.init = function(listHeight, classes, targetElementOutput) {
+	output.init = function(classes, targetElementOutput) {
 		this._listHoveredClass = classes.listHoveredClass;
 		this._listUnhoveredClass = classes.listUnhoveredClass;
 		this.targetElementOutput = targetElementOutput;
 		this.targetElement = document.createElement("div");
 		this.targetElement.className = classes.listContainerClass;
 		this.targetElement.style.display = "none";
-		this.targetElement.style.overflow = "scroll";
-		this.targetElement.style.maxHeight = listHeight;
-		this.targetElement.style.height = listHeight;
 		this.targetElementOutput.addEventListener("keydown", this, false);
 		this.targetElementOutput.addEventListener("click", this, false);
 		this.targetElementOutput.addEventListener("focus", this, false);
 		document.addEventListener("click", this, false);
 	};
-	output.init(listHeight, classes, targetElementOutput);
+	output.init(classes, targetElementOutput);
 	return output;
 }

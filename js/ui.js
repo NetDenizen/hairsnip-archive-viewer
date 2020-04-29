@@ -4,7 +4,6 @@ var defaultResultsPerPage = 10;
 var defaultPageNumber = 0;
 var defaultSearchResultClass = "SearchResult";
 var defaultSearchResultSelectedClass = "SearchResult selected";
-var defaultListHeight = "10em";
 
 var defaultListSortButtonClass = "SearchResultsSort";
 var defaultListSortButtonSelectedClass = "SearchResultsSort selected";
@@ -539,19 +538,19 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this.viewcountManager = newRangeSearcher("ViewcountQuery", this.searcher.viewcountLookup, this);
 
 		// autocompleteSearcher
-		this.domainManager = newAutocompleteSearcher("DomainQuery", defaultListHeight, classes, this.searcher.domainLookup, this);
-		this.languageManager = newAutocompleteSearcher("LanguageQuery", defaultListHeight, classes, this.searcher.languageLookup, this);
-		this.contentManager = newAutocompleteSearcher("ContentQuery", defaultListHeight, classes, this.searcher.contentLookup, this);
-		this.typeManager = newAutocompleteSearcher("TypeQuery", defaultListHeight, classes, this.searcher.typeLookup, this);
-		this.categoryManager = newAutocompleteSearcher("CategoryQuery", defaultListHeight, classes, this.searcher.categoryLookup, this);
-		this.locationManager = newAutocompleteSearcher("LocationQuery", defaultListHeight, classes, this.searcher.locationLookup, this);
-		this.formatManager = newAutocompleteSearcher("FormatQuery", defaultListHeight, classes, this.searcher.formatLookup, this);
-		this.authorManager = newAutocompleteSearcher("AuthorQuery", defaultListHeight, classes, this.searcher.authorLookup, this);
-		this.emailManager = newAutocompleteSearcher("EmailQuery", defaultListHeight, classes, this.searcher.emailLookup, this);
-		this.tagManager = newAutocompleteSearcher("TagQuery", defaultListHeight, classes, this.searcher.tagLookup, this);
-		this.originManager = newAutocompleteSearcher("OriginQuery", defaultListHeight, classes, this.searcher.originLookup, this);
-		this.siteManager = newAutocompleteSearcher("SiteQuery", defaultListHeight, classes, this.searcher.siteLookup, this);
-		this.titleManager = newAutocompleteSearcher("TitleQuery", defaultListHeight, classes, this.searcher.titleLookup, this);
+		this.domainManager = newAutocompleteSearcher("DomainQuery", classes, this.searcher.domainLookup, this);
+		this.languageManager = newAutocompleteSearcher("LanguageQuery", classes, this.searcher.languageLookup, this);
+		this.contentManager = newAutocompleteSearcher("ContentQuery", classes, this.searcher.contentLookup, this);
+		this.typeManager = newAutocompleteSearcher("TypeQuery", classes, this.searcher.typeLookup, this);
+		this.categoryManager = newAutocompleteSearcher("CategoryQuery", classes, this.searcher.categoryLookup, this);
+		this.locationManager = newAutocompleteSearcher("LocationQuery", classes, this.searcher.locationLookup, this);
+		this.formatManager = newAutocompleteSearcher("FormatQuery", classes, this.searcher.formatLookup, this);
+		this.authorManager = newAutocompleteSearcher("AuthorQuery", classes, this.searcher.authorLookup, this);
+		this.emailManager = newAutocompleteSearcher("EmailQuery", classes, this.searcher.emailLookup, this);
+		this.tagManager = newAutocompleteSearcher("TagQuery", classes, this.searcher.tagLookup, this);
+		this.originManager = newAutocompleteSearcher("OriginQuery", classes, this.searcher.originLookup, this);
+		this.siteManager = newAutocompleteSearcher("SiteQuery", classes, this.searcher.siteLookup, this);
+		this.titleManager = newAutocompleteSearcher("TitleQuery", classes, this.searcher.titleLookup, this);
 	};
 	output._InitAllQueryTables = function() {
 		var searchFields = document.getElementById("SearchFields");
