@@ -212,6 +212,8 @@ function newKeywordSearcher(name, lookup, manager) {
 				this._CheckResultsNegate(encounteredValue);
 				this.results.NegateValues(result.values);
 				negatedResults.extend(result);
+			} else if( kw.startsWith("?") ) {
+				necessaryResults.extend( this._AddToIndex( kw.slice(1) ) );
 			} else if( kw.startsWith("+") ) {
 				var result = this._AddToIndex( kw.slice(1) );
 				this.results.extend(result);
