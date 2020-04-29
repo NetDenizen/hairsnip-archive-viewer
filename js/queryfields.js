@@ -633,14 +633,19 @@ function newAutocompleteSearcher(name, listHeight, classes, lookup, manager) {
 			var val = rawVal.trim();
 			var valLower = val.toLowerCase();
 			var valSpace = SliceRear(rawVal, rawVal.length - rawVal.trimLeft().length);
+			var valSliceAmount = 0;
 			var containsVal = [];
 			var startsVal = [];
 			var exactStartsVal = [];
 			var currentLength = this._currentKeys.length;
 			var idx = undefined;
+			if( ( valLower !== "-" && valLower.startsWith("-") ) || valLower.startsWith("+") ) {
+				valSliceAmount = 1;
+			}
+			valLower = valLower.slice(valSliceAmount);
 			for(idx = 0; idx < currentLength; ++idx) {
 				var s = this._currentKeys[idx];
-				var sLower = s.toLowerCase();
+				var sLower = s.toLowerCase().slice(valSliceAmount);
 				if( sLower.indexOf(valLower) !== -1 ) {
 					containsVal.push(s);
 				}
