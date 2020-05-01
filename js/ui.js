@@ -127,21 +127,24 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQueryTarget = function(idx) {
 		var target = this.queryOccurrenceTargetsLookup[idx];
 		var lookup = this.queryManagerLookup[idx];
+		var value = "";
 		if(lookup.results !== undefined) {
-			var value = this.querySelectionLookup[idx].length.toString();
+			value += this.querySelectionLookup[idx].length.toString();
 			value += " (";
 			value += lookup.results.AllValues().length.toString();
 			value += ")";
-			if(lookup.negatedResultsCount > 0) {
-				value += " (-";
-				value += lookup.negatedResultsCount.toString();
-				value += ")";
-			}
-			if(lookup.necessaryResults !== undefined) {
-				value += " (?";
-				value += lookup.necessaryResults.AllValues().length.toString();
-				value += ")";
-			}
+		}
+		if(lookup.negatedResultsCount > 0) {
+			value += " (-";
+			value += lookup.negatedResultsCount.toString();
+			value += ")";
+		}
+		if(lookup.necessaryResults !== undefined) {
+			value += " (?";
+			value += lookup.necessaryResults.AllValues().length.toString();
+			value += ")";
+		}
+		if(value !== "") {
 			SetHTMLToText(target, value);
 		} else {
 			ClearChildren(target);
