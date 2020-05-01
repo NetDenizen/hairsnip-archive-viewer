@@ -2,6 +2,8 @@
 
 ## TODO-TO-DO.T
 
+* Fix bug that fails to properly handle first character of an soft-necessary (`?`) and necessary (`+`) options in fields 6, 7, 9-11, 16-21, 23, and 24. Its effects are likely rare, but it is a flaw in the old code, nonetheless.
+
 * Create a soft-necessary option (`?`) which ensures that other results will have its value, but not generate any results of its own. Thus, the `+` option will have the result of entering the option normally, then again, preceded by `?`.
 
 * Change the default text of fields 13-15 to reflect the requirement of both values in a range.

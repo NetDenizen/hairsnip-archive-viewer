@@ -550,11 +550,8 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 				var searchValue = values[idx].trim();
 				currentValue = searchValue;
 				if( searchValue.startsWith("?") ) {
-					var glob = undefined;
 					searchValue = searchValue.slice(1);
-					glob = this._MatchGlob(searchValue);
-					searchValue = searchValue.slice(1);
-					necessaryResults.ExtendAllToEachKey( this.lookup.get(glob) );
+					necessaryResults.ExtendAllToEachKey( this.lookup.get( this._MatchGlob(searchValue) ) );
 				} else if(searchValue !== "") {
 					if(searchValue === "-") {
 						var result = this.lookup.get("");
@@ -573,12 +570,9 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 						this.results.NegateValues(result.values);
 						negatedResults.extend(result);
 					} else if( searchValue.startsWith("+") ) {
-						var glob = undefined;
 						var result = undefined;
 						searchValue = searchValue.slice(1);
-						glob = this._MatchGlob(searchValue);
-						searchValue = searchValue.slice(1);
-						result = this.lookup.get(glob);
+						result = this.lookup.get( this._MatchGlob(searchValue) );
 						necessaryResults.ExtendAllToEachKey(result);
 						this.results.extend(result);
 						negatedResults.NegateValues(result.values);
