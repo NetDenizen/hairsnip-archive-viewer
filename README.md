@@ -37,7 +37,9 @@ All search fields (items 5-25) take a number of comma-separated keywords. Each s
 
 `-` alone represents a search for an empty (blank) string (or the absence of any value), which differs from not filtering any options, by leaving the actual field blank. Options may be preceeded by `-` to negate them, including the blank string, which would be negated with `--`.
 
-Keywords may be preceded by `+` to only match results if they contain them, regardless of whether they match and of the other keywords, or not.
+Keywords may be preceded by `?` to only match results if they contain them, regardless of whether they match and of the other keywords, or not. Note that this will only apply the effect to existing results, but no new ones.
+
+`+` will perform the same functionality as `?`, as well as actually match results to the given keyword.
 
 The `K` button preceding applicable fields will cause the search results (field 33) to be sorted by the category associated with whichever one is selected.
 
@@ -49,7 +51,7 @@ The order of the list may be toggled between alphabetical and number of occurren
 
 In fields 8, and 13-15 an option is a single value, or a range. A range is two values separated by a `-`, their order being irrelevant. If either of these values is left out, the entry is ignored. The respective minimum and maximum values are included in the titles of these fields.
 
-Underneath every field, the number of selected options is displayed. The first number in parentheses without a preceeding `-` or a `+`, represents the actual number of selected options for that field only. If there is a number preceded by a `-` in parentheses, it represents the number of negated options (preceded by the same symbol when their keywords). Similarly, if a number in parentheses is preceded by a `+`, it represents the number of options preceded with a `+`, which only match results that contain them, regardless of other keywords. The number of selected options is calculated after all of these other numbers are applied.
+Underneath every field, the number of selected options is displayed. The first number in parentheses without a preceeding `-` or a `?`, represents the actual number of selected options for that field only. If there is a number preceded by a `-` in parentheses, it represents the number of negated options (preceded by the same symbol when their keywords). Similarly, if a number in parentheses is preceded by a `?`, it represents the number of options preceded with a `?`, which only match results that contain them, regardless of other keywords. The number of selected options is calculated after all of these other numbers are applied.
 
 ### Items
 

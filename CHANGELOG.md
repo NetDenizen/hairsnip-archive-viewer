@@ -2,6 +2,8 @@
 
 ## TODO-TO-DO.T
 
+* Create a soft-necessary option (`?`) which ensures that other results will have its value, but not generate any results of its own. Thus, the `+` option will have the result of entering the option normally, then again, preceded by `?`.
+
 * Change the default text of fields 13-15 to reflect the requirement of both values in a range.
 
 * Include base number of options retrieved by each field, before the actual value is calculated.

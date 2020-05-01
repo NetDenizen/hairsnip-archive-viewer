@@ -22,6 +22,11 @@ function newBasicSearcher() {
 			this.necessaryResults = undefined;
 		}
 	};
+	output._CheckOnlySoftNecessaryResults = function(encounteredValue) {
+		if(!encounteredValue) {
+			this.results = undefined;
+		}
+	};
 	output._SetNegatedResultsCount = function(negatedResults) {
 		this.negatedResultsCount = negatedResults.AllValues().length;
 	};
@@ -76,34 +81,39 @@ function newChecksumSearcher(name, lookup, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < checksumsLength; ++idx) {
 			var cs = checksums[idx].replace(/\\,/g, ',').trim();
-			if(cs === '--') {
-				var result = lookup.get("");
-				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(result.values);
-				negatedResults.extend(result);
-			} else if(cs === '-') {
-				var result = lookup.get("");
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
-			} else if( cs.startsWith("-") ) {
-				var result = lookup.get( cs.slice(1).trim() );
-				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(result.values);
-				negatedResults.extend(result);
-			} else if( cs.startsWith("+") ) {
-				var result = lookup.get( cs.slice(1).trim() );
-				this.results.extend(result);
-				necessaryResults.extend(result);
-				negatedResults.NegateValues(result.values);
-			} else {
-				var result = lookup.get(cs);
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
+			if( cs.startsWith("?") ) {
+				necessaryResults.extend( lookup.get( cs.slice(1).trim() ) );
+			} else if(cs !== "") {
+				if(cs === '--') {
+					var result = lookup.get("");
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if(cs === '-') {
+					var result = lookup.get("");
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else if( cs.startsWith("-") ) {
+					var result = lookup.get( cs.slice(1).trim() );
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if( cs.startsWith("+") ) {
+					var result = lookup.get( cs.slice(1).trim() );
+					this.results.extend(result);
+					necessaryResults.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else {
+					var result = lookup.get(cs);
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				}
+				encounteredValue = true;
 			}
-			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
 		this._SetNegatedResultsCount(negatedResults);
+		this._CheckOnlySoftNecessaryResults(encounteredValue);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -140,34 +150,39 @@ function newFulltextSearcher(name, searcher, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
-			if(kw === '--') {
-				var result = this._AddToIndex("");
-				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(result.values);
-				negatedResults.extend(result);
-			} else if(kw === '-') {
-				var result = this._AddToIndex("");
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
-			} else if( kw.startsWith("-") ) {
-				var result = this._AddToIndex( kw.slice(1) );
-				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(result.values);
-				negatedResults.extend(result);
-			} else if( kw.startsWith("+") ) {
-				var result = this._AddToIndex( kw.slice(1) );
-				this.results.extend(result);
-				necessaryResults.extend(result);
-				negatedResults.NegateValues(result.values);
-			} else {
-				var result = this._AddToIndex(kw);
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
+			if( kw.startsWith("?") ) {
+				necessaryResults.extend( this._AddToIndex( kw.slice(1) ) );
+			} else if(kw !== "") {
+				if(kw === '--') {
+					var result = this._AddToIndex("");
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if(kw === '-') {
+					var result = this._AddToIndex("");
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else if( kw.startsWith("-") ) {
+					var result = this._AddToIndex( kw.slice(1) );
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if( kw.startsWith("+") ) {
+					var result = this._AddToIndex( kw.slice(1) );
+					this.results.extend(result);
+					necessaryResults.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else {
+					var result = this._AddToIndex(kw);
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				}
+				encounteredValue = true;
 			}
-			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
 		this._SetNegatedResultsCount(negatedResults);
+		this._CheckOnlySoftNecessaryResults(encounteredValue);
 	};
 	output.init = function(name, searcher, manager) {
 		this.targetElement = document.createElement('input');
@@ -199,29 +214,34 @@ function newKeywordSearcher(name, lookup, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < keywordsLength; ++idx) {
 			var kw = keywords[idx].trim().replace(/\\,/g, ',');
-			if( kw === '-' ) {
-				var result = this._AddToIndex(kw);
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
-			} else if( kw.startsWith("-") ) {
-				var result = this._AddToIndex( kw.slice(1) );
-				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(result.values);
-				negatedResults.extend(result);
-			} else if( kw.startsWith("+") ) {
-				var result = this._AddToIndex( kw.slice(1) );
-				this.results.extend(result);
-				necessaryResults.extend(result);
-				negatedResults.NegateValues(result.values);
-			} else if(kw != "") {
-				var result = this._AddToIndex(kw);
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
+			if( kw.startsWith("?") ) {
+				necessaryResults.extend( this._AddToIndex( kw.slice(1) ) );
+			} else if(kw !== "") {
+				if( kw === '-' ) {
+					var result = this._AddToIndex(kw);
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else if( kw.startsWith("-") ) {
+					var result = this._AddToIndex( kw.slice(1) );
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if( kw.startsWith("+") ) {
+					var result = this._AddToIndex( kw.slice(1) );
+					this.results.extend(result);
+					necessaryResults.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else {
+					var result = this._AddToIndex(kw);
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				}
+				encounteredValue = true;
 			}
-			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
 		this._SetNegatedResultsCount(negatedResults);
+		this._CheckOnlySoftNecessaryResults(encounteredValue);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -251,7 +271,7 @@ function newRangeSearcher(name, lookup, manager) {
 			var pair = [];
 			var result = undefined;
 			var startChar = undefined;
-			var value = values[idx].replace(/\\,/g, ',');
+			var value = values[idx].replace(/\\,/g, ',').trim();
 			if(value.length > 0) {
 				startChar = value.charAt(0);
 				if(value === '-') {
@@ -279,6 +299,8 @@ function newRangeSearcher(name, lookup, manager) {
 					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(result.values);
 					negatedResults.extend(result);
+				} else if(startChar === '?') {
+					necessaryResults.ExtendAllToEachKey(result);
 				} else if(startChar === '+') {
 					this.results.extend(result);
 					necessaryResults.ExtendAllToEachKey(result);
@@ -287,10 +309,13 @@ function newRangeSearcher(name, lookup, manager) {
 					this.results.extend(result);
 				}
 			}
-			encounteredValue = true;
+			if(value !== "" && startChar !== '?') {
+				encounteredValue = true;
+			}
 		}
 		this._SetNecessaryResults(necessaryResults);
 		this._SetNegatedResultsCount(negatedResults);
+		this._CheckOnlySoftNecessaryResults(encounteredValue);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
@@ -340,34 +365,39 @@ function newDateSearcher(name, lookup, manager) {
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var vTrimmed = values[idx].replace(/\\,/g, ',').trim();
-			if(vTrimmed === '-') {
-				var result = this.lookup.GetNumericalRange(undefined, undefined);
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
-			} else if(vTrimmed === '--') {
-				var result = this.lookup.GetNumericalRange(undefined, undefined);
-				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(result.values);
-				negatedResults.extend(result);
-			} else if( vTrimmed.startsWith('-') ) {
-				var result = this._ExtractValues( vTrimmed.slice(1) );
-				this._CheckResultsNegate(encounteredValue);
-				this.results.NegateValues(result.values);
-				negatedResults.extend(result);
-			} else if( vTrimmed.startsWith('+') ) {
-				var result = this._ExtractValues( vTrimmed.slice(1) );
-				this.results.extend(result);
-				necessaryResults.ExtendAllToEachKey(result);
-				negatedResults.NegateValues(result.values);
-			} else {
-				var result = this._ExtractValues(vTrimmed);
-				this.results.extend(result);
-				negatedResults.NegateValues(result.values);
+			if( vTrimmed.startsWith('?') ) {
+				necessaryResults.ExtendAllToEachKey( this._ExtractValues( vTrimmed.slice(1) ) );
+			} else if(vTrimmed !== "") {
+				if(vTrimmed === '-') {
+					var result = this.lookup.GetNumericalRange(undefined, undefined);
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else if(vTrimmed === '--') {
+					var result = this.lookup.GetNumericalRange(undefined, undefined);
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if( vTrimmed.startsWith('-') ) {
+					var result = this._ExtractValues( vTrimmed.slice(1) );
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if( vTrimmed.startsWith('+') ) {
+					var result = this._ExtractValues( vTrimmed.slice(1) );
+					this.results.extend(result);
+					necessaryResults.ExtendAllToEachKey(result);
+					negatedResults.NegateValues(result.values);
+				} else {
+					var result = this._ExtractValues(vTrimmed);
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				}
+				encounteredValue = true;
 			}
-			encounteredValue = true;
 		}
 		this._SetNecessaryResults(necessaryResults);
 		this._SetNegatedResultsCount(negatedResults);
+		this._CheckOnlySoftNecessaryResults(encounteredValue);
 	};
 	output.targetElement.setAttribute("placeholder", "<date range>[,...]");
 	return output;
@@ -425,7 +455,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		}
 		return output;
 	};
-	output._MarkupData = function(referenceValueSlices, negator, necessitator, matchValue) {
+	output._MarkupData = function(referenceValueSlices, negator, softNecessitator, necessitator, matchValue) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
 		var idx = undefined;
@@ -433,6 +463,9 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		var strongEnd = 0;
 		if(negator.length !== 0) {
 			output.push( document.createTextNode(negator) );
+		}
+		if(softNecessitator.length !== 0) {
+			output.push( document.createTextNode(softNecessitator) );
 		}
 		if(necessitator.length !== 0) {
 			output.push( document.createTextNode(necessitator) );
@@ -466,10 +499,14 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		var rawCurrentValue = currentValue;
 		var rawCurrentValueSlices = undefined;
 		var negator = "";
+		var softNecessitator = "";
 		var necessitator = "";
 		if( currentValue !== "-" && currentValue.startsWith("-") ) {
 			rawCurrentValue = currentValue.slice(1);
 			negator = "-";
+		} else if( currentValue.startsWith("?") ) {
+			rawCurrentValue = currentValue.slice(1);
+			softNecessitator = "?";
 		} else if( currentValue.startsWith("+") ) {
 			rawCurrentValue = currentValue.slice(1);
 			necessitator = "+";
@@ -480,14 +517,14 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		for(idx = 0; idx < datalistLength; ++idx) {
 			var rawK = this._datalistKeys[idx];
 			var rawKLower = rawK.toLowerCase();
-			var k =  negator + necessitator + rawK;
+			var k =  negator + softNecessitator + necessitator + rawK;
 			if( ( rawKLower.includes(rawCurrentValue) ||
 				  TestGlob(rawKLower, rawCurrentValueSlices) ) &&
 			    !excludedValues.includes(rawK) ) {
 				var v = this._datalistValues[idx];
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
-				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, necessitator, v) );
+				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, softNecessitator, necessitator, v) );
 				prefixedKeys.push(prefix + k);
 			}
 		}
@@ -512,42 +549,51 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 			for(idx = 0; idx < valuesLength; ++idx) {
 				var searchValue = values[idx].trim();
 				currentValue = searchValue;
-				if(searchValue === "-") {
-					var result = this.lookup.get("");
-					this.results.extend(result);
-					negatedResults.NegateValues(result.values);
-				} else if(searchValue === "--") {
-					var result = this.lookup.get("");
-					this._CheckResultsNegate(encounteredValue);
-					this.results.NegateValues(result.values);
-					negatedResults.extend(result);
-				} else if( searchValue.startsWith("-") ) {
-					var result = undefined;
-					this._CheckResultsNegate(encounteredValue);
-					searchValue = searchValue.slice(1);
-					result = this.lookup.get( this._MatchGlob(searchValue) );
-					this.results.NegateValues(result.values);
-					negatedResults.extend(result);
-				} else if( searchValue.startsWith("+") ) {
+				if( searchValue.startsWith("?") ) {
 					var glob = undefined;
-					var result = undefined;
 					searchValue = searchValue.slice(1);
 					glob = this._MatchGlob(searchValue);
 					searchValue = searchValue.slice(1);
-					result = this.lookup.get(glob);
-					necessaryResults.ExtendAllToEachKey(result);
-					this.results.extend(result);
-					negatedResults.NegateValues(result.values);
+					necessaryResults.ExtendAllToEachKey( this.lookup.get(glob) );
 				} else if(searchValue !== "") {
-					var result = this.lookup.get( this._MatchGlob(searchValue) );
-					this.results.extend(result);
-					negatedResults.NegateValues(result.values);
+					if(searchValue === "-") {
+						var result = this.lookup.get("");
+						this.results.extend(result);
+						negatedResults.NegateValues(result.values);
+					} else if(searchValue === "--") {
+						var result = this.lookup.get("");
+						this._CheckResultsNegate(encounteredValue);
+						this.results.NegateValues(result.values);
+						negatedResults.extend(result);
+					} else if( searchValue.startsWith("-") ) {
+						var result = undefined;
+						this._CheckResultsNegate(encounteredValue);
+						searchValue = searchValue.slice(1);
+						result = this.lookup.get( this._MatchGlob(searchValue) );
+						this.results.NegateValues(result.values);
+						negatedResults.extend(result);
+					} else if( searchValue.startsWith("+") ) {
+						var glob = undefined;
+						var result = undefined;
+						searchValue = searchValue.slice(1);
+						glob = this._MatchGlob(searchValue);
+						searchValue = searchValue.slice(1);
+						result = this.lookup.get(glob);
+						necessaryResults.ExtendAllToEachKey(result);
+						this.results.extend(result);
+						negatedResults.NegateValues(result.values);
+					} else {
+						var result = this.lookup.get( this._MatchGlob(searchValue) );
+						this.results.extend(result);
+						negatedResults.NegateValues(result.values);
+					}
+					encounteredValue = true;
 				}
-				encounteredValue = true;
 				searchValues.push(searchValue);
 			}
 			this._SetNecessaryResults(necessaryResults);
 			this._SetNegatedResultsCount(negatedResults);
+			this._CheckOnlySoftNecessaryResults(encounteredValue);
 			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
 							   currentValue.toLowerCase(),
 							   SliceRear(searchValues, valuesLength - 1)
@@ -640,7 +686,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 			var exactStartsVal = [];
 			var currentLength = this._currentKeys.length;
 			var idx = undefined;
-			if( ( valLower !== "-" && valLower.startsWith("-") ) || valLower.startsWith("+") ) {
+			if( ( valLower !== "-" && valLower.startsWith("-") ) || valLower.startsWith("+") || valLower.startsWith("?") ) {
 				valSliceAmount = 1;
 			}
 			valLower = valLower.slice(valSliceAmount);
