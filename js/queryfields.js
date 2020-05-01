@@ -435,7 +435,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		}
 		return output;
 	};
-	output._MarkupData = function(referenceValueSlices, negator, necessitator, matchValue) {
+	output._MarkupData = function(referenceValueSlices, negator, softNecessitator, necessitator, matchValue) {
 		var output = [];
 		var referenceValueSlicesLength = referenceValueSlices.length;
 		var idx = undefined;
@@ -443,6 +443,9 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		var strongEnd = 0;
 		if(negator.length !== 0) {
 			output.push( document.createTextNode(negator) );
+		}
+		if(softNecessitator.length !== 0) {
+			output.push( document.createTextNode(softNecessitator) );
 		}
 		if(necessitator.length !== 0) {
 			output.push( document.createTextNode(necessitator) );
@@ -501,7 +504,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 				var v = this._datalistValues[idx];
 				this._currentKeys.push(k);
 				this._currentValues.push(v);
-				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, necessitator, v) );
+				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, softNecessitator, necessitator, v) );
 				prefixedKeys.push(prefix + k);
 			}
 		}
