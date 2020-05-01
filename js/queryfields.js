@@ -296,7 +296,7 @@ function newRangeSearcher(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
 		this.targetElement.setAttribute("type", "text");
 		this.targetElement.setAttribute("id", name);
-		this.targetElement.setAttribute("placeholder", "<[value 1]-[value 2]>[,...]");
+		this.targetElement.setAttribute("placeholder", "<<value 1>-<value 2>>[,...]");
 		this.targetElement.addEventListener("input", this, false);
 		this.lookup = lookup;
 		this._manager = manager;
