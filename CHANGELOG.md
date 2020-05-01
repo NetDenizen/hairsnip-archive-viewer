@@ -2,6 +2,8 @@
 
 ## TODO-TO-DO.T
 
+* Change the default text of fields 13-15 to reflect the requirement of both values in a range.
+
 * Include base number of options retrieved by each field, before the actual value is calculated.
 
 * An attempt was made to fix an intermittent bug where the autocomplete list will not open automatically. It seems this bug applies to negated (`-`) options, but perhaps now normal ones. Necessary (`+`) options were not tested for when this bug occurred.
