@@ -438,7 +438,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 	};
 	output._MatchGlob = function(value) {
 		var output = [];
-		var cleanValue = value.replace(/\\,/g, ',');
+		var cleanValue = value.replace(/\\,/g, ',').replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+');
 		if( !cleanValue.includes('*') ) {
 			output.push(cleanValue);
 		} else {
@@ -446,7 +446,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 			var idx = 0;
 			var datalistLength = this._datalistKeys.length;
 			for(idx = 0; idx < datalistLength; ++idx) {
-				var kRaw = this._datalistKeys[idx].replace(/\\,/g, ',');
+				var kRaw = this._datalistKeys[idx].replace(/\\,/g, ',').replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+');
 				var k = kRaw.toLowerCase();
 				if( TestGlob(k, slices) ) {
 					output.push(kRaw);
@@ -494,38 +494,40 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 	output._SetDataList = function(prefix, currentValue, excludedValues) {
 		var prefixedKeys = [];
 		var prefixedValues = [];
-		var datalistLength = this._datalistKeys.length;
-		var idx = undefined;
-		var rawCurrentValue = currentValue;
-		var rawCurrentValueSlices = undefined;
-		var negator = "";
-		var softNecessitator = "";
-		var necessitator = "";
-		if( currentValue !== "-" && currentValue.startsWith("-") ) {
-			rawCurrentValue = currentValue.slice(1);
-			negator = "-";
-		} else if( currentValue.startsWith("?") ) {
-			rawCurrentValue = currentValue.slice(1);
-			softNecessitator = "?";
-		} else if( currentValue.startsWith("+") ) {
-			rawCurrentValue = currentValue.slice(1);
-			necessitator = "+";
-		}
-		rawCurrentValueSlices = ProcessGlob(rawCurrentValue);
 		this._currentKeys = [];
 		this._currentValues = [];
-		for(idx = 0; idx < datalistLength; ++idx) {
-			var rawK = this._datalistKeys[idx];
-			var rawKLower = rawK.toLowerCase();
-			var k =  negator + softNecessitator + necessitator + rawK;
-			if( ( rawKLower.includes(rawCurrentValue) ||
-				  TestGlob(rawKLower, rawCurrentValueSlices) ) &&
-			    !excludedValues.includes(rawK) ) {
-				var v = this._datalistValues[idx];
-				this._currentKeys.push(k);
-				this._currentValues.push(v);
-				prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, softNecessitator, necessitator, v) );
-				prefixedKeys.push(prefix + k);
+		if(currentValue !== null) {
+			var datalistLength = this._datalistKeys.length;
+			var idx = undefined;
+			var rawCurrentValue = currentValue;
+			var rawCurrentValueSlices = undefined;
+			var negator = "";
+			var softNecessitator = "";
+			var necessitator = "";
+			if( currentValue.startsWith("-") ) {
+				rawCurrentValue = currentValue.slice(1);
+				negator = "-";
+			} else if( currentValue.startsWith("?") ) {
+				rawCurrentValue = currentValue.slice(1);
+				softNecessitator = "?";
+			} else if( currentValue.startsWith("+") ) {
+				rawCurrentValue = currentValue.slice(1);
+				necessitator = "+";
+			}
+			rawCurrentValueSlices = ProcessGlob(rawCurrentValue);
+			for(idx = 0; idx < datalistLength; ++idx) {
+				var rawK = this._datalistKeys[idx];
+				var rawKLower = rawK.toLowerCase();
+				var k =  negator + softNecessitator + necessitator + rawK;
+				if( ( rawKLower.includes(rawCurrentValue) ||
+					  TestGlob(rawKLower, rawCurrentValueSlices) ) &&
+				    !excludedValues.includes(rawK) ) {
+					var v = this._datalistValues[idx];
+					this._currentKeys.push(k);
+					this._currentValues.push(v);
+					prefixedValues.push( this._MarkupData(rawCurrentValueSlices, negator, softNecessitator, necessitator, v) );
+					prefixedKeys.push(prefix + k);
+				}
 			}
 		}
 		this.targetList.update(prefixedKeys, prefixedValues);
@@ -555,10 +557,13 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 				} else if(searchValue !== "") {
 					if(searchValue === "-") {
 						var result = this.lookup.get("");
+						searchValue = searchValue.slice(1);
 						this.results.extend(result);
 						negatedResults.NegateValues(result.values);
 					} else if(searchValue === "--") {
 						var result = this.lookup.get("");
+						searchValue = searchValue.slice(2);
+						currentValue = null;
 						this._CheckResultsNegate(encounteredValue);
 						this.results.NegateValues(result.values);
 						negatedResults.extend(result);
@@ -585,11 +590,14 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 				}
 				searchValues.push(searchValue);
 			}
+			if(currentValue !== null) {
+				currentValue = currentValue.toLowerCase();
+			}
 			this._SetNecessaryResults(necessaryResults);
 			this._SetNegatedResultsCount(negatedResults);
 			this._CheckOnlySoftNecessaryResults(encounteredValue);
 			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
-							   currentValue.toLowerCase(),
+							   currentValue,
 							   SliceRear(searchValues, valuesLength - 1)
 							 );
 		}
@@ -627,7 +635,10 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		this._datalistKeys = [];
 		this._datalistValues = [];
 		for(idx = 0; idx < valuesLength; ++idx) {
-			var val = values.keys[idx].replace(/,/g, '\\,');
+			var val = values.keys[idx].replace(/,/g, '\\,')
+									  .replace(/-/g, '\\-')
+									  .replace(/\?/g, '\\?')
+									  .replace(/\+/g, '\\+');
 			if(val === "") {
 				val = "-";
 			}
