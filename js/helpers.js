@@ -65,9 +65,9 @@ function LongestCommonPrefix(values) {
 	return output;
 }
 
-function SplitUnescapedCommas(value) {
+function SplitUnescaped(character, value) {
 	var output = undefined;
-	if( value.includes('\\,') ) {
+	if( value.includes('\\' + character) ) {
 		var currentString = "";
 		var slash = false;
 		var valueLength = value.length;
@@ -81,7 +81,7 @@ function SplitUnescapedCommas(value) {
 			} else if(v === '\\') {
 				currentString += v;
 				slash = true;
-			} else if(v === ',') {
+			} else if(v === character) {
 				output.push(currentString);
 				currentString = "";
 			} else {
@@ -93,9 +93,17 @@ function SplitUnescapedCommas(value) {
 			output.push(currentString);
 		}
 	} else {
-		output = value.split(',');
+		output = value.split(character);
 	}
 	return output;
+}
+
+function SplitUnescapedCommas(value) {
+	return SplitUnescaped(',', value);
+}
+
+function SplitUnescapedDashes(value) {
+	return SplitUnescaped('-', value);
 }
 
 //// Wildcard Matching
