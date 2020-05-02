@@ -61,6 +61,53 @@ function newBasicIndexedSearcher() {
 		}
 		return found;
 	};
+	output._CleanKw = function(kw) {
+		return kw.trim().replace(/\\,/g, ',');
+	};
+	output._ParseTarget = function() {
+		var encounteredValue = false;
+		var keywords = SplitUnescapedCommas(this.targetElement.value);
+		var keywordsLength = keywords.length;
+		var idx = undefined;
+		var necessaryResults = newIdRecord([], []);
+		var negatedResults = newIdRecord([], []);
+		this.results = newIdRecord([], []);
+		for(idx = 0; idx < keywordsLength; ++idx) {
+			var kw = this._CleanKw(keywords[idx]);
+			if( kw.startsWith("?") ) {
+				necessaryResults.extend( this._AddToIndex( kw.slice(1) ) );
+			} else if(kw !== "") {
+				if(kw === '--') {
+					var result = this._AddToIndex("");
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if(kw === '-') {
+					var result = this._AddToIndex("");
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else if( kw.startsWith("-") ) {
+					var result = this._AddToIndex( kw.slice(1) );
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if( kw.startsWith("+") ) {
+					var result = this._AddToIndex( kw.slice(1) );
+					this.results.extend(result);
+					necessaryResults.extend(result);
+					negatedResults.NegateValues(result.values);
+				} else {
+					var result = this._AddToIndex(kw);
+					this.results.extend(result);
+					negatedResults.NegateValues(result.values);
+				}
+				encounteredValue = true;
+			}
+		}
+		this._SetNecessaryResults(necessaryResults);
+		this._SetNegatedResultsCount(negatedResults);
+		this._CheckOnlySoftNecessaryResults(encounteredValue);
+	};
 	return output;
 }
 
@@ -139,52 +186,11 @@ function newFulltextSearcher(name, searcher, manager) {
 			this.results = this.searcher.titleLookup.GetAll();
 		}
 	};
+	output._CleanKw = function(kw) {
+		return kw.trim().trim().replace(/\\,/g, ',').replace(/"/g, '""');
+	};
 	output._GetKwValue = function(kw) {
 		return this.searcher.LookupBody('"' + kw + '"');
-	};
-	output._ParseTarget = function() {
-		var encounteredValue = false;
-		var keywords = SplitUnescapedCommas(this.targetElement.value);
-		var keywordsLength = keywords.length;
-		var idx = undefined;
-		var necessaryResults = newIdRecord([], []);
-		var negatedResults = newIdRecord([], []);
-		this.results = newIdRecord([], []);
-		for(idx = 0; idx < keywordsLength; ++idx) {
-			var kw = keywords[idx].trim().replace(/\\,/g, ',').replace(/"/g, '""');
-			if( kw.startsWith("?") ) {
-				necessaryResults.extend( this._AddToIndex( kw.slice(1) ) );
-			} else if(kw !== "") {
-				if(kw === '--') {
-					var result = this._AddToIndex("");
-					this._CheckResultsNegate(encounteredValue);
-					this.results.NegateValues(result.values);
-					negatedResults.extend(result);
-				} else if(kw === '-') {
-					var result = this._AddToIndex("");
-					this.results.extend(result);
-					negatedResults.NegateValues(result.values);
-				} else if( kw.startsWith("-") ) {
-					var result = this._AddToIndex( kw.slice(1) );
-					this._CheckResultsNegate(encounteredValue);
-					this.results.NegateValues(result.values);
-					negatedResults.extend(result);
-				} else if( kw.startsWith("+") ) {
-					var result = this._AddToIndex( kw.slice(1) );
-					this.results.extend(result);
-					necessaryResults.extend(result);
-					negatedResults.NegateValues(result.values);
-				} else {
-					var result = this._AddToIndex(kw);
-					this.results.extend(result);
-					negatedResults.NegateValues(result.values);
-				}
-				encounteredValue = true;
-			}
-		}
-		this._SetNecessaryResults(necessaryResults);
-		this._SetNegatedResultsCount(negatedResults);
-		this._CheckOnlySoftNecessaryResults(encounteredValue);
 	};
 	output.init = function(name, searcher, manager) {
 		this.targetElement = document.createElement('input');
@@ -205,50 +211,6 @@ function newKeywordSearcher(name, lookup, manager) {
 
 	output._GetKwValue = function(kw) {
 		return kw === '' ? this.lookup.get('') : this.lookup.GetFuzzy(kw);
-	};
-	output._ParseTarget = function() {
-		var encounteredValue = false;
-		var keywords = SplitUnescapedCommas(this.targetElement.value);
-		var keywordsLength = keywords.length;
-		var idx = undefined;
- 		var necessaryResults = newIdRecord([], []);
-		var negatedResults = newIdRecord([], []);
-		this.results = newIdRecord([], []);
-		for(idx = 0; idx < keywordsLength; ++idx) {
-			var kw = keywords[idx].trim().replace(/\\,/g, ',');
-			if( kw.startsWith("?") ) {
-				necessaryResults.extend( this._AddToIndex( kw.slice(1) ) );
-			} else if(kw !== "") {
-				if(kw === '--') {
-					var result = this._AddToIndex("");
-					this._CheckResultsNegate(encounteredValue);
-					this.results.NegateValues(result.values);
-					negatedResults.extend(result);
-				} else if( kw === '-' ) {
-					var result = this._AddToIndex("");
-					this.results.extend(result);
-					negatedResults.NegateValues(result.values);
-				} else if( kw.startsWith("-") ) {
-					var result = this._AddToIndex( kw.slice(1) );
-					this._CheckResultsNegate(encounteredValue);
-					this.results.NegateValues(result.values);
-					negatedResults.extend(result);
-				} else if( kw.startsWith("+") ) {
-					var result = this._AddToIndex( kw.slice(1) );
-					this.results.extend(result);
-					necessaryResults.extend(result);
-					negatedResults.NegateValues(result.values);
-				} else {
-					var result = this._AddToIndex(kw);
-					this.results.extend(result);
-					negatedResults.NegateValues(result.values);
-				}
-				encounteredValue = true;
-			}
-		}
-		this._SetNecessaryResults(necessaryResults);
-		this._SetNegatedResultsCount(negatedResults);
-		this._CheckOnlySoftNecessaryResults(encounteredValue);
 	};
 	output.init = function(name, lookup, manager) {
 		this.targetElement = document.createElement('input');
