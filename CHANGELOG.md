@@ -1,6 +1,6 @@
 # Changelog
 
-## TODO-TO-DO.T
+## 2020-05-02.1
 
 * Fix intermittent bug that prevents the count of negated (`-`) options from being removed, under certain circumstances.
 
