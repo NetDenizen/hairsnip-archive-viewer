@@ -84,7 +84,7 @@ function newChecksumSearcher(name, lookup, manager) {
 		for(idx = 0; idx < checksumsLength; ++idx) {
 			var cs = checksums[idx].replace(/\\,/g, ',').trim();
 			if( cs.startsWith("?") ) {
-				necessaryResults.extend( lookup.get( cs.slice(1).trim() ) );
+				necessaryResults.extend( lookup.get( cs.slice(1).replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim() ) );
 			} else if(cs !== "") {
 				if(cs === '--') {
 					var result = lookup.get("");
@@ -96,17 +96,17 @@ function newChecksumSearcher(name, lookup, manager) {
 					this.results.extend(result);
 					negatedResults.NegateValues(result.values);
 				} else if( cs.startsWith("-") ) {
-					var result = lookup.get( cs.slice(1).trim() );
+					var result = lookup.get( cs.slice(1).replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim() );
 					this._CheckResultsNegate(encounteredValue);
 					this.results.NegateValues(result.values);
 					negatedResults.extend(result);
 				} else if( cs.startsWith("+") ) {
-					var result = lookup.get( cs.slice(1).trim() );
+					var result = lookup.get( cs.slice(1).replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim() );
 					this.results.extend(result);
 					necessaryResults.extend(result);
 					negatedResults.NegateValues(result.values);
 				} else {
-					var result = lookup.get(cs);
+					var result = lookup.get( cs.replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+') );
 					this.results.extend(result);
 					negatedResults.NegateValues(result.values);
 				}
