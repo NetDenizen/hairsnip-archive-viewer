@@ -41,6 +41,8 @@ Keywords may be preceded by `?` to only match results if they contain them, rega
 
 `+` will perform the same functionality as `?`, as well as actually match results to the given keyword.
 
+`-`, `?`, and `+` themselves may be represented by `\-`, `?`, and `+`, respectively.
+
 The `K` button preceding applicable fields will cause the search results (field 33) to be sorted by the category associated with whichever one is selected.
 
 In fields 6, 7, 9-11, 16-21, 23, and 24, wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option.
@@ -105,13 +107,13 @@ Underneath every field, the number of selected options is displayed. The first n
 
 21. Select stories by email addresses associated with an author, whether on their profile, or in the story info itself. Certain email addresses included in the body of the story, may not be retrieved.
 
-22. Select stories by case-insensitive keywords in the description in the author's profile. Only existed in limited use for format 2.\*-3.\* stories.
+22. Select stories by case-insensitive keywords in the description in the author's profile. Only existed in limited use for format 2.\*-3.\* stories. Note that this search will be performed against the raw HTML code of those descriptions, which might produce uncommon cases where the rendered results do not match the query.
 
 23. Select stories by their listed origin site. Only 'Haircut Story Archive' should be available, and only for format 4.\*.
 
 24. Select stories by their related tags. Note that tags were separated by comma, but commas were not consistently used in the original website, which might produce some odd options. Only applies to format 4.\* stories.
 
-25. Select stories by case-insensitive keywords or phrases in the body of the story itself.
+25. Select stories by case-insensitive keywords or phrases in the body of the story itself. Note that this search will be performed against the raw HTML code of those descriptions, which might produce uncommon cases where the rendered results do not match the query.
 
 26. Set the number of results available in each page. Must be a natural number greater than 0. Invalid entries will be replaced by 1.
 
