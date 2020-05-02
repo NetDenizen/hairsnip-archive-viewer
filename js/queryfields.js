@@ -204,7 +204,7 @@ function newKeywordSearcher(name, lookup, manager) {
 	output.lookup = undefined;
 
 	output._GetKwValue = function(kw) {
-		return kw === '-' ? this.lookup.get('') : this.lookup.GetFuzzy(kw);
+		return kw === '' ? this.lookup.get('') : this.lookup.GetFuzzy(kw);
 	};
 	output._ParseTarget = function() {
 		var encounteredValue = false;
@@ -219,8 +219,13 @@ function newKeywordSearcher(name, lookup, manager) {
 			if( kw.startsWith("?") ) {
 				necessaryResults.extend( this._AddToIndex( kw.slice(1) ) );
 			} else if(kw !== "") {
-				if( kw === '-' ) {
-					var result = this._AddToIndex(kw);
+				if(kw === '--') {
+					var result = this._AddToIndex("");
+					this._CheckResultsNegate(encounteredValue);
+					this.results.NegateValues(result.values);
+					negatedResults.extend(result);
+				} else if( kw === '-' ) {
+					var result = this._AddToIndex("");
 					this.results.extend(result);
 					negatedResults.NegateValues(result.values);
 				} else if( kw.startsWith("-") ) {
