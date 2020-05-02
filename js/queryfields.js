@@ -33,6 +33,7 @@ function newBasicSearcher() {
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
+			this.negatedResultsCount = 0;
 			this.necessaryResults = undefined;
 		} else {
 			this._ParseTarget();
@@ -594,13 +595,13 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 				currentValue = currentValue.toLowerCase();
 			}
 			this._SetNecessaryResults(necessaryResults);
-			this._SetNegatedResultsCount(negatedResults);
 			this._CheckOnlySoftNecessaryResults(encounteredValue);
 			this._SetDataList( SliceRear( fullValue, this._FindPrefix(fullValue) ),
 							   currentValue,
 							   SliceRear(searchValues, valuesLength - 1)
 							 );
 		}
+		this._SetNegatedResultsCount(negatedResults);
 	};
 	output._update = function(selected) {
 		this._ParseKeywords();
