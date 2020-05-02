@@ -51,12 +51,13 @@ function newBasicIndexedSearcher() {
 	var output = newBasicSearcher();
 	output.index = {};
 	output._AddToIndex = function(kw) {
+		var cleanKw = kw.replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+');
 		var found = undefined;
-		if( !this.index.hasOwnProperty(kw) ) {
-			found = this._GetKwValue(kw);
-			this.index[kw] = found;
+		if( !this.index.hasOwnProperty(cleanKw) ) {
+			found = this._GetKwValue(cleanKw);
+			this.index[cleanKw] = found;
 		} else {
-			found = this.index[kw];
+			found = this.index[cleanKw];
 		}
 		return found;
 	};
