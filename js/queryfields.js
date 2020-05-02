@@ -280,17 +280,17 @@ function newRangeSearcher(name, lookup, manager) {
 				} else if( value.startsWith('-') || value.startsWith('+') ) {
 					value = value.slice(1);
 				}
-				pair = value.split("-", 2);
+				pair = SplitUnescapedDashes(value);
 			}
 			if(pair.length === 2) {
-				var pair0 = pair[0].trim();
-				var pair1 = pair[1].trim();
+				var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
+				var pair1 = pair[1].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
 				pair0 = pair0 !== "" ? pair0 : undefined;
 				pair1 = pair1 !== "" ? pair1 : undefined;
 				result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
 										 this.lookup.GetNumericalRange(pair0, pair1);
 			} else if( pair.length === 1 && !value.includes('-') ) {
-				var pair0 = pair[0].trim();
+				var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
 				if(pair0 !== "") {
 					result = this.lookup.GetNumericalRange(pair0, pair0);
 				}
