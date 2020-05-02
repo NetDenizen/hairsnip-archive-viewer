@@ -29,7 +29,7 @@ An example interface of the webapp is as follows; features are annotated with bl
 
 All buttons should also have tooltips if hovered over.
 
-![screenshot](https://i.imgur.com/boVbeIH.png)
+![screenshot](https://i.imgur.com/dkxNhOl.png)
 
 ### Query Fields
 
