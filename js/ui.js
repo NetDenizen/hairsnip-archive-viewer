@@ -110,10 +110,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateSingleQuery = function(queryIdx) {
 		if(this.queryManagerLookup[queryIdx].results !== undefined) {
 			var filteredStoryIndexes = [];
-			this.querySelectionLookup[queryIdx] = [];
 			var allValues = this.queryManagerLookup[queryIdx].results.AllValuesSet();
 			var storyIndexesLength = this._storyIndexes.length;
 			var idx = undefined;
+			this.querySelectionLookup[queryIdx] = [];
 			for(idx = 0; idx < storyIndexesLength; ++idx) {
 				var storyIdx = this._storyIndexes[idx];
 				if( allValues.has(storyIdx) && this._StoryIdxHasNecessaryValues(queryIdx, storyIdx) ) {
