@@ -335,7 +335,7 @@ function newDateSearcher(name, lookup, manager) {
 	var output = newRangeSearcher(name, lookup, manager);
 	output._ExtractValues = function(dateString) {
 		var output = newIdRecord([], []);
-		var parsed = chrono.parse(dateString);
+		var parsed = chrono.parse( dateString.replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+') );
 		var parsedLength = parsed.length;
 		var idx = undefined;
 		for(idx = 0; idx < parsedLength; ++idx) {
