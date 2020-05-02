@@ -278,7 +278,7 @@ function newRangeSearcher(name, lookup, manager) {
 				startChar = value.charAt(0);
 				if(value === '-') {
 					startChar = undefined;
-				} else if( value.startsWith('-') || value.startsWith('+') ) {
+				} else if( value.startsWith('-') || value.startsWith('?') || value.startsWith('+') ) {
 					value = value.slice(1);
 				}
 				pair = SplitUnescapedDashes(value);
