@@ -253,10 +253,10 @@ function newRangeSearcher(name, lookup, manager) {
 			if(pair.length === 2) {
 				var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
 				var pair1 = pair[1].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
-				pair0 = pair0 !== "" ? pair0 : undefined;
-				pair1 = pair1 !== "" ? pair1 : undefined;
-				result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
-										 this.lookup.GetNumericalRange(pair0, pair1);
+				if(pair0 !== "" && pair1 !== "") {
+					result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
+											 this.lookup.GetNumericalRange(pair0, pair1);
+				}
 			} else if(pair.length === 1) {
 				var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
 				if(pair0 !== "") {
