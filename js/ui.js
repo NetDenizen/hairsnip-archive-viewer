@@ -405,13 +405,15 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			if(this._currentSortManager !== undefined) {
 				this.queryManagerSortTargetsLookup[this._currentSortManager].className = defaultListSortButtonClass;
 			}
-			this.queryManagerSortTargetsLookup[idx].className = defaultListSortButtonSelectedClass;
-			this._allStoryIndexes = this.queryManagerLookup[idx].lookup.GetAll().AllValues();
-			if(this._resultsOrder === "reverse") {
-				this._allStoryIndexes.reverse();
+			if(idx > 0 && idx < this.queryManagerSortTargetsLookup.length) {
+				this.queryManagerSortTargetsLookup[idx].className = defaultListSortButtonSelectedClass;
+				this._allStoryIndexes = this.queryManagerLookup[idx].lookup.GetAll().AllValues();
+				if(this._resultsOrder === "reverse") {
+					this._allStoryIndexes.reverse();
+				}
+				this._UpdateSearch();
+				this._currentSortManager = idx;
 			}
-			this._UpdateSearch();
-			this._currentSortManager = idx;
 		}
 	};
 	output.handleEvent = function(e) {

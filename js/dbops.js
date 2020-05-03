@@ -230,7 +230,11 @@ function newStorySearcher(_db) {
 		return newIdRecord(outputKeywords, outputIds);
 	};
 	output.GetBody = function(id) {
-		return this._db.exec("SELECT body FROM stories_body WHERE id=" + this._bodyLookup[id])[0]['values'][0];
+		output = "ERROR: Failed to retrieve body from id: " + id;
+		if(parseInt(id, 10) !== NaN) {
+			output = this._db.exec("SELECT body FROM stories_body WHERE id=" + this._bodyLookup[id])[0]['values'][0];
+		}
+		return output;
 	};
 	output.init(_db);
 	return output;
