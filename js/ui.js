@@ -147,7 +147,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		if(value !== "") {
 			SetHTMLToText(target, value);
 		} else {
-			ClearChildren(target);
+			SetHTMLToText(target, "\xa0");
 		}
 	};
 	output._UpdateQueries = function() {
@@ -508,6 +508,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				heading.appendChild( document.createTextNode(" ") );
 				heading.appendChild(managers[idx].targetListElementSortOrder);
 			}
+			SetHTMLToText(occurrence, "\xa0");
 			headings.appendChild(heading);
 			query.appendChild(managers[idx].targetElement);
 			queries.appendChild(query);
