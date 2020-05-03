@@ -129,13 +129,15 @@ function newIdRecord(keys, values) {
 		this.ExtendRaw(record.keys, record.values);
 	};
 	output.ExtendAllToEachKey = function(record) {
-		var idx = undefined;
-		var keysLength = record.keys.length;
+		var v = record.AllValuesSet()
+		var values = [];
 		var recordKeys = record.keys;
-		var values = [record.AllValuesSet()];
-		for(idx = 0; idx < keysLength; ++idx) {
-			this.ExtendRaw([ recordKeys[idx] ], values);
+		var recordKeysLength = recordKeys.length;
+		var idx = undefined;
+		for(idx = 0; idx < recordKeysLength; ++idx) {
+			values.push(v);
 		}
+		this.ExtendRaw(recordKeys, values);
 	};
 	output.NegateValues = function(values) {
 		// TODO: Optimize me. Avoid reallocating this array, and using indexOf to find the values
