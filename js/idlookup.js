@@ -110,8 +110,7 @@ function newIdRecord(keys, values) {
 				thisValues.push(vSet);
 				thisLookup[k] = vSet;
 				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
-					var v = vArray[vIdx];
-					this._AddToReverseLookup(v, rawK);
+					this._AddToReverseLookup(vArray[vIdx], rawK);
 				}
 			} else {
 				var found = thisLookup[k];
@@ -195,8 +194,7 @@ function newIdLookup() {
 	output._all = undefined;
 	output._allChanged = true;
 	output._GetKey = function(key) {
-		var cleanKey = key.slice(3);
-		return newIdRecord([cleanKey], [ Array.from(this._lookup[key]) ]);
+		return newIdRecord([key.slice(3)], [ Array.from(this._lookup[key]) ]);
 	};
 	output._GetIdx = function(idx) {
 		return this._GetKey(this._keys[idx]);
@@ -241,9 +239,8 @@ function newIdLookup() {
 		if( this._lookup.hasOwnProperty(strKey) ) {
 			this._lookup[strKey].add(item);
 		} else {
-			var itemSet = new Set([item]);
 			this._keys.push(strKey);
-			this._lookup[strKey] = itemSet;
+			this._lookup[strKey] = new Set([item]);
 		}
 		this._allChanged = true;
 		this._AddSingleReverse(item, strKey);
