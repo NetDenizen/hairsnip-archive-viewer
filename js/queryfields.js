@@ -52,12 +52,13 @@ function newBasicIndexedSearcher() {
 	output.index = {};
 	output._AddToIndex = function(kw) {
 		var cleanKw = kw.replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+');
+		var key = "v" + cleanKw;
 		var found = undefined;
-		if( !this.index.hasOwnProperty(cleanKw) ) {
+		if( !this.index.hasOwnProperty(key) ) {
 			found = this._GetKwValue(cleanKw);
-			this.index[cleanKw] = found;
+			this.index[key] = found;
 		} else {
-			found = this.index[cleanKw];
+			found = this.index[key];
 		}
 		return found;
 	};
