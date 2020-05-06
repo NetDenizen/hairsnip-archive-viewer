@@ -1,5 +1,19 @@
 # Changelog
 
+## 2020-05-06.1
+
+* Fix a bug that prevents `-` from being removed from autocomplete lists.
+
+* Attempt to optimize code to better handle soft-necessary (`?`) and necessary (`+`) wildcard queries. It is still too slow for many cases, however.
+
+* Perform better input sanitizationa of the data-value attribute, and in JavaScript object element names. Should be functionally identical under most circumstances.
+
+* In an attempt to minimize (slow) table reflow, the result counts beneath each field are always filled with empty space, if not in use.
+
+* Fix bug that sometimes allows rangeSearcher to work without both ends being specified.
+
+* Tidy up code.
+
 ## 2020-05-02.1
 
 * Fix intermittent bug that prevents the count of negated (`-`) options from being removed, under certain circumstances.
