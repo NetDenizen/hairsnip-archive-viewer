@@ -234,7 +234,7 @@ function newRangeSearcher(name, lookup, manager) {
 		var values = SplitUnescapedCommas(this.targetElement.value);
 		var valuesLength = values.length;
 		var idx = undefined;
- 		var necessaryResults = newIdRecord([], []);
+ 		var necessaryResults = newUnnegatableIdRecord([], []);
 		var negatedResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
@@ -330,7 +330,7 @@ function newDateSearcher(name, lookup, manager) {
 		var values = SplitUnescapedCommas(this.targetElement.value);
 		var valuesLength = values.length;
 		var idx = undefined;
- 		var necessaryResults = newIdRecord([], []);
+ 		var necessaryResults = newUnnegatableIdRecord([], []);
 		var negatedResults = newIdRecord([], []);
 		this.results = newIdRecord([], []);
 		for(idx = 0; idx < valuesLength; ++idx) {
@@ -511,7 +511,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 			this._SetDataList("", "", []);
 		} else {
 			var encounteredValue = false;
-			var necessaryResults = newIdRecord([], []);
+			var necessaryResults = newUnnegatableIdRecord([], []);
 			var searchValues = [];
 			var currentValue = undefined;
 			var values = SplitUnescapedCommas(fullValue);

@@ -87,9 +87,9 @@ function newIdRecord(keys, values) {
 		var vString = "v" + v.toString();
 		var thisReverseLookup = this._reverseLookup;
 		if( thisReverseLookup.hasOwnProperty(vString) ) {
-			thisReverseLookup[vString].push(k);
+			thisReverseLookup[vString].add(k);
 		} else {
-			thisReverseLookup[vString] = [k];
+			thisReverseLookup[vString] = new Set([k]);
 		}
 	};
 	output.ExtendRaw = function(keys, values) {
@@ -101,25 +101,33 @@ function newIdRecord(keys, values) {
 		for(idx = 0; idx < keysLength; ++idx) {
 			var rawK = keys[idx];
 			var k = "v" + rawK;
-			var vArray = Array.from(values[idx]);
-			var vArrayLength = vArray.length;
-			var vIdx = undefined;
+			var vSet = new Set(values[idx]);
+			var iter = vSet.values();
 			if( !thisLookup.hasOwnProperty(k) ) {
-				var vSet = new Set(vArray);
 				thisKeys.push(rawK);
 				thisValues.push(vSet);
 				thisLookup[k] = vSet;
-				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
-					this._AddToReverseLookup(vArray[vIdx], rawK);
+				while(true) {
+					var next = iter.next();
+					if(next.done) {
+						break;
+					}
+					this._AddToReverseLookup(next.value, rawK);
 				}
 			} else {
 				var found = thisLookup[k];
-				for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
-					var v = vArray[vIdx];
-					if( !thisLookup[k].has(v) ) {
-						this._AddToReverseLookup(v, rawK);
+				while(true) {
+					var next = iter.next();
+					var v = undefined;
+					if(next.done) {
+						break;
 					}
-					found.add(v);
+					v = next.value;
+					if( found.has(v) ) {
+						this._AddToReverseLookup(v, rawK);
+					} else {
+						found.add(v);
+					}
 				}
 			}
 		}
@@ -140,39 +148,66 @@ function newIdRecord(keys, values) {
 		this.ExtendRaw(recordKeys, values);
 	};
 	output.NegateValues = function(values) {
-		// TODO: Optimize me. Avoid reallocating this array, and using indexOf to find the values
 		var thisLookup = this._lookup;
 		var thisReverseLookup = this._reverseLookup;
 		var thisKeys = this.keys;
 		var thisValues = this.values;
+		var thisIndexes = [];
+		var changeIndexes = false;
+		var thisKeysLength = thisKeys.length;
 		var valuesLength = values.length;
-		var idx = 0;
+		var idx = undefined;
+		// TODO: More efficient initialization
+		for(idx = 0; idx < thisKeysLength; ++idx) {
+			thisIndexes.push(true);
+		}
 		for(idx = 0; idx < valuesLength; ++idx) {
-			var vArray = Array.from(values[idx]);
-			var vArrayLength = vArray.length;
-			var vIdx = undefined;
-			for(vIdx = 0; vIdx < vArrayLength; ++vIdx) {
-				var v = vArray[vIdx];
-				var vString = "v" + v.toString();
+			var iter = values[idx].values();
+			while(true) {
+				var next = iter.next();
+				var v = undefined;
+				var vString = undefined;
+				if(next.done) {
+					break;
+				}
+				v = next.value;
+				vString = "v" + v.toString();
 				if( thisReverseLookup.hasOwnProperty(vString) ) {
-					var reverseKeys = thisReverseLookup[vString];
-					var reverseKeysLength = reverseKeys.length;
-					var reverseKeysIdx = undefined;
-					for(reverseKeysIdx = 0; reverseKeysIdx < reverseKeysLength; ++reverseKeysIdx) {
-						var rawK = reverseKeys[reverseKeysIdx];
+					var reverseIter = thisReverseLookup[vString].values();
+					while(true) {
+						var reverseNext = reverseIter.next();
+						var rawK = undefined;
+						var k = undefined;
+						var vSet = undefined;
+						if(reverseNext.done) {
+							break;
+						}
+						var rawK = reverseNext.value;
 						var k = "v" + rawK;
 						var vSet = thisLookup[k];
 						vSet.delete(v);
 						if(vSet.size === 0) {
 							var kIndex = thisKeys.indexOf(rawK);
-							thisKeys.splice(kIndex, 1);
-							thisValues.splice(kIndex, 1);
+							thisIndexes[kIndex] = false;
+							changeIndexes = true;
 							delete thisLookup[k];
 						}
 					}
 					delete thisReverseLookup[vString];
 				}
 			}
+		}
+		if(changeIndexes) {
+			var newKeys = [];
+			var newValues = [];
+			for(idx = 0; idx < thisKeysLength; ++idx) {
+				if(thisIndexes[idx]) {
+					newKeys.push(thisKeys[idx]);
+					newValues.push(thisValues[idx]);
+				}
+			}
+			this.keys = newKeys;
+			this.values = newValues;
 		}
 		this._edited = true;
 	};
@@ -181,6 +216,41 @@ function newIdRecord(keys, values) {
 		tmp.extend(this);
 		tmp.NegateValues(record.values);
 		this.NegateValues(tmp.values);
+	};
+	output.GetValueKeyCount = function(v) {
+		var thisReverseLookup = this._reverseLookup;
+		var vString = "v" + v.toString();
+		var output = 0;
+		if( thisReverseLookup.hasOwnProperty(vString) ) {
+			output = thisReverseLookup[vString].length;
+		}
+		return output;
+	};
+	output.ExtendRaw(keys, values);
+	return output;
+}
+
+function newUnnegatableIdRecord(keys, values) {
+	var output = newIdRecord(keys, values);
+	output.NegateValues = undefined;
+	output.intersect = undefined;
+	output._AddToReverseLookup = function(v, k) {
+		var vString = "v" + v.toString();
+		var thisReverseLookup = this._reverseLookup;
+		if( thisReverseLookup.hasOwnProperty(vString) ) {
+			thisReverseLookup[vString] = thisReverseLookup[vString] + 1; // TODO: Can we optimize this?
+		} else {
+			thisReverseLookup[vString] = 1;
+		}
+	};
+	output.GetValueKeyCount = function(v) {
+		var thisReverseLookup = this._reverseLookup;
+		var vString = "v" + v.toString();
+		var output = 0;
+		if( thisReverseLookup.hasOwnProperty(vString) ) {
+			output = thisReverseLookup[vString];
+		}
+		return output;
 	};
 	output.ExtendRaw(keys, values);
 	return output;

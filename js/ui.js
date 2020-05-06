@@ -93,17 +93,10 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	};
 	output._StoryIdxHasNecessaryValues = function(queryIdx, storyIdx) {
 		var output = true;
-		if( this.queryManagerLookup[queryIdx].hasOwnProperty("necessaryResults") &&
-			this.queryManagerLookup[queryIdx].necessaryResults !== undefined ) {
-			var necessaryValues = this.queryManagerLookup[queryIdx].necessaryResults.values;
-			var necessaryValuesLength = necessaryValues.length;
-			var necessaryValuesIdx = undefined;
-			for(necessaryValuesIdx = 0; necessaryValuesIdx < necessaryValuesLength; ++necessaryValuesIdx) {
-				if( !necessaryValues[necessaryValuesIdx].has(storyIdx) ) {
-					output = false;
-					break;
-				}
-			}
+		if( (this.queryManagerLookup[queryIdx].hasOwnProperty("necessaryResults") &&
+			this.queryManagerLookup[queryIdx].necessaryResults !== undefined) &&
+			this.queryManagerLookup[queryIdx].necessaryResults.values.length > this.queryManagerLookup[queryIdx].necessaryResults.GetValueKeyCount(storyIdx) ) {
+			output = false;
 		}
 		return output;
 	};
