@@ -75,8 +75,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._storyAmountTarget = undefined;
 	output._pageNumber = undefined;
 	output._maxPageNumber = undefined;
-	output._resultsOrderTarget = undefined;
-	output._resultsOrder = undefined;
 
 	output._currentResultId = undefined;
 	output._currentResultTarget = undefined;
@@ -146,6 +144,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	output._UpdateQueries = function() {
 		var queryManagerLookupLength = this.queryManagerLookup.length;
 		var idx = undefined;
+		this._allStoryIndexes = this.queryManagerLookup[this._currentSortManager].targetListSortedValues.AllValues();
 		this._storyIndexes = this._allStoryIndexes.slice(0);
 		for(idx = 0; idx < queryManagerLookupLength; ++idx) {
 			this._UpdateSingleQuery(idx);
@@ -380,19 +379,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		this._UpdateResults();
 	};
-	output._ToggleResultsOrder = function() {
-		if(this._resultsOrder === "normal") {
-			SetHTMLToText(this._resultsOrderTarget, "v");
-			this._resultsOrderTarget.title = 'Order results normally (first to last).';
-			this._resultsOrder = "reverse";
-		} else {
-			SetHTMLToText(this._resultsOrderTarget, "^");
-			this._resultsOrderTarget.title = 'Order results in reverse (last to first).';
-			this._resultsOrder = "normal";
-		}
-		this._allStoryIndexes.reverse();
-		this._UpdateSearch();
-	};
 	output._SortResults = function(idx) {
 		if(idx !== this._currentSortManager) {
 			if(this._currentSortManager !== undefined) {
@@ -400,12 +386,8 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			}
 			if(idx > 0 && idx < this.queryManagerSortTargetsLookup.length) {
 				this.queryManagerSortTargetsLookup[idx].className = defaultListSortButtonSelectedClass;
-				this._allStoryIndexes = this.queryManagerLookup[idx].lookup.GetAll().AllValues();
-				if(this._resultsOrder === "reverse") {
-					this._allStoryIndexes.reverse();
-				}
-				this._UpdateSearch();
 				this._currentSortManager = idx;
+				this._UpdateSearch();
 			}
 		}
 	};
@@ -421,8 +403,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				this._PageNumberLeft();
 			} else if(e.currentTarget === this._pageNumberRightTarget) {
 				this._PageNumberRight();
-			} else if(e.currentTarget === this._resultsOrderTarget) {
-				this._ToggleResultsOrder();
 			} else if( e.currentTarget.classList.contains(defaultSearchResultClass) ) {
 				this._LoadStory(e.currentTarget);
 			} else if( e.currentTarget.classList.contains(defaultListSortButtonClass) ) {
@@ -639,7 +619,6 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		var resultsPerPageContainer = document.createElement("tr");
 		var resultsPerPageTitle = document.createElement("td");
 		var resultsPerPageTargetContainer = document.createElement("td");
-		var resultsOrderTarget = document.createElement("button");
 
 		ClearChildren(searchResults);
 
@@ -664,15 +643,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		resultsControlTable.appendChild( this._InitPageNumber(pageNumber) );
 		resultsControlTable.className = "HorizontalCenter left";
 
-		SetHTMLToText(resultsOrderTarget, "^");
-		resultsOrderTarget.addEventListener("click", this, false);
-		resultsOrderTarget.className = "HorizontalCenter left";
-		resultsOrderTarget.title = 'Order results in reverse (last to first).';
-		this._resultsOrderTarget = resultsOrderTarget;
-		this._resultsOrder = "normal";
-
 		searchResults.appendChild(resultsControlTable);
-		searchResults.appendChild(resultsOrderTarget);
 		searchResults.appendChild( document.createElement("hr") );
 		searchResults.appendChild(resultsDisplay);
 	};

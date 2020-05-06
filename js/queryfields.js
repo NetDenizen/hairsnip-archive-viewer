@@ -380,6 +380,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 	output._targetListElementSortMode = 'alphabetical';
 	output.targetListElementSortOrder = undefined;
 	output._targetListElementSortOrderMode = 'normal';
+	output.targetListSortedValues = undefined;
 	output.targetList = undefined;
 
 	output._datalistKeys = undefined;
@@ -597,6 +598,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		} else if(this._targetListElementSortOrderMode === 'reverse') {
 			values.reverse();
 		}
+		this.targetListSortedValues = values;
 		return values;
 	};
 	output._BuildDatalistValues = function(update) {
