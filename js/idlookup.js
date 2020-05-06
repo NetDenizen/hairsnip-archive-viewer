@@ -87,9 +87,9 @@ function newIdRecord(keys, values) {
 		var vString = "v" + v.toString();
 		var thisReverseLookup = this._reverseLookup;
 		if( thisReverseLookup.hasOwnProperty(vString) ) {
-			thisReverseLookup[vString].add(k);
+			thisReverseLookup[vString].push(k);
 		} else {
-			thisReverseLookup[vString] = new Set([k]);
+			thisReverseLookup[vString] = [k];
 		}
 	};
 	output.ExtendRaw = function(keys, values) {
@@ -173,16 +173,11 @@ function newIdRecord(keys, values) {
 				v = next.value;
 				vString = "v" + v.toString();
 				if( thisReverseLookup.hasOwnProperty(vString) ) {
-					var reverseIter = thisReverseLookup[vString].values();
-					while(true) {
-						var reverseNext = reverseIter.next();
-						var rawK = undefined;
-						var k = undefined;
-						var vSet = undefined;
-						if(reverseNext.done) {
-							break;
-						}
-						var rawK = reverseNext.value;
+					var reverseKeys = thisReverseLookup[vString];
+					var reverseKeysLength = reverseKeys.length;
+					var reverseKeysIdx = undefined;
+					for(reverseKeysIdx = 0; reverseKeysIdx < reverseKeysLength; ++reverseKeysIdx) {
+						var rawK = reverseKeys[reverseKeysIdx];
 						var k = "v" + rawK;
 						var vSet = thisLookup[k];
 						vSet.delete(v);
