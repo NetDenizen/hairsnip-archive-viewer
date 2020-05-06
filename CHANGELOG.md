@@ -1,5 +1,11 @@
 # Changelog
 
+## 2020-05-06.2
+
+* Remove the search results order button (item 32 as of version 2020-05-06.1). Search results order is now set by the sorting buttons for the query fields the results are sorted by (selected by the `K` button).
+
+* Fix a typo in the code which may have resulted in a bug. Perhaps it is functionally identical, and perhaps it isn't, but it was a typo nonetheless.
+
 ## 2020-05-06.1
 
 * Fix a bug that prevents `-` from being removed from autocomplete lists.
