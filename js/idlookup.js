@@ -123,7 +123,7 @@ function newIdRecord(keys, values) {
 						break;
 					}
 					v = next.value;
-					if( found.has(v) ) {
+					if( !found.has(v) ) {
 						this._AddToReverseLookup(v, rawK);
 					} else {
 						found.add(v);
