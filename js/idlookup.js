@@ -18,51 +18,55 @@ function newRecordSet() {
 	};
 	output.add = function(v) {
 		var thisEntries = this._entries;
-		if(v > thisEntries.length) {
-			thisEntries.push(true);
-		} else {
-			thisEntries[v] = true;
+		var idx = thisEntries.length;
+		while(idx <= v) {
+			thisEntries.push(false);
+			++idx;
 		}
+		thisEntries[v] = true;
 		++this.size;
 	};
 	output.delete = function(v) {
 		var thisEntries = this._entries;
-		if(v < thisEntries.length) {
+		if(v < thisEntries.length && thisEntries[v]) {
 			thisEntries[v] = false;
 			--this.size;
 		}
 	};
 	output.or = function(set) {
+		//TODO: Trim this function down
 		var thisEntries = this._entries;
 		var setEntries = set._entries;
-		var shorterLength = thisEntries.length;
-		var longerLength = setEntries.length;
-		var shorterEntries = thisEntries;
-		var longerEntries = setEntries;
+		var thisLength = thisEntries.length;
+		var setLength = setEntries.length;
 		var idx = 0;
 		var newSize = 0;
-		if(shorterLength > longerLength) {
-			var tmp = shorterLength;
-			shorterLength = longerLength;
-			longerLength = tmp;
-			longerEntries = thisEntries;
-			shorterEntries = setEntries;
-		}
-		while(idx < shorterLength) {
-			var tmp = thisEntries[idx] || setEntries[idx];
-			if(tmp) {
-				++newSize;
+		if(thisLength >= setLength) {
+			while(idx < setLength) {
+				var tmp = thisEntries[idx] || setEntries[idx];
+				if(tmp) {
+					++newSize;
+				}
+				thisEntries[idx] = tmp;
+				++idx;
 			}
-			thisEntries[idx] = tmp;
-			++idx;
-		}
-		while(idx < longerLength) {
-			var tmp = longerEntries[idx];
-			if(tmp) {
-				++newSize;
+		} else {
+			while(idx < thisLength) {
+				var tmp = thisEntries[idx] || setEntries[idx];
+				if(tmp) {
+					++newSize;
+				}
+				thisEntries[idx] = tmp;
+				++idx;
 			}
-			shorterEntries.push(tmp);
-			++idx;
+			while(idx < setLength) {
+				var tmp = setEntries[idx];
+				if(tmp) {
+					++newSize;
+				}
+				thisEntries.push(tmp);
+				++idx;
+			}
 		}
 		this.size = newSize;
 	};
@@ -191,14 +195,15 @@ function newIdRecord(keys, values) {
 		for(idx = 0; idx < keysLength; ++idx) {
 			var rawK = keys[idx];
 			var k = "v" + rawK;
-			var vSet = values[idx].dupe();
+			var vSet = values[idx];
 			var vSetArray = vSet.ToArray();
 			var vSetArrayLength = vSetArray.length;
 			var vSetIdx = undefined;
 			if( !thisLookup.hasOwnProperty(k) ) {
+				var vSetNew = vSet.dupe();
 				thisKeys.push(rawK);
-				thisValues.push(vSet);
-				thisLookup[k] = vSet;
+				thisValues.push(vSetNew);
+				thisLookup[k] = vSetNew;
 				for(vSetIdx = 0; vSetIdx < vSetArrayLength; ++vSetIdx) {
 					this._AddToReverseLookup(vSetArray[vSetIdx], rawK);
 				}
