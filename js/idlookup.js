@@ -1,5 +1,102 @@
 "use strict";
 
+// XXX: This function essentially has no safeguards to prevent the entries from expanding out of control
+// or to prevent anything other than a numerical type being used with it.
+// Ensure that all interactions with it are through carefully selected interfaces.
+// Really, this function should not be called outside of this file.
+function newRecordSet() {
+	var output = {};
+	output._entries = [];
+	output.size = 0;
+	output.has = function(v) {
+		var output = false;
+		var thisEntries = this._entries;
+		if(v < thisEntries.length) {
+			output = thisEntries[v];
+		}
+		return output;
+	};
+	output.add = function(v) {
+		var thisEntries = this._entries;
+		if(v > thisEntries.length) {
+			thisEntries.push(true);
+		} else {
+			thisEntries[v] = true;
+		}
+		++this.size;
+	};
+	output.delete = function(v) {
+		var thisEntries = this._entries;
+		if(v < thisEntries.length) {
+			thisEntries[v] = false;
+			--this.size;
+		}
+	};
+	output.or = function(set) {
+		var thisEntries = this._entries;
+		var setEntries = set._entries;
+		var shorterLength = thisEntries.length;
+		var longerLength = setEntries.length;
+		var shorterEntries = thisEntries;
+		var longerEntries = setEntries;
+		var idx = 0;
+		var newSize = 0;
+		if(shorterLength > longerLength) {
+			var tmp = shorterLength;
+			shorterLength = longerLength;
+			longerLength = tmp;
+			longerEntries = thisEntries;
+			shorterEntries = setEntries;
+		}
+		while(idx < shorterLength) {
+			var tmp = thisEntries[idx] || setEntries[idx];
+			if(tmp) {
+				++newSize;
+			}
+			thisEntries[idx] = tmp;
+			++idx;
+		}
+		while(idx < longerLength) {
+			var tmp = longerEntries[idx];
+			if(tmp) {
+				++newSize;
+			}
+			shorterEntries.push(tmp);
+			++idx;
+		}
+		this.size = newSize;
+	};
+	output.ToArray = function() {
+		var output = []
+		var thisEntries = this._entries;
+		var thisEntriesLength = thisEntries.length;
+		var idx = undefined;
+		for(idx = 0; idx < thisEntriesLength; ++idx) {
+			if(thisEntries[idx]) {
+				output.push(idx);
+			}
+		}
+		return output;
+	};
+	output.dupe = function() {
+		var output = newRecordSet();
+		output._entries = this._entries.slice(0);
+		output.size = this.size;
+		return output;
+	};
+	return output;
+}
+
+function newRecordSetFromArray(array) {
+	var output = newRecordSet();
+	var arrayLength = array.length;
+	var idx = undefined;
+	for(idx = 0; idx < arrayLength; ++idx) {
+		output.add(array[idx]);
+	}
+	return output;
+}
+
 function newIdRecord(keys, values) {
 	var output = {};
 	output.keys = [];
@@ -10,19 +107,12 @@ function newIdRecord(keys, values) {
 	output._edited = false;
 	output._GenerateAllValues = function() {
 		if(this._edited) {
-			var output = new Set();
+			var output = newRecordSet();
 			var values = this.values;
 			var valuesLength = values.length;
 			var idx = undefined;
 			for(idx = 0; idx < valuesLength; ++idx) {
-				var iter = values[idx].values();
-				while(true) {
-					var next = iter.next();
-					if(next.done) {
-						break;
-					}
-					output.add(next.value);
-				}
+				output.or(values[idx]);
 			}
 			this._allValues = output;
 			this._edited = false;
@@ -30,11 +120,11 @@ function newIdRecord(keys, values) {
 	};
 	output.AllValues = function() {
 		this._GenerateAllValues();
-		return Array.from(this._allValues);
+		return this._allValues.ToArray();
 	};
 	output.AllValuesSet = function() {
 		this._GenerateAllValues();
-		return new Set(this._allValues);
+		return this._allValues.dupe();
 	};
 	output.SortKeyValues = function(compareFunction) {
 		var idx = undefined;
@@ -101,28 +191,21 @@ function newIdRecord(keys, values) {
 		for(idx = 0; idx < keysLength; ++idx) {
 			var rawK = keys[idx];
 			var k = "v" + rawK;
-			var vSet = new Set(values[idx]);
-			var iter = vSet.values();
+			var vSet = values[idx].dupe();
+			var vSetArray = vSet.ToArray();
+			var vSetArrayLength = vSetArray.length;
+			var vSetIdx = undefined;
 			if( !thisLookup.hasOwnProperty(k) ) {
 				thisKeys.push(rawK);
 				thisValues.push(vSet);
 				thisLookup[k] = vSet;
-				while(true) {
-					var next = iter.next();
-					if(next.done) {
-						break;
-					}
-					this._AddToReverseLookup(next.value, rawK);
+				for(vSetIdx = 0; vSetIdx < vSetArrayLength; ++vSetIdx) {
+					this._AddToReverseLookup(vSetArray[vSetIdx], rawK);
 				}
 			} else {
 				var found = thisLookup[k];
-				while(true) {
-					var next = iter.next();
-					var v = undefined;
-					if(next.done) {
-						break;
-					}
-					v = next.value;
+				for(vSetIdx = 0; vSetIdx < vSetArrayLength; ++vSetIdx) {
+					var v = vSetArray[vSetIdx];
 					if( !found.has(v) ) {
 						this._AddToReverseLookup(v, rawK);
 					} else {
@@ -162,16 +245,12 @@ function newIdRecord(keys, values) {
 			thisIndexes.push(true);
 		}
 		for(idx = 0; idx < valuesLength; ++idx) {
-			var iter = values[idx].values();
-			while(true) {
-				var next = iter.next();
-				var v = undefined;
-				var vString = undefined;
-				if(next.done) {
-					break;
-				}
-				v = next.value;
-				vString = "v" + v.toString();
+			var vArray = values[idx].ToArray();
+			var vArrayLength = values[idx].length;
+			var vArrayIdx = undefined;
+			for(vArrayIdx = 0; vArrayIdx < vArrayLength; ++vArrayIdx) {
+				var v = vArray[vArrayIdx];
+				var vString = "v" + v.toString();
 				if( thisReverseLookup.hasOwnProperty(vString) ) {
 					var reverseKeys = thisReverseLookup[vString];
 					var reverseKeysLength = reverseKeys.length;
@@ -259,7 +338,7 @@ function newIdLookup() {
 	output._all = undefined;
 	output._allChanged = true;
 	output._GetKey = function(key) {
-		return newIdRecord([key.slice(3)], [ Array.from(this._lookup[key]) ]);
+		return newIdRecord([key.slice(3)], [newRecordSetFromArray(Array.from(this._lookup[key]))]);
 	};
 	output._GetIdx = function(idx) {
 		return this._GetKey(this._keys[idx]);
@@ -352,16 +431,6 @@ function newIdLookup() {
 			}
 			return output;
 		});
-	};
-	output.get = function(key) {
-		var output = newIdRecord([], []);
-		var arrayKey = !Array.isArray(arrayKey) ? [key] : key;
-		var arrayKeyLength = arrayKey.length;
-		var idx = undefined;
-		for(idx = 0; idx < arrayKeyLength; ++idx) {
-			output.extend( this._GetSingle(arrayKey[idx]) );
-		}
-		return output;
 	};
 	output.GetNumericalRange = function(start, end) {
 		//TODO: This function is too phat. Refactor... eventually.

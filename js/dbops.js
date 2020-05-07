@@ -221,7 +221,7 @@ function newStorySearcher(_db) {
 				var bodyIdsLength = bodyIds.length;
 				var idxBodyIds = undefined;
 				for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
-					var values = this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ];
+					var values = newRecordSetFromArray(this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ]);
 					outputKeywords.push(arrayKeywords[idxKeywordsArray]);
 					outputIds.push( [].concat.apply([], values) );
 				}
