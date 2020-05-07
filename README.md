@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2020-05-06.1)
+# Hairsnip Archive Viewer (2020-05-07.1)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
@@ -29,7 +29,7 @@ An example interface of the webapp is as follows; features are annotated with bl
 
 All buttons should also have tooltips if hovered over.
 
-![screenshot](https://i.imgur.com/CAzIdS7.png)
+![screenshot](https://i.imgur.com/0M4em0d.png)
 
 ### Query Fields
 
@@ -133,6 +133,4 @@ Underneath every field, the number of selected options is displayed. The first n
 
 31. Go to the next page. Will wrap around to the first, if the last is reached.
 
-32. Toggle the order of the results. `^` will reverse them, while `v` will set them back in order.
-
-33. The search results list.
+32. The search results list.
