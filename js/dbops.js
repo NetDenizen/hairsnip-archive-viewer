@@ -51,9 +51,9 @@ function newStorySearcher(_db) {
 		var values = this._db.exec("SELECT id, name FROM " + table)[0]['values'];
 		var valuesLength = values.length;
 		var idx = undefined;
-		output.add("", -1);
+		output.add(null, "");
 		for (idx = 0; idx < valuesLength; ++idx) {
-			output.add(values[idx][1], values[idx][0]);
+			output.add(values[idx][0], values[idx][1]);
 		}
 		output.sort();
 		return output;
@@ -142,14 +142,14 @@ function newStorySearcher(_db) {
 		var sha256Length = sha256.length;
 		var idx = undefined;
 		for(idx = 0; idx < sha256Length; ++idx) {
-			var domainArray = domain_array_id[idx][1] !== null ? intArrays[ domain_array_id[idx][1] ] : -1;
-			var contentArray = content_array_id[idx][1] !== null ? intArrays[ content_array_id[idx][1] ] : -1;
-			var typeArray = type_array_id[idx][1] !== null ? intArrays[ type_array_id[idx][1] ] : -1;
-			var categoryArray = category_array_id[idx][1] !== null ? intArrays[ category_array_id[idx][1] ] : -1;
-			var locationArray = location_array_id[idx][1] !== null ? intArrays[ location_array_id[idx][1] ] : -1;
-			var formatArray = format_array_id[idx][1] !== null ? intArrays[ format_array_id[idx][1] ] : -1;
-			var emailArray = email_array_id[idx][1] !== null ? intArrays[ email_array_id[idx][1] ] : -1;
-			var tagArray = tags_array_id[idx][1] !== null ? intArrays[ tags_array_id[idx][1] ] : -1;
+			var domainArray = domain_array_id[idx][1] !== null ? intArrays[ domain_array_id[idx][1] ] : null;
+			var contentArray = content_array_id[idx][1] !== null ? intArrays[ content_array_id[idx][1] ] : null;
+			var typeArray = type_array_id[idx][1] !== null ? intArrays[ type_array_id[idx][1] ] : null;
+			var categoryArray = category_array_id[idx][1] !== null ? intArrays[ category_array_id[idx][1] ] : null;
+			var locationArray = location_array_id[idx][1] !== null ? intArrays[ location_array_id[idx][1] ] : null;
+			var formatArray = format_array_id[idx][1] !== null ? intArrays[ format_array_id[idx][1] ] : null;
+			var emailArray = email_array_id[idx][1] !== null ? intArrays[ email_array_id[idx][1] ] : null;
+			var tagArray = tags_array_id[idx][1] !== null ? intArrays[ tags_array_id[idx][1] ] : null;
 
 			this.sha256Lookup.add(sha256[idx][1], sha256[idx][0]);
 			this.commentsLookup.add(comments[idx][1], comments[idx][0]);
@@ -159,21 +159,21 @@ function newStorySearcher(_db) {
 			this.viewcountLookup.add(viewcount[idx][1], viewcount[idx][0]);
 			this.posixdateLookup.add(posixdate[idx][1], posixdate[idx][0]);
 
-			this.languageLookup.add(languageIds.GetReverse(language_id[idx][1]), language_id[idx][0]);
-			this.authorLookup.add(authorIds.GetReverse(author_id[idx][1]), author_id[idx][0]);
-			this.originLookup.add(originIds.GetReverse(origin_id[idx][1]), origin_id[idx][0]);
-			this.siteLookup.add(siteIds.GetReverse(site_id[idx][1]), site_id[idx][0]);
-			this.descriptionLookup.add(descriptionIds.GetReverse(description_id[idx][1]), description_id[idx][0]);
-			this.titleLookup.add(titleIds.GetReverse(title_id[idx][1]), title_id[idx][0]);
+			this.languageLookup.add(languageIds.get(language_id[idx][1]).AllValues(), language_id[idx][0]);
+			this.authorLookup.add(authorIds.get(author_id[idx][1]).AllValues(), author_id[idx][0]);
+			this.originLookup.add(originIds.get(origin_id[idx][1]).AllValues(), origin_id[idx][0]);
+			this.siteLookup.add(siteIds.get(site_id[idx][1]).AllValues(), site_id[idx][0]);
+			this.descriptionLookup.add(descriptionIds.get(description_id[idx][1]).AllValues(), description_id[idx][0]);
+			this.titleLookup.add(titleIds.get(title_id[idx][1]).AllValues(), title_id[idx][0]);
 
-			this.domainLookup.add(domainIds.GetReverse(domainArray), domain_array_id[idx][0]);
-			this.contentLookup.add(contentIds.GetReverse(contentArray), content_array_id[idx][0]);
-			this.typeLookup.add(typeIds.GetReverse(typeArray), type_array_id[idx][0]);
-			this.categoryLookup.add(categoryIds.GetReverse(categoryArray), category_array_id[idx][0]);
-			this.locationLookup.add(locationIds.GetReverse(locationArray), location_array_id[idx][0]);
-			this.formatLookup.add(formatIds.GetReverse(formatArray), format_array_id[idx][0]);
-			this.emailLookup.add(emailIds.GetReverse(emailArray), email_array_id[idx][0]);
-			this.tagLookup.add(tagIds.GetReverse(tagArray), tags_array_id[idx][0]);
+			this.domainLookup.add(domainIds.get(domainArray).AllValues(), domain_array_id[idx][0]);
+			this.contentLookup.add(contentIds.get(contentArray).AllValues(), content_array_id[idx][0]);
+			this.typeLookup.add(typeIds.get(typeArray).AllValues(), type_array_id[idx][0]);
+			this.categoryLookup.add(categoryIds.get(categoryArray).AllValues(), category_array_id[idx][0]);
+			this.locationLookup.add(locationIds.get(locationArray).AllValues(), location_array_id[idx][0]);
+			this.formatLookup.add(formatIds.get(formatArray).AllValues(), format_array_id[idx][0]);
+			this.emailLookup.add(emailIds.get(emailArray).AllValues(), email_array_id[idx][0]);
+			this.tagLookup.add(tagIds.get(tagArray).AllValues(), tags_array_id[idx][0]);
 		}
 
 		this._LoadBodyIds();
@@ -221,7 +221,7 @@ function newStorySearcher(_db) {
 				var bodyIdsLength = bodyIds.length;
 				var idxBodyIds = undefined;
 				for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
-					var values = newRecordSetFromArray(this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ]);
+					var values = this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ];
 					outputKeywords.push(arrayKeywords[idxKeywordsArray]);
 					outputIds.push( [].concat.apply([], values) );
 				}
