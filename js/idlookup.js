@@ -67,7 +67,7 @@ function newRecordSet() {
 		this.size = newSize;
 	};
 	output.ToArray = function() {
-		var output = []
+		var output = [];
 		var thisEntries = this._entries;
 		var thisEntriesLength = thisEntries.length;
 		var idx = undefined;
@@ -220,7 +220,7 @@ function newIdRecord(keys, values) {
 		this.ExtendRaw(record.keys, record.values);
 	};
 	output.ExtendAllToEachKey = function(record) {
-		var v = record.AllValuesSet()
+		var v = record.AllValuesSet();
 		var values = [];
 		var recordKeys = record.keys;
 		var recordKeysLength = recordKeys.length;
