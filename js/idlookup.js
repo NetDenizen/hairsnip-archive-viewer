@@ -415,16 +415,6 @@ function newIdLookup() {
 		output.extend(this._all);
 		return output;
 	};
-	output.get = function(key) {
-		var output = newIdRecord([], []);
-		var arrayKey = !Array.isArray(key) ? [key] : key;
-		var arrayKeyLength = arrayKey.length;
-		var idx = undefined;
-		for(idx = 0; idx < arrayKeyLength; ++idx) {
-			output.extend( this._GetSingle(arrayKey[idx]) );
-		}
-		return output;
-	};
 	output.GetFuzzy = function(key) {
 		var arrayKey = !Array.isArray(key) ? [key] : key;
 		var matches = [];
