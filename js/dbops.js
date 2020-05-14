@@ -55,7 +55,6 @@ function newStorySearcher(_db) {
 		for (idx = 0; idx < valuesLength; ++idx) {
 			output.add(values[idx][0], values[idx][1]);
 		}
-		output.sort();
 		return output;
 	};
 	output._BuildIntArrayLookup = function() {
