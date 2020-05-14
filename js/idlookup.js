@@ -136,17 +136,6 @@ function newIdRecord(keys, values) {
 	output.extend = function(record) {
 		this.ExtendRaw(record.keys, record.values);
 	};
-	output.ExtendAllToEachKey = function(record) {
-		var v = record.AllValuesSet();
-		var values = [];
-		var recordKeys = record.keys;
-		var recordKeysLength = recordKeys.length;
-		var idx = undefined;
-		for(idx = 0; idx < recordKeysLength; ++idx) {
-			values.push(v);
-		}
-		this.ExtendRaw(recordKeys, values);
-	};
 	output.NegateValues = function(values) {
 		var thisLookup = this._lookup;
 		var thisReverseLookup = this._reverseLookup;

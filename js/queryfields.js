@@ -270,10 +270,10 @@ function newRangeSearcher(name, lookup, manager) {
 					this.results.NegateValues(result.values);
 					negatedResults.extend(result);
 				} else if(startChar === '?') {
-					necessaryResults.ExtendAllToEachKey(result);
+					necessaryResults.extend(result);
 				} else if(startChar === '+') {
 					this.results.extend(result);
-					necessaryResults.ExtendAllToEachKey(result);
+					necessaryResults.extend(result);
 					negatedResults.NegateValues(result.values);
 				} else {
 					this.results.extend(result);
@@ -336,7 +336,7 @@ function newDateSearcher(name, lookup, manager) {
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var vTrimmed = values[idx].replace(/\\,/g, ',').trim();
 			if( vTrimmed.startsWith('?') ) {
-				necessaryResults.ExtendAllToEachKey( this._ExtractValues( vTrimmed.slice(1) ) );
+				necessaryResults.extend( this._ExtractValues( vTrimmed.slice(1) ) );
 			} else if(vTrimmed !== "") {
 				if(vTrimmed === '-') {
 					var result = this.lookup.GetNumericalRange(undefined, undefined);
@@ -355,7 +355,7 @@ function newDateSearcher(name, lookup, manager) {
 				} else if( vTrimmed.startsWith('+') ) {
 					var result = this._ExtractValues( vTrimmed.slice(1) );
 					this.results.extend(result);
-					necessaryResults.ExtendAllToEachKey(result);
+					necessaryResults.extend(result);
 					negatedResults.NegateValues(result.values);
 				} else {
 					var result = this._ExtractValues(vTrimmed);
@@ -526,7 +526,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 				currentValue = searchValue;
 				if( searchValue.startsWith("?") ) {
 					searchValue = searchValue.slice(1);
-					necessaryResults.ExtendAllToEachKey( this.lookup.get( this._MatchGlob(searchValue) ) );
+					necessaryResults.extend( this.lookup.get( this._MatchGlob(searchValue) ) );
 				} else if(searchValue !== "") {
 					if(searchValue === "-") {
 						var result = this.lookup.get("");
@@ -550,7 +550,7 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 						var result = undefined;
 						searchValue = searchValue.slice(1);
 						result = this.lookup.get( this._MatchGlob(searchValue) );
-						necessaryResults.ExtendAllToEachKey(result);
+						necessaryResults.extend(result);
 						this.results.extend(result);
 						negatedResults.NegateValues(result.values);
 					} else {

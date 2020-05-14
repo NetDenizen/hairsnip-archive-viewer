@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-05-14.1
+
+* Wildcard globs will now be treated as one selection when using necessary (`+`) or soft-necessary (`?`) options. The code responsible for this was extremely slow for large selections (each keystroke easily taking 10+ seconds, for instance), and the same selections could be made with other, admittedly less intutive sequences.
+
 ## 2020-05-07.1
 
 * Remove the search results order button (item 32 as of version 2020-05-06.1). Search results order is now set by the sorting buttons for the query fields the results are sorted by (selected by the `K` button).
