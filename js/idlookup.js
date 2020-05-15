@@ -342,16 +342,6 @@ function newIdLookup() {
 			return output;
 		});
 	};
-	output.get = function(key) {
-		var output = newIdRecord([], []);
-		var arrayKey = !Array.isArray(arrayKey) ? [key] : key;
-		var arrayKeyLength = arrayKey.length;
-		var idx = undefined;
-		for(idx = 0; idx < arrayKeyLength; ++idx) {
-			output.extend( this._GetSingle(arrayKey[idx]) );
-		}
-		return output;
-	};
 	output.GetNumericalRange = function(start, end) {
 		//TODO: This function is too phat. Refactor... eventually.
 		var output = newIdRecord([], []);
