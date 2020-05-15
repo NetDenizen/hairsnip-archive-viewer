@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-05-15.1
+
+* Fix bug where inconsistent search field behavior. The precise causes and effects of it are unclear, but it at least prevented all the autocomplete options from being listed, when they should have been.
+
 ## 2020-05-14.1
 
 * Wildcard globs will now be treated as one selection when using necessary (`+`) or soft-necessary (`?`) options. The code responsible for this was extremely slow for large selections (each keystroke easily taking 10+ seconds, for instance), and the same selections could be made with other, admittedly less intutive sequences.
