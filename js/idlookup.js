@@ -140,15 +140,11 @@ function newIdRecord(keys, values) {
 		var thisReverseLookup = this._reverseLookup;
 		var thisKeys = this.keys;
 		var thisValues = this.values;
-		var thisIndexes = [];
 		var changeIndexes = false;
 		var thisKeysLength = thisKeys.length;
+		var thisIndexes = InitArray(true, thisKeysLength);
 		var valuesLength = values.length;
 		var idx = undefined;
-		// TODO: More efficient initialization
-		for(idx = 0; idx < thisKeysLength; ++idx) {
-			thisIndexes.push(true);
-		}
 		for(idx = 0; idx < valuesLength; ++idx) {
 			var iter = values[idx].values();
 			while(true) {

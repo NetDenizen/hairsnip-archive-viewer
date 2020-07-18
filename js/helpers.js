@@ -171,6 +171,15 @@ function ConcatInplace(to, from) {
 	}
 }
 
+function InitArray(val, length) {
+	var output = [];
+	var idx = undefined;
+	for(idx = 0; idx < length; ++idx) {
+		output.push(val);
+	}
+	return output;
+}
+
 // Datetime Manipulations
 var unixEpochStartSeconds = 0;
 var unixEpochEndSeconds = 2147483647;
