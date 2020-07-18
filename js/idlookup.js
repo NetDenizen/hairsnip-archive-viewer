@@ -441,7 +441,7 @@ function newIdLookup() {
 		var arrayItemLength = arrayItem.length;
 		var idx = undefined;
 		for(idx = 0; idx < arrayItemLength; ++idx) {
-			output = output.concat( this._GetReverseSingle(arrayItem[idx]) );
+			ConcatInplace( output, this._GetReverseSingle(arrayItem[idx]) );
 		}
 		return output;
 	};

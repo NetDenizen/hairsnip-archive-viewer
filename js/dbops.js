@@ -222,7 +222,7 @@ function newStorySearcher(_db) {
 				var idxBodyIds = undefined;
 				var outputIdsCurrent = [];
 				for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
-					outputIdsCurrent = outputIdsCurrent.concat( this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ] );
+					ConcatInplace(outputIdsCurrent, this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ]);
 				}
 				outputKeywords.push(kw);
 				outputIds.push(outputIdsCurrent);

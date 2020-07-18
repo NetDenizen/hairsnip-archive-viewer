@@ -162,6 +162,15 @@ function range(start, end) {
 	return output;
 }
 
+function ConcatInplace(to, from) {
+	var toLength = to.length;
+	var fromLength = from.length;
+	var idx = undefined;
+	for(idx = 0; idx < fromLength; ++idx){
+	  to[toLength + idx] = from[idx]
+	}
+}
+
 // Datetime Manipulations
 var unixEpochStartSeconds = 0;
 var unixEpochEndSeconds = 2147483647;
