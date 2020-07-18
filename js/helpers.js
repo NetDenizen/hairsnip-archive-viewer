@@ -163,11 +163,10 @@ function range(start, end) {
 }
 
 function ConcatInplace(to, from) {
-	var toLength = to.length;
 	var fromLength = from.length;
 	var idx = undefined;
 	for(idx = 0; idx < fromLength; ++idx){
-	  to[toLength + idx] = from[idx]
+	  to.push(from[idx]);
 	}
 }
 
