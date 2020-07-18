@@ -214,16 +214,18 @@ function newStorySearcher(_db) {
 		var arrayKeywordsLength = arrayKeywords.length;
 		var idxKeywordsArray = undefined;
 		for(idxKeywordsArray = 0; idxKeywordsArray < arrayKeywordsLength; ++idxKeywordsArray) {
-			var found = this._db.exec('SELECT id FROM stories_body WHERE body MATCH "' + arrayKeywords[idxKeywordsArray].replace(/"/g, '""') + '" ORDER BY id');
+			var kw = arrayKeywords[idxKeywordsArray];
+			var found = this._db.exec('SELECT id FROM stories_body WHERE body MATCH "' + kw.replace(/"/g, '""') + '" ORDER BY id');
 			if(found.length > 0) {
 				var bodyIds = found[0]['values'];
 				var bodyIdsLength = bodyIds.length;
 				var idxBodyIds = undefined;
+				var outputIdsCurrent = [];
 				for(idxBodyIds = 0; idxBodyIds < bodyIdsLength; ++idxBodyIds) {
-					var values = this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ];
-					outputKeywords.push(arrayKeywords[idxKeywordsArray]);
-					outputIds.push( [].concat.apply([], values) );
+					outputIdsCurrent = outputIdsCurrent.concat( this._bodyLookupReverse[ "v" + bodyIds[idxBodyIds] ] );
 				}
+				outputKeywords.push(kw);
+				outputIds.push(outputIdsCurrent);
 			}
 		}
 		return newIdRecord(outputKeywords, outputIds);
