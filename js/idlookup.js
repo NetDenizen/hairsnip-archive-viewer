@@ -125,7 +125,6 @@ function newIdRecord(keys, values) {
 					v = next.value;
 					if( !found.has(v) ) {
 						this._AddToReverseLookup(v, rawK);
-					} else {
 						found.add(v);
 					}
 				}
