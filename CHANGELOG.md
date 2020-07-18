@@ -1,5 +1,13 @@
 # Changelog
 
+## TODO-TO-DO-?
+
+* Upgrade chrono version from 1.4.6 to 1.4.8
+
+* Fix bug that prevented the Body Keywords field (25) from displaying more than one result.
+
+* Some refactoring and code tidying.
+
 ## 2020-05-15.1
 
 * Fix bug where inconsistent search field behavior. The precise causes and effects of it are unclear, but it at least prevented all the autocomplete options from being listed, when they should have been.
