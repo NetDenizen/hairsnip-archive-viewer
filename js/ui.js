@@ -313,18 +313,28 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	};
 	output._UpdatePageNumber = function(e) {
 		var value = Number(this._pageNumberTarget.value);
+		var doUpdate = false;
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		} else if(value <= 0) {
-			this._pageNumber = 0;
+			if(this._pageNumber !== 0) {
+				this._pageNumber = 0;
+				doUpdate = true;
+			}
 			this._pageNumberTarget.value = "1";
 		} else if(value > this._maxPageNumber) {
-			this._pageNumber = this._maxPageNumber;
+			if(this._pageNumber !== this._maxPageNumber) {
+				this._pageNumber = this._maxPageNumber;
+				doUpdate = true;
+			}
 			this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		} else {
 			this._pageNumber = value;
+			doUpdate = true;
 		}
-		this._UpdateResults();
+		if(doUpdate) {
+			this._UpdateResults();
+		}
 	};
 	output._UpdateResultsPerPage = function(e) {
 		var value = Number(this._resultsPerPageTarget.value);
