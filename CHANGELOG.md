@@ -2,6 +2,8 @@
 
 ## TODO-TO-DO-?
 
+* Unecessary redraws of the search results are avoided, which means one's scroll position won't be changed, unless a new page is shown.
+
 * Upgrade chrono version from 1.4.6 to 1.4.8
 
 * Fix bug that prevented the Body Keywords field (25) from displaying more than one result.
