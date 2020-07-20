@@ -359,6 +359,13 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 												  this._storyDisplayTarget.firstChild);
 		}
 	};
+	output._SetPageNumber = function() {
+		var pageNumberString = (this._pageNumber + 1).toString();
+		if(pageNumberString !== this._pageNumberTarget.value) {
+			this._pageNumberTarget.value = pageNumberString;
+			this._UpdateResults();
+		}
+	};
 	output._PageNumberLeft = function() {
 		if(this._maxPageNumber >= 0) {
 			if( (this._pageNumber > this._maxPageNumber || this._pageNumber <= 0) ) {
@@ -367,8 +374,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				this._pageNumber -= 1;
 			}
 		}
-		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
-		this._UpdateResults();
+		this._SetPageNumber();
 	};
 	output._PageNumberRight = function() {
 		if(this._pageNumber < this._maxPageNumber) {
@@ -376,8 +382,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		} else if(this._maxPageNumber >= 0) {
 			this._pageNumber = 0;
 		}
-		this._pageNumberTarget.value = (this._pageNumber + 1).toString();
-		this._UpdateResults();
+		this._SetPageNumber();
 	};
 	output._SortResults = function(idx) {
 		if(idx !== this._currentSortManager) {
