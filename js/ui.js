@@ -338,16 +338,23 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 	};
 	output._UpdateResultsPerPage = function(e) {
 		var value = Number(this._resultsPerPageTarget.value);
+		var doUpdate = false;
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._resultsPerPageTarget.value = this._resultsPerPage.toString();
 		} else if(value <= 0) {
-			this._resultsPerPage = 1;
+			if(this._resultsPerPage !== 1) {
+				this._resultsPerPage = 1;
+				doUpdate = true;
+			}
 			this._resultsPerPageTarget.value = "1";
-		} else {
+		} else if(this._resultsPerPage !== value) {
 			this._resultsPerPage = value;
+			doUpdate = true;
 		}
-		this._UpdateResults();
-		this._UpdateMaxPageNumber();
+		if(doUpdate) {
+			this._UpdateResults();
+			this._UpdateMaxPageNumber();
+		}
 	};
 	output._LoadStory = function(e) {
 		var id = parseInt(e.getAttribute("data-value"), 10);
