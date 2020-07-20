@@ -1,6 +1,6 @@
 # Changelog
 
-## TODO-TO-DO-?
+## 2020-07-20.1
 
 * Unecessary redraws of the search results are avoided, which means one's scroll position won't be changed, unless a new page is shown.
 
