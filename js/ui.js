@@ -312,21 +312,21 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 		thisThis._UpdateSearch();
 	};
 	output._UpdatePageNumber = function(e) {
-		var value = Number(this._pageNumberTarget.value);
+		var value = Number(this._pageNumberTarget.value) - 1;
 		var doUpdate = false;
 		if(isNaN(value) || Math.floor(value) !== value) {
 			this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		} else if(value <= 0) {
 			if(this._pageNumber !== 0) {
-				this._pageNumber = 0;
 				doUpdate = true;
 			}
+			this._pageNumber = 0;
 			this._pageNumberTarget.value = "1";
 		} else if(value > this._maxPageNumber) {
 			if(this._pageNumber !== this._maxPageNumber) {
-				this._pageNumber = this._maxPageNumber;
 				doUpdate = true;
 			}
+			this._pageNumber = this._maxPageNumber;
 			this._pageNumberTarget.value = (this._pageNumber + 1).toString();
 		} else {
 			this._pageNumber = value;
@@ -343,9 +343,9 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			this._resultsPerPageTarget.value = this._resultsPerPage.toString();
 		} else if(value <= 0) {
 			if(this._resultsPerPage !== 1) {
-				this._resultsPerPage = 1;
 				doUpdate = true;
 			}
+			this._resultsPerPage = 1;
 			this._resultsPerPageTarget.value = "1";
 		} else if(this._resultsPerPage !== value) {
 			this._resultsPerPage = value;
