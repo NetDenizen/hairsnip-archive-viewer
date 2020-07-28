@@ -2,6 +2,8 @@
 
 ## 2020-07-28.1
 
+* Reword README.
+
 * New screenshot to reflect interface changes.
 
 * Fix '-' and '--' behavior for fields 13-15.

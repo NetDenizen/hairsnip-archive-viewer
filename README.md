@@ -45,11 +45,11 @@ Keywords may be preceded by `?` to only match results if they contain them, rega
 
 The `K` button preceding applicable fields will cause the search results (field 33) to be sorted by the category associated with whichever one is selected.
 
+The order of results may be toggled between alphabetical and number of occurrences, by the respective 'ABC' and '123' settings of the relevant field (if it exists). The order may also be reversed and set normal again by the '^' and 'v' settings of the field.
+
 In fields 6, 7, 9-11, 16-21, 23, and 24, wildcard matches may be made with the `*` character, which represent 0 or more arbitrary characters in an option.
 
 These fields also support tab completion, where the tab key can be pressed to complete the partially entered keyword, to the closest mutually matching parts among the options. The results from the dropdown menus may be switched between using the arrow keys, and will wrap around to the respective opposite position, if the first and last options are passed. Options from the list may be selected by clicking them, or pressing enter with the desired one selected.
-
-The order of the list may be toggled between alphabetical and number of occurrences, by the respective 'ABC' and '123' settings of the relevant button. The order may also be reversed and set normal again by the '^' and 'v' settings of the relevant button.
 
 In fields 8, and 13-15 an option is a single value, or a range. A range is two values separated by a `-`, their order being irrelevant. If either of these values is left out, the entry is ignored. The respective minimum and maximum values are included in the titles of these fields.
 
