@@ -1,4 +1,4 @@
-# Hairsnip Archive Viewer (2020-07-20.1)
+# Hairsnip Archive Viewer (2020-07-28.1)
 
 This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
 
@@ -29,7 +29,7 @@ An example interface of the webapp is as follows; features are annotated with bl
 
 All buttons should also have tooltips if hovered over.
 
-![screenshot](https://i.imgur.com/0M4em0d.png)
+![screenshot](https://i.imgur.com/cY7E9Wu.png)
 
 ### Query Fields
 
