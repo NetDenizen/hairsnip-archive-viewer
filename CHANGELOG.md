@@ -2,6 +2,8 @@
 
 ## 2020-07-28.1
 
+* Fix '-' and '--' behavior for fields 13-15.
+
 * Add order reversing option for sorting of fields 5, 8, 12-15, and 22.
 
 * Fix sorting for fields 5, 8, 12-15, and 22.

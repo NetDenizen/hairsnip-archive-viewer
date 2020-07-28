@@ -318,26 +318,30 @@ function newRangeSearcher(name, lookup, manager) {
 			var result = undefined;
 			var startChar = undefined;
 			var value = values[idx].replace(/\\,/g, ',').trim();
-			if(value.length > 0) {
+			if(value === '--') {
+				value = '-';
+			} else if(value === '-') {
+				startChar = '-';
+			} else if( value.startsWith('-') || value.startsWith('?') || value.startsWith('+') ) {
 				startChar = value.charAt(0);
-				if(value === '-') {
-					startChar = undefined;
-				} else if( value.startsWith('-') || value.startsWith('?') || value.startsWith('+') ) {
-					value = value.slice(1);
-				}
-				pair = SplitUnescapedDashes(value);
+				value = value.slice(1);
 			}
-			if(pair.length === 2) {
-				var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
-				var pair1 = pair[1].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
-				if(pair0 !== "" && pair1 !== "") {
-					result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
-											 this.lookup.GetNumericalRange(pair0, pair1);
-				}
-			} else if(pair.length === 1) {
-				var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
-				if(pair0 !== "") {
-					result = this.lookup.GetNumericalRange(pair0, pair0);
+			if(value === '-') {
+				result = this.lookup.GetNumericalRange(undefined, undefined);
+			} else {
+				pair = SplitUnescapedDashes(value);
+				if(pair.length === 2) {
+					var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
+					var pair1 = pair[1].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
+					if(pair0 !== "" && pair1 !== "") {
+						result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
+												 this.lookup.GetNumericalRange(pair0, pair1);
+					}
+				} else if(pair.length === 1) {
+					var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
+					if(pair0 !== "") {
+						result = this.lookup.GetNumericalRange(pair0, pair0);
+					}
 				}
 			}
 			if(result !== undefined) {
