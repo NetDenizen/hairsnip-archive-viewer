@@ -1,5 +1,11 @@
 # Changelog
 
+## 2020-07-28.1
+
+* Add order reversing option for sorting of fields 5, 8, 12-15, and 22.
+
+* Fix sorting for fields 5, 8, 12-15, and 22.
+
 ## 2020-07-20.1
 
 * Unecessary redraws of the search results are avoided, which means one's scroll position won't be changed, unless a new page is shown.

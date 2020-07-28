@@ -497,11 +497,13 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 				heading.insertBefore(document.createTextNode(" "), heading.firstChild);
 				heading.insertBefore(sortButton, heading.firstChild);
 			}
-			if( managers[idx].hasOwnProperty('targetListElementSort') ) {
+			if( managers[idx].hasOwnProperty('targetListElementSort') &&
+				managers[idx].targetListElementSort !== undefined ) {
 				heading.appendChild( document.createTextNode(" ") );
 				heading.appendChild(managers[idx].targetListElementSort);
 			}
-			if( managers[idx].hasOwnProperty('targetListElementSortOrder') ) {
+			if( managers[idx].hasOwnProperty('targetListElementSortOrder') &&
+				managers[idx].targetListElementSortOrder !== undefined ) {
 				heading.appendChild( document.createTextNode(" ") );
 				heading.appendChild(managers[idx].targetListElementSortOrder);
 			}

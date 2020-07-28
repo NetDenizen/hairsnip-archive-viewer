@@ -9,6 +9,12 @@ function newBasicSearcher() {
 	output.necessaryResults = undefined;
 	output.negatedResultsCount = 0;
 
+	output.targetListElementSort = undefined;
+	output._targetListElementSortMode = 'alphabetical';
+	output.targetListElementSortOrder = undefined;
+	output._targetListElementSortOrderMode = 'normal';
+	output.targetListSortedValues = undefined;
+
 	output._CheckResultsNegate = function(encounteredValue) {
 		if(!encounteredValue) {
 			this.results = this.lookup.GetAll();
@@ -30,6 +36,46 @@ function newBasicSearcher() {
 	output._SetNegatedResultsCount = function(negatedResults) {
 		this.negatedResultsCount = negatedResults.AllValues().length;
 	};
+	output._GetSortedLookup = function() {
+		var values = this.lookup.GetAll();
+		if(this._targetListElementSortMode === 'numerical') {
+			if(this._targetListElementSortOrderMode === 'normal') {
+				values.SortNumerical();
+			} else {
+				values.SortNumericalReverse();
+			}
+		} else if(this._targetListElementSortOrderMode === 'reverse') {
+			values.reverse();
+		}
+		this.targetListSortedValues = values;
+		return values;
+	};
+	output._ToggleSort = function() {
+		if(this._targetListElementSortMode === 'alphabetical') {
+			this._targetListElementSortMode = 'numerical';
+			SetHTMLToText(this.targetListElementSort, "ABC");
+			this.targetListElementSort.title = 'Sort list alphabetically.';
+		} else {
+			this._targetListElementSortMode = 'alphabetical';
+			SetHTMLToText(this.targetListElementSort, "123");
+			this.targetListElementSort.title = 'Sort list by occurrences.';
+		}
+	};
+	output._ToggleOrder = function() {
+		if(this._targetListElementSortOrderMode === 'normal') {
+			this._targetListElementSortOrderMode = 'reverse';
+			SetHTMLToText(this.targetListElementSortOrder, "v");
+			this.targetListElementSortOrder.title = 'Sort list in normally (first to last).';
+		} else {
+			this._targetListElementSortOrderMode = 'normal';
+			SetHTMLToText(this.targetListElementSortOrder, "^");
+			this.targetListElementSortOrder.title = 'Sort list in reverse (last to first).';
+		}
+	};
+	output._SortPostAction = function() {
+		this._GetSortedLookup();
+		this._manager.UpdateSearchCallback(this._manager);
+	};
 	output._InputListener = function(e) {
 		if(this.targetElement.value === "") {
 			this.results = undefined;
@@ -41,8 +87,33 @@ function newBasicSearcher() {
 		this.edited = true;
 		this._manager.UpdateSearchCallback(this._manager);
 	};
+	output._ClickListener = function(e) {
+		if(e.currentTarget === this.targetListElementSort) {
+			this._ToggleSort();
+		} else {
+			this._ToggleOrder();
+		}
+		this._SortPostAction();
+	};
 	output.handleEvent = function(e) {
-		this._InputListener(e);
+		var eType = e.type;
+		if(eType === "input") {
+			this._InputListener(e);
+		} else if(eType === "click") {
+			this._ClickListener(e);
+		}
+	};
+	output._InitSortButtons = function() {
+		this.targetListElementSort = document.createElement('button');
+		this.targetListElementSort.title = 'Sort list by occurrences.';
+		SetHTMLToText(this.targetListElementSort, "123");
+		this.targetListElementSort.addEventListener("click", this, false);
+	};
+	output._InitSortOrderButtons = function() {
+		this.targetListElementSortOrder = document.createElement('button');
+		SetHTMLToText(this.targetListElementSortOrder, "^");
+		this.targetListElementSortOrder.title = 'Sort list in reverse.';
+		this.targetListElementSortOrder.addEventListener("click", this, false);
 	};
 	return output;
 }
@@ -115,6 +186,7 @@ function newBasicIndexedSearcher() {
 function newBasicLookupSearcher() {
 	var output = newBasicSearcher();
 	output.lookup = undefined;
+
 	return output;
 }
 
@@ -171,8 +243,10 @@ function newChecksumSearcher(name, lookup, manager) {
 		this.targetElement.setAttribute("id", name);
 		this.targetElement.setAttribute("placeholder", "<checksum>[,...]");
 		this.targetElement.addEventListener("input", this, false);
+		this._InitSortOrderButtons();
 		this.lookup = lookup;
 		this._manager = manager;
+		this._GetSortedLookup();
 	};
 	output.init(name, lookup, manager);
 	return output;
@@ -219,8 +293,10 @@ function newKeywordSearcher(name, lookup, manager) {
 		this.targetElement.setAttribute("id", name);
 		this.targetElement.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElement.addEventListener("input", this, false);
+		this._InitSortOrderButtons();
 		this.lookup = lookup;
 		this._manager = manager;
+		this._GetSortedLookup();
 	};
 	output.init(name, lookup, manager);
 	return output;
@@ -293,8 +369,10 @@ function newRangeSearcher(name, lookup, manager) {
 		this.targetElement.setAttribute("id", name);
 		this.targetElement.setAttribute("placeholder", "<<value 1>-<value 2>>[,...]");
 		this.targetElement.addEventListener("input", this, false);
+		this._InitSortOrderButtons();
 		this.lookup = lookup;
 		this._manager = manager;
+		this._GetSortedLookup();
 	};
 	output.init(name, lookup, manager);
 	return output;
@@ -375,12 +453,6 @@ function newDateSearcher(name, lookup, manager) {
 
 function newAutocompleteSearcher(name, classes, lookup, manager) {
 	var output = newBasicLookupSearcher();
-	output.targetElementInput = undefined;
-	output.targetListElementSort = undefined;
-	output._targetListElementSortMode = 'alphabetical';
-	output.targetListElementSortOrder = undefined;
-	output._targetListElementSortOrderMode = 'normal';
-	output.targetListSortedValues = undefined;
 	output.targetList = undefined;
 
 	output._datalistKeys = undefined;
@@ -587,20 +659,6 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 	output._InputListener = function(e) {
 		this._update(true);
 	};
-	output._GetSortedLookup = function() {
-		var values = this.lookup.GetAll();
-		if(this._targetListElementSortMode === 'numerical') {
-			if(this._targetListElementSortOrderMode === 'normal') {
-				values.SortNumerical();
-			} else {
-				values.SortNumericalReverse();
-			}
-		} else if(this._targetListElementSortOrderMode === 'reverse') {
-			values.reverse();
-		}
-		this.targetListSortedValues = values;
-		return values;
-	};
 	output._BuildDatalistValues = function(update) {
 		var values = this._GetSortedLookup();
 		var valuesLength = values.keys.length;
@@ -623,30 +681,6 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		} else {
 			this._SetDataList("", "", []);
 		}
-	};
-	output._ToggleSort = function() {
-		if(this._targetListElementSortMode === 'alphabetical') {
-			this._targetListElementSortMode = 'numerical';
-			SetHTMLToText(this.targetListElementSort, "ABC");
-			this.targetListElementSort.title = 'Sort list alphabetically.';
-		} else {
-			this._targetListElementSortMode = 'alphabetical';
-			SetHTMLToText(this.targetListElementSort, "123");
-			this.targetListElementSort.title = 'Sort list by occurrences.';
-		}
-		this._BuildDatalistValues(true);
-	};
-	output._ToggleOrder = function() {
-		if(this._targetListElementSortOrderMode === 'normal') {
-			this._targetListElementSortOrderMode = 'reverse';
-			SetHTMLToText(this.targetListElementSortOrder, "v");
-			this.targetListElementSortOrder.title = 'Sort list in normally (first to last).';
-		} else {
-			this._targetListElementSortOrderMode = 'normal';
-			SetHTMLToText(this.targetListElementSortOrder, "^");
-			this.targetListElementSortOrder.title = 'Sort list in reverse (last to first).';
-		}
-		this._BuildDatalistValues(true);
 	};
 	output._KeyDownListener = function(e) {
 		if(e.keyCode === 9) {
@@ -703,12 +737,8 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 			}
 		}
 	};
-	output._ClickListener = function(e) {
-		if(e.currentTarget === this.targetListElementSort) {
-			this._ToggleSort();
-		} else {
-			this._ToggleOrder();
-		}
+	output._SortPostAction = function() {
+		this._BuildDatalistValues(true);
 	};
 	output.handleEvent = function(e) {
 		var eType = e.type;
@@ -728,14 +758,8 @@ function newAutocompleteSearcher(name, classes, lookup, manager) {
 		this.targetElementInput.setAttribute("placeholder", "<keyword>[,...]");
 		this.targetElementInput.addEventListener("input", this, false);
 		this.targetElementInput.addEventListener("keydown", this, false);
-		this.targetListElementSort = document.createElement('button');
-		this.targetListElementSort.title = 'Sort list by occurrences.';
-		SetHTMLToText(this.targetListElementSort, "123");
-		this.targetListElementSort.addEventListener("click", this, false);
-		this.targetListElementSortOrder = document.createElement('button');
-		SetHTMLToText(this.targetListElementSortOrder, "^");
-		this.targetListElementSortOrder.title = 'Sort list in reverse.';
-		this.targetListElementSortOrder.addEventListener("click", this, false);
+		this._InitSortButtons();
+		this._InitSortOrderButtons();
 		this.targetList = newAutocompleteList(classes, this.targetElementInput);
 		this.targetList.relevantTargets.push(this.targetListElementSort);
 		this.targetList.relevantTargets.push(this.targetListElementSortOrder);
