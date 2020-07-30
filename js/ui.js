@@ -406,7 +406,7 @@ function newUiManager(searcher, name, classes, pageNumber, resultsPerPage) {
 			if(this._currentSortManager !== undefined) {
 				this.queryManagerSortTargetsLookup[this._currentSortManager].className = defaultListSortButtonClass;
 			}
-			if(idx > 0 && idx < this.queryManagerSortTargetsLookup.length) {
+			if(idx >= 0 && idx < this.queryManagerSortTargetsLookup.length) {
 				this.queryManagerSortTargetsLookup[idx].className = defaultListSortButtonSelectedClass;
 				this._currentSortManager = idx;
 				this._UpdateSearch();

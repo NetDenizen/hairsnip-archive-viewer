@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-07-30.1
+
+* Fix typo that prevents the sorting category button ('K') for the Story Checksum search field (5) from working.
+
 ## 2020-07-28.1
 
 * Reword README.
