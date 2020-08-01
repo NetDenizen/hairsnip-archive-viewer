@@ -16,6 +16,9 @@ section.ResponsiveSection.right {
 }
 
 @media only screen and (min-width: 1921px) {
+	section.ResponsiveSection {
+		height: 100%;
+	}
 	section.ResponsiveSection.left {
 		float: left;
 		width: 50%
@@ -42,3 +45,4 @@ section#StoryArea {
 	white-space: normal;
 	clear: both;
 }
+

@@ -2,6 +2,8 @@
 
 ## 2020-08-01.1
 
+* Synchronize height of search fields and search results in widescreen (>1920 pixels in width) mode. The size of both can be changed at once, though the search results can still be scrolled.
+
 * Fix huge gap between the search fields and search results in widescreen (>1920 pixels in width) mode.
 
 ## 2020-07-30.1
