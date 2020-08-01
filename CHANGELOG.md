@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-08-01.1
+
+* Fix huge gap between the search fields and search results in widescreen (>1920 pixels in width) mode.
+
 ## 2020-07-30.1
 
 * Fix typo that prevents the sorting category button ('K') for the Story Checksum search field (5) from working.
