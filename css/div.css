@@ -32,16 +32,16 @@ div.SearchResult:hover {
 }
 
 @media only screen and (min-width: 1921px) {
+	div.ScrollField {
+		height: 30em;
+		resize: none;
+	}
+
 	div#SearchContainer {
 		height: 35em;
 		resize: vertical;
 		overflow: hidden;
 		margin-bottom: 2%;
 		padding-bottom: 2em;
-	}
-
-	div.ScrollField {
-		height: 30em;
-		resize: none;
 	}
 }
