@@ -1,0 +1,15 @@
+# Hairsnip Archive Viewer (2020-08-01.1) #
+
+This webapp is meant to browse and display archives of the body of stories once shared between the domains: hairsnip.com, 1hss.com, and haircuttingstories.com, in the SQLite 3 format.
+
+## How to Use ##
+
+To use the webapp, you will need a modern web browser with support for HTML5, asm.js, and the set of features included by ECMAScript 6 (Which was released in 2015, as the most recent of these three hard dependencies.).
+
+Open `hairsnip-viewer.html` in your supported browser, then use the file selection labeled 'Select SQLite File' to choose `data.sqlite`. The page may become unresponsive during loading, but will list the time required to load `data.sqlite` upon success, or a message to notify you of failure.
+
+## Documentation ##
+
+Refer to https://github.com/NetDenizen/hairsnip-archive-viewer/tree/distrib (or `README.md`) for more detailed documentation, including an interface guide.
+
+You may also refer to https://github.com/NetDenizen/hairsnip-archive-viewer/blob/distrib/CHANGELOG.md (or `CHANGELOG.md`) for a list of changes to this software and accompanying dataset.
