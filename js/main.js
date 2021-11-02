@@ -6,7 +6,6 @@ var config = {
 
 var dbId = "DbFile";
 
-var SQL = undefined;
 var db = undefined;
 var searcher = undefined;
 var documentUi = undefined;
@@ -25,8 +24,7 @@ function OpenDb(path) {
 	var reader = new FileReader();
 	reader.onload = function() {
 		var raw = new Uint8Array(reader.result);
-		db = new SQL.Database(raw);
-		LoadSearcher();
+		initSqlJs(config).then(function(SQL){db = new SQL.Database(raw); LoadSearcher();});
 	};
 	reader.readAsArrayBuffer(path);
 }
@@ -37,7 +35,6 @@ function OnSQLSelect() {
 }
 
 function OnPageLoad() {
-	SQL = initSqlJs(config); // TODO: Why isn't this being set globally anymore?
 	SetHTMLToText( document.getElementById("DbLoadStatus"), "Waiting for SQLite file" );
 }
 
