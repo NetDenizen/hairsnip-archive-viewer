@@ -1,5 +1,9 @@
 # Changelog
 
+## 2021-11-01.2
+
+* Dependency licenses should be text files, not MarkDown.
+
 ## 2021-11-01.1
 
 * Update and reword README.md to be more concise. Fix a few typos.
