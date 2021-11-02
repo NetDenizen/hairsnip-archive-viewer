@@ -1,5 +1,15 @@
 # Changelog
 
+## 2021-11-01.1
+
+* Update and reword README.md to be more concise. Fix a few typos.
+
+* We no longer use a weird kludge to load sql.js, though the code should be functionally identical.
+
+* sql.js is upgraded from version 1.2.2 to version 1.6.2
+
+* Fix range-specification behavior fields 13-15.
+
 ## 2020-08-01.1
 
 * Synchronize height of search fields and search results in widescreen (>1920 pixels in width) mode. The size of both can be changed at once, though the search results can still be scrolled.
