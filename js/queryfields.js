@@ -334,8 +334,8 @@ function newRangeSearcher(name, lookup, manager) {
 					var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
 					var pair1 = pair[1].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
 					if(pair0 !== "" && pair1 !== "") {
-						result = pair1 < pair0 ? this.lookup.GetNumericalRange(pair1, pair0) :
-												 this.lookup.GetNumericalRange(pair0, pair1);
+						result = parseFloat(pair1) < parseFloat(pair0) ? this.lookup.GetNumericalRange(pair1, pair0) :
+																		 this.lookup.GetNumericalRange(pair0, pair1);
 					}
 				} else if(pair.length === 1) {
 					var pair0 = pair[0].replace(/\\-/g, '-').replace(/\\\?/g, '?').replace(/\\\+/g, '+').trim();
